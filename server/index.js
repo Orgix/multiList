@@ -17,7 +17,10 @@ app.use(bodyParser.urlencoded({limit:"30mb", extended:true}));
 app.use(cors());
 app.use(morgan('tiny'))
 
-app.use('/tasks',taskRoutes);
+app.use('/profile/me/tasks',taskRoutes);
+app.use('/profile/:userId/tasks', taskRoutes)
+
+
 
 // "/" route wont have anything initially as it will be serving the landing page content in case the landing page needs server data
 app.get("/",(req,res)=>{
