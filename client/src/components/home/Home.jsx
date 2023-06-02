@@ -1,16 +1,16 @@
 import React from 'react'
-import Sidenav from '../sidenav/Sidenav'
+
 import { Container, Grid } from '@mui/material'
-import TaskBar from '../TaskBar'
+import TaskBar from '../sidenav/TaskBar'
 
 const Home = () => {
   return (
 
-      <Grid container spacing={3}>
-        <Grid item xs={12} sm={4} md={2}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={4} md={3}>
           <TaskBar/>
         </Grid>
-        <Grid item xs={12} sm={8} md={10}>
+        <Grid item xs={12} sm={8} md={9}>
           <div>
             tasks here
           </div>

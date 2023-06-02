@@ -6,7 +6,8 @@ import { useTheme } from '@emotion/react';
 import {AppBar, Box, Toolbar, IconButton, Typography, 
         Menu, MenuItem, Avatar, Tooltip } 
         from '@mui/material';
-import { Link } from 'react-router-dom';
+import {Link} from '@mui/material';
+import { Route, Link as RouterLink } from 'react-router-dom';
 import user from '../../assets/images/user.png';
 
 const Navbar = () => {
@@ -19,7 +20,7 @@ const Navbar = () => {
     color: 'white'
   }
     
-    const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
 
   const handleOpenNavMenu = (event) => {
@@ -90,25 +91,45 @@ const Navbar = () => {
             >
               
                 <MenuItem key="key-1" onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">Explore</Typography>
+                  <Typography textAlign="center">
+                    <Link component={RouterLink} to="/explore" underline="none">
+                      Explore
+                    </Link>
+                  </Typography>
                 </MenuItem>
                 <MenuItem key="key-2" onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">My profile</Typography>
+                  <Typography textAlign="center">
+                    <Link component={RouterLink} to="/profile/me/" underline="none">
+                      My profile
+                    </Link>
+                  </Typography>
                 </MenuItem>
                 <MenuItem key="key-3" onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">New Task</Typography>
+                  <Typography textAlign="center">
+                    <Link component={RouterLink} to="/profile/me/tasks" underline="none">
+                      My Tasks
+                    </Link>
+                  </Typography>
+                </MenuItem>
+              
+                <MenuItem key="key-4" onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">
+                    <Link component={RouterLink} to="/tasks/new" underline="none">
+                      New Task
+                    </Link>
+                  </Typography>
                 </MenuItem>
               
             </Menu>
           </Box>
               <Box sx={{flexGrow:1, display:{xs:'none', md:'flex'}, justifyContent:'center'}}>
-                    <Link to="/profile/me/tasks" style={linkStyles}>
+                    <Link component={RouterLink} to="/profile/me/tasks" style={linkStyles}>
                       Tasks
                     </Link>
-                    <Link to="/explore" style={linkStyles}>
+                    <Link component={RouterLink} to="/explore" style={linkStyles}>
                         Explore
                     </Link>
-                    <Link to="/profile/me" style={linkStyles}>
+                    <Link component={RouterLink} to="/profile/me" style={linkStyles}>
                         My Profile
                     </Link>
               </Box>
