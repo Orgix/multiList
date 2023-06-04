@@ -6,3 +6,5 @@ export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async () => {
     const response = await api.fetchTasks()
     return response.data
 })
+
+//fetchTask, createTask, updateTask, deleteTask,

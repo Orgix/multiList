@@ -3,7 +3,7 @@ import Task from './Task/Task'
 import { useSelector, useDispatch } from 'react-redux'
 import { getTasksStatus, getTasks, getTasksError } from '../../services/state/taskSlice'
 import { fetchTasks } from '../../services/actions/tasks'
-import { CircularProgress, Grid } from '@mui/material'
+import { CircularProgress, Grid, Typography } from '@mui/material'
 
 const Tasks = () => {
   const dispatch = useDispatch();
@@ -34,7 +34,7 @@ const Tasks = () => {
 }
   return (
    <div>
-    Tasks
+    <Typography variant="h3" sx={{my:4, textAlign:'center'}}>All user Tasks</Typography>
     <Grid container spacing={2}>
         {content}
     </Grid>

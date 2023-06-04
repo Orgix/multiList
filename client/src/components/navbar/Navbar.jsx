@@ -4,9 +4,10 @@ import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '@emotion/react';
 import {AppBar, Box, Toolbar, IconButton, Typography, 
-        Menu, MenuItem, Avatar, Tooltip } 
+        Menu, MenuItem, Avatar, Tooltip, Divider, Button } 
         from '@mui/material';
 import {Link} from '@mui/material';
+import {Container} from '@mui/material';
 import { Route, Link as RouterLink } from 'react-router-dom';
 import user from '../../assets/images/user.png';
 
@@ -19,7 +20,7 @@ const Navbar = () => {
     textDecoration: "none",
     color: 'white'
   }
-    
+  const colorBtn=theme.palette.background.default;
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
 
@@ -133,7 +134,15 @@ const Navbar = () => {
                         My Profile
                     </Link>
               </Box>
-              <Box sx={{ flexGrow: 0 }}>
+              <Box sx={{flexGrow:0}}>
+                <Button variant="contained" href="/auth/signin" color="inherit" sx={{mx:1,display:{xs:'none', sm:'block'}}}>
+                  Sign In
+                </Button>
+              </Box>
+              {/* <Box sx={{flexGrow:0, display:{xs:'none', sm:'block'}}}>
+              <Typography variant="subtitle1" sx={{fontWeight:700, color:'white', fontSize:'1.1em'}}>Username here</Typography>
+              </Box>
+              <Box sx={{ flexGrow: 0}}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ px: 1 }}>
                 <Avatar alt="Remy Sharp" src={user} />
@@ -154,8 +163,12 @@ const Navbar = () => {
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
-            >
-              
+            >   
+              <Container sx={{display:{xs:'block', sm:'none'}, fontWeight:800}}>
+              <Typography  textAlign="center">Username here</Typography>
+                <Divider/>
+              </Container>
+                
                 <MenuItem key="opt-1" onClick={handleCloseUserMenu}>
                   <Typography textAlign="center">User Settings</Typography>
                 </MenuItem>
@@ -167,7 +180,7 @@ const Navbar = () => {
                 </MenuItem>
               
             </Menu>
-          </Box>
+          </Box> */}
           </Toolbar>
       </AppBar>
   )
