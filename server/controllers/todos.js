@@ -38,6 +38,7 @@ export const updateTask = async(req,res)=>{
 }
 
 export const createTask = async(req,res)=>{
+    console.log(req.body)
     //create task. only get here when registered user is authorized
     const task = req.body;
     const newTask = new Todo({...task, createdAt: new Date().toISOString()});
@@ -64,6 +65,9 @@ export const deleteTask = async(req,res)=>{
 }
 
 export const getTasks = async(req,res)=>{   
+    const tasks = await  Todo.find({});
+    if(!tasks) res.status(404).json({message: 'No tasks found'})
+    res.status(200).json(tasks)
     //get all tasks from specific user. either /me or /:id 
     // /me renders in a different location and only to authorized users
     // /:id renders public only headlines

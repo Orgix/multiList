@@ -16,3 +16,5 @@ export const updateTask = (id, updatedTask) => API.patch(`profile/me/tasks/${id}
 export const deleteTask = (id) => API.delete(`/profile/me/posts/${id}`);
 export const signIn = (formData) => API.post('/user/signin', formData);
 export const signUp = (formData) => API.post('/user/signup', formData);
+
+// convert profile/me to profile/userName/tasks/ ... so as to avoid duplicate links
