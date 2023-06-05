@@ -11,6 +11,7 @@ import {Container} from '@mui/material';
 import { Route, Link as RouterLink } from 'react-router-dom';
 import user from '../../assets/images/user.png';
 
+
 const Navbar = () => {
   const theme = useTheme();
   const linkStyles={
@@ -20,7 +21,7 @@ const Navbar = () => {
     textDecoration: "none",
     color: 'white'
   }
-  const colorBtn=theme.palette.background.default;
+  
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
 
@@ -38,7 +39,7 @@ const Navbar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
+ 
   return (
     <AppBar position='static' color={theme.secondary}>
         
@@ -135,7 +136,7 @@ const Navbar = () => {
                     </Link>
               </Box>
               <Box sx={{flexGrow:0}}>
-                <Button variant="contained" href="/auth/signin" color="inherit" sx={{mx:1,display:{xs:'none', sm:'block'}}}>
+                <Button variant="contained" href="/auth" color="inherit" sx={{mx:1,display:{xs:'none', sm:'block'}}}>
                   Sign In
                 </Button>
               </Box>
