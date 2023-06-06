@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -18,21 +17,28 @@ export default function Auth() {
     const [formData, setFormData] = useState(initialState);
     const [isSignup, setIsSignup] = useState(false)
     const [error, setError] = useState('')
+    const [disabled, setDisabled] = useState(true)
     
     const handleShowPassword = () => setShowPassword((show) => !show);
 
     const switchMode = () => {
         setFormData(initialState);
-        console.log(formData)
         setIsSignup((prevIsSignup) => !prevIsSignup);
         setShowPassword(prev=> !prev);
+        setDisabled(true)
       };
 
     const handleSubmit = (event) => {
         event.preventDefault();
         //if pwd !== repeatpwd , clear the form and leave an error message
-        console.log(formData)
-  };
+        
+        // const check = isSignup ? Object.keys(formData) : Object.keys(formData).filter(field => field === 'email' || field==='password')
+        
+        // if(check.length === 2) console.log(validateLoginData(formData, check))
+    };
+
+
+
   const handleChange = (e) => {
     setFormData({...formData, [e.target.name]: e.target.value})
   }
@@ -41,9 +47,48 @@ export default function Auth() {
     setFormData(initialState);
   };
 
+  const handleOnBlur = (e) =>{
+    const check = isSignup ? Object.keys(formData) : Object.keys(formData).filter(field => field === 'email' || field==='password')
+        
+    if(check.length === 2) setDisabled(!validateLoginData(formData, check))
+    else setDisabled(!validateRegisterData(formData, check))
+  }
+
+
+  const validateLoginData = (state, keys) =>{
+    //validate email and password. email needs to have . and @ and a certain length that is required(about 13) and password min 8 max 20
+    const error = keys.filter(key=>{
+      const val = state[key]
+      if(key === 'password'){
+        if(val.length < 8 || val.length > 20) return true
+      }
+      else if(val.indexOf('@') === -1 || val.indexOf('.')=== -1 || val.length < 15) return true;
+  
+      return false;
+    })
+  
+    return error.length === 0 
+  }
+ 
+  const validateRegisterData = (state,keys)=>{
+    const error = keys.filter(key=>{
+      const val = state[key]
+      if(key==="firstName" || key==="lastName"){
+        if(val.length < 5 || val.length > 14) return true
+      }
+      else if(key==="password" || key==="confirmPassword"){
+        if(val.length < 8 || val.length > 20) return true
+      }
+      else{
+        if(val.indexOf('@') === -1 || val.indexOf('.')=== -1 || val.length < 15) return true
+      }
+      return false;
+    })
+    return error.length === 0 && state["password"] === state["confirmPassword"];
+  }
+
   return (
       <Container component="main" maxWidth="xs">
-        <CssBaseline />
         <Box
           sx={{
             marginTop: 8,
@@ -58,27 +103,27 @@ export default function Auth() {
           <Typography component="h1" variant="h5">
             {isSignup? 'Sign up':'Sign In'}
           </Typography>
-          <form onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <form onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
             <Grid container spacing={2}>
             {isSignup && (
                 <>
                     <Grid item xs={12} sm={6}>
-                        <Input name="firstName" value={formData.firstName} label="First Name" handleChange={handleChange} autoFocus  />
+                        <Input name="firstName" value={formData.firstName} label="First Name" handleOnBlur={handleOnBlur} handleChange={handleChange} autoFocus  />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <Input name="lastName" value={formData.lastName} label="Last Name" handleChange={handleChange} />
+                        <Input name="lastName" value={formData.lastName} label="Last Name" handleOnBlur={handleOnBlur} handleChange={handleChange} />
                     </Grid>
                 </>
             )}
               
               <Grid item xs={12}>
-                <Input name="email" value={formData.email} label="Email Address" handleChange={handleChange} type="email" />
+                <Input name="email" value={formData.email} handleOnBlur={handleOnBlur} label="Email Address" handleChange={handleChange} type="email" />
               </Grid>
               <Grid item xs={12}>
-              <Input name="password"  value={formData.password} label="Password" handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} />    
+              <Input name="password"  value={formData.password} handleOnBlur={handleOnBlur} label="Password" handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} />    
               </Grid>
               <Grid item xs={12}>
-              {isSignup && <Input name="confirmPassword"  value={formData.confirmPassword} label="Repeat Password" handleChange={handleChange} type={showPassword ? 'text' : 'password'}/> }
+              {isSignup && <Input name="confirmPassword"  handleOnBlur={handleOnBlur} value={formData.confirmPassword} label="Repeat Password" handleChange={handleChange} type={showPassword ? 'text' : 'password'}/> }
               </Grid>
             </Grid>
             <Button
@@ -86,6 +131,7 @@ export default function Auth() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={disabled}
             >
               {isSignup ? 'Sign Up' : 'Sign In'}
             </Button>

@@ -4,11 +4,12 @@ import { TextField,  InputAdornment, IconButton } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-const Input = ({ name, handleChange, label,value, autoFocus, type, handleShowPassword }) => (
+const Input = ({ name, handleChange,handleOnBlur, label,value, autoFocus, type, handleShowPassword }) => (
       <TextField
         value={value}
         name={name}
         onChange={handleChange}
+        onBlur={handleOnBlur}
         variant="outlined"
         required
         fullWidth
