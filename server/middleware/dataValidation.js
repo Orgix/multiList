@@ -24,8 +24,8 @@ const extension = (joi) =>({
 })
 const Joi = baseJoi.extend(extension)
 const userSchema = Joi.object({
-        firstName: Joi.string().min(5).max(12).required().escapeHTML(),
-        lastName: Joi.string().min(5).max(12).required().escapeHTML(),
+        firstName: Joi.string().min(5).max(14).required().escapeHTML(),
+        lastName: Joi.string().min(5).max(14).required().escapeHTML(),
         email:Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net','uk','gr','fr','in','de','ru','br'] } }).required(),
         password:Joi.string().min(8).max(15).required().alphanum()
 }) 
