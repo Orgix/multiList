@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { v4 as uuid } from 'uuid'; 
-import jwt from 'jsonwebtoken';
+
 
 const todoSchema = mongoose.Schema({
     title:{
@@ -16,11 +16,6 @@ const todoSchema = mongoose.Schema({
     //tasks need to be in this form to be validated properly. one way is to check tasks before casting .save()
     tasks:[{
                 name:String, 
-                id:{
-                    type:String,
-                    default: uuid(),
-                    
-                },
                 completed:{
                     type:Boolean,
                     default: false
@@ -50,9 +45,9 @@ const todoSchema = mongoose.Schema({
 
 todoSchema.pre('save', function(next){
     //create team token. lasts a year
-    const teamToken = jwt.sign({title:this.title, author: this.author, id: this._id, created:this.createdAt}, 'test-key',{expiresIn:"365d"})
+    const teamId = uuid();
     //update team field
-    this.team.id = teamToken
+    this.team.id = teamId
     //next middleware
     next();
 })
