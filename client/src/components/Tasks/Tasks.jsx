@@ -35,7 +35,7 @@ const Tasks = () => {
   return (
    <div>
     <Typography variant="h3" sx={{my:4, textAlign:'center'}}>All user Tasks</Typography>
-    <Grid container spacing={2}>
+    <Grid container spacing={2} sx={{marginLeft:'8px'}}>
         {content}
     </Grid>
     

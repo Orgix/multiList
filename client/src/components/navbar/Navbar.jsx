@@ -44,6 +44,7 @@ const Navbar = () => {
     <AppBar position='static' color={theme.secondary}>
         
           <Toolbar disableGutters>
+          
             <ListAltSharpIcon sx={{display:{xs:'none', md:'flex'}, mr:1}}/>
             <Typography
               variant="h6"
