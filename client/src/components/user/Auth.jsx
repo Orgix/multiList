@@ -7,24 +7,23 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-
+import useToggle from '../../hooks/useToggle';
 import Input from './Input';
 
 const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' };
 
 export default function Auth() {
-    const [showPassword, setShowPassword] = useState(false);
+    const [showPassword, setShowPassword] = useToggle(false);
     const [formData, setFormData] = useState(initialState);
-    const [isSignup, setIsSignup] = useState(false)
-    const [error, setError] = useState('')
-    const [disabled, setDisabled] = useState(true)
+    const [isSignup, setIsSignup] = useToggle(false)
+    const [disabled, setDisabled] = useToggle(true)
     
-    const handleShowPassword = () => setShowPassword((show) => !show);
+    
 
     const switchMode = () => {
         setFormData(initialState);
-        setIsSignup((prevIsSignup) => !prevIsSignup);
-        setShowPassword(prev=> !prev);
+        setIsSignup();
+        setShowPassword();
         setDisabled(true)
       };
 
@@ -120,7 +119,7 @@ export default function Auth() {
                 <Input name="email" value={formData.email} handleOnBlur={handleOnBlur} label="Email Address" handleChange={handleChange} type="email" />
               </Grid>
               <Grid item xs={12}>
-              <Input name="password"  value={formData.password} handleOnBlur={handleOnBlur} label="Password" handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} />    
+              <Input name="password"  value={formData.password} handleOnBlur={handleOnBlur} label="Password" handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={setShowPassword} />    
               </Grid>
               <Grid item xs={12}>
               {isSignup && <Input name="confirmPassword"  handleOnBlur={handleOnBlur} value={formData.confirmPassword} label="Repeat Password" handleChange={handleChange} type={showPassword ? 'text' : 'password'}/> }
