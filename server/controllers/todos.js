@@ -8,6 +8,7 @@ export const getTask = async(req,res)=>{
     
     try{//task with private privacy, cant be retrieved if determined user is from /:id route
         const task = await Todo.findById(id)
+        if(!task) return res.status(404).json({message:"not found"})
 
         //const compare = compareTokens(userId, task.team.token) if false user has requested
         //once user model, login/register is done. Implement compareTokens middleware 
@@ -16,14 +17,14 @@ export const getTask = async(req,res)=>{
         if(determinedUser === "me"){
             //validate token from user and from user from post if thye match send response with the post, else send error resp
             //
-            res.status(200).json(task)
+          return res.status(200).json(task)
         } //check if user is included in the privacy settings of the post, if not, forbidden access
-        else if(task.privacy === "Private") res.status(403).json({message: "Unathorized Access"})
+        else if(task.privacy === "Private") return res.status(403).json({message: "Unathorized Access"})
 
         res.status(200).json(task)
     
     }catch(err){
-        res.status(404).json({message: err.message})
+        res.status(400).json({message: err.message})
     }
 }
 
