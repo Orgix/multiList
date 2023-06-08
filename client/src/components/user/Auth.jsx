@@ -31,7 +31,7 @@ export default function Auth() {
     const handleSubmit = (event) => {
         event.preventDefault();
         //if pwd !== repeatpwd , clear the form and leave an error message
-        
+        console.log("handling")
         // const check = isSignup ? Object.keys(formData) : Object.keys(formData).filter(field => field === 'email' || field==='password')
         
         // if(check.length === 2) console.log(validateLoginData(formData, check))
