@@ -1,8 +1,8 @@
 import {useSelector, useDispatch} from 'react-redux'
 import { getTaskById, getTasksError, getSinglePostStatus } from '../../services/state/taskSlice'
-import {useParams, Link as RouterLink} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 import { fetchTask } from '../../services/actions/tasks';
-import { Box, Typography, Grid, Paper,Container, Link, CircularProgress } from '@mui/material';
+import { Box, Typography, Grid, Paper,Container, CircularProgress } from '@mui/material';
 import { convertToRelativeTime } from '../../utils/time';
 import { useEffect} from 'react';
 import { getLoading } from '../../services/state/taskSlice';
@@ -10,25 +10,9 @@ import Checkbox from '@mui/material/Checkbox';
 import Subtask from './Subtask';
 import HoverableEditButton from './EditButton';
 import useToggle from '../../hooks/useToggle';
-const styles= {
-  container:{
-    display:'flex',
-    alignItems:'center',
-    justifyContent:'space-between',
-  },
-  text:{
-    fontSize:'20px',
-    fontWeight:500
-  },
-  linkBtn:{
-    fontSize:'16px'
-  },
-  
-  box:{
-    display:'flex',
-    alignItems:'center'
-  }
-}
+import { styles } from './styles';
+
+
 const TaskDetails = () => {
   const [active, setActive] = useToggle(true)
   const dispatch = useDispatch();
@@ -36,30 +20,30 @@ const TaskDetails = () => {
   const {id} = useParams();
   //get the task from the state, if exists. also get the rest of the state via other selectors
   const loading = useSelector(getLoading)
-  const task = useSelector((state)=>getTaskById(state,id))
+  const task = useSelector((state)=>getTaskById(state,id));
   const status = useSelector(getSinglePostStatus)
   const error = useSelector(getTasksError)
  
 
   useEffect(()=>{
-    if(loading){
+    if(!task){
       dispatch(fetchTask(id))
-      
     }
   },[])
   
   
-
+ 
+  
   if(error){
     return(
-      <article>
+      <article style={styles.error}>
         {error}
       </article>
     )
   }
   if(loading){
     return(
-      <section>
+      <section style={styles.loading}>
         <CircularProgress/>
       </section>
     )

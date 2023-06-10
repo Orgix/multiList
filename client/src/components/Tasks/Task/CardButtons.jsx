@@ -9,7 +9,7 @@ const CardButtons = ({id}) => {
     <>
         <Button size="small">
           <Link component={RouterLink} to={pageLink} underline="none">
-            To Tasks
+            To Task
           </Link>
         </Button>
         {/* This button will render only if task is authored by the user requesting */}

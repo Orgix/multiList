@@ -1,0 +1,34 @@
+export const styles= {
+    container:{
+      display:'flex',
+      alignItems:'center',
+      justifyContent:'space-between',
+    },
+    text:{
+      fontSize:'20px',
+      fontWeight:500
+    },
+    linkBtn:{
+      fontSize:'16px'
+    },
+    
+    box:{
+      display:'flex',
+      alignItems:'center'
+    }, 
+    error:{
+      display:'flex',
+      fontWeight:'bold',
+      fontSize:'22px',
+      textAlign:'center',
+      justifyContent:'center',
+      paddingTop:'22px'
+    },
+    loading:{
+      display:'flex',
+      fontSize:'22px',
+      textAlign:'center',
+      justifyContent:'center',
+      paddingTop:'22px'
+    }
+  }

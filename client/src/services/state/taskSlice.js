@@ -18,12 +18,17 @@ const taskSlice = createSlice({
       builder
           .addCase(fetchTasks.pending, (state, action) => {
               state.isLoading = true
+              state.error = ''
           })
           .addCase(fetchTasks.fulfilled, (state,action)=>{
               //add map here to handle the posts
               state.isLoading = false
               state.status = 'succeeded'
-              state.tasks.push(...action.payload)
+              action.payload.forEach((newTask)=>{
+                const existingTask = state.tasks.find(task=> task._id === newTask._id)
+                if(!existingTask) state.tasks.push(newTask)
+              })
+              //state.tasks.push(...action.payload)
           })
           .addCase(fetchTasks.rejected, (state,action)=>{
                 state.isLoading = false
@@ -32,6 +37,7 @@ const taskSlice = createSlice({
           } ) 
           .addCase(fetchTask.pending, (state,action)=>{
                 state.isLoading = true
+                state.error=''
           })   
           .addCase(fetchTask.fulfilled, (state,action)=>{
             state.isLoading =  false
@@ -41,6 +47,7 @@ const taskSlice = createSlice({
             }
           })
           .addCase(fetchTask.rejected, (state, action)=>{
+                state.isLoading = false
                 state.singleStatus = 'failed'
                 state.error = action.error.message
           })
