@@ -22,6 +22,7 @@ const taskSlice = createSlice({
           })
           .addCase(fetchTasks.fulfilled, (state,action)=>{
               //add map here to handle the posts
+              state.error = ''
               state.isLoading = false
               state.status = 'succeeded'
               action.payload.forEach((newTask)=>{

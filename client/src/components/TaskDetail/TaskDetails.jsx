@@ -47,7 +47,7 @@ const TaskDetails = () => {
         <CircularProgress/>
       </section>
     )
-  }else{
+  }else if(task){
     const completed = task.tasks.filter(task=> task.completed).length
     const activeTasks = task.tasks.filter(task=> !task.completed)
     const visible = active ? task.tasks : activeTasks
