@@ -1,5 +1,5 @@
 import * as api from '../api/'
-import { createAsyncThunk, isRejectedWithValue } from '@reduxjs/toolkit'
+import { createAsyncThunk} from '@reduxjs/toolkit'
 
 
 export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async () => {

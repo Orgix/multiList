@@ -1,14 +1,11 @@
 import * as React from 'react';
 import { useState } from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
+import {Container, Typography, Box, Grid, Button, Avatar} from '@mui/material/'
 import useToggle from '../../hooks/useToggle';
 import Input from './Input';
+import {useDispatch, useSelector} from 'react-redux';
+import { register,signin } from '../../services/actions/auth';
 
 const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' };
 
@@ -17,8 +14,8 @@ export default function Auth() {
     const [formData, setFormData] = useState(initialState);
     const [isSignup, setIsSignup] = useToggle(false)
     const [disabled, setDisabled] = useToggle(true)
-    
-    
+    const dispatch = useDispatch();
+    const {error, success, loading, userInfo} = useSelector((state)=> state.auth)
 
     const switchMode = () => {
         setFormData(initialState);
@@ -30,10 +27,20 @@ export default function Auth() {
     const handleSubmit = (event) => {
         event.preventDefault();
         //if pwd !== repeatpwd , clear the form and leave an error message
-        console.log("handling")
+        const check = isSignup ? Object.keys(formData) : Object.keys(formData).filter(field => field === 'email' || field==='password')
+        
+        //in case there's 
+        if(check.length === 2) setDisabled(!validateLoginData(formData, check))
+        else setDisabled(!validateRegisterData(formData, check))
         // const check = isSignup ? Object.keys(formData) : Object.keys(formData).filter(field => field === 'email' || field==='password')
         
-        // if(check.length === 2) console.log(validateLoginData(formData, check))
+        if(!disabled){
+          //handle the registration or signing in
+          if(isSignup) dispatch(register(formData))
+          else dispatch(signin(formData))
+          clear();
+        }
+        
     };
 
 
@@ -44,6 +51,7 @@ export default function Auth() {
 
   const clear = () => {
     setFormData(initialState);
+    setDisabled(true)
   };
 
   const handleOnBlur = (e) =>{
@@ -99,10 +107,11 @@ export default function Auth() {
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
+          <Typography component="h1" variant="h5" sx={{mb:1}}>
             {isSignup? 'Sign up':'Sign In'}
           </Typography>
           <form onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
+            {error && <div> {error} </div>}
             <Grid container spacing={2}>
             {isSignup && (
                 <>

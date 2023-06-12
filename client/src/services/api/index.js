@@ -14,7 +14,7 @@ export const fetchTask = (id) => API.get(`/profile/me/tasks/${id}`);
 export const createTask = (newTask) => API.post('/profile/me/tasks', newTask);
 export const updateTask = (id, updatedTask) => API.patch(`profile/me/tasks/${id}`, updatedTask);
 export const deleteTask = (id) => API.delete(`/profile/me/posts/${id}`);
-export const signIn = (formData) => API.post('/user/signin', formData);
-export const signUp = (formData) => API.post('/user/signup', formData);
+export const signIn = (formData) => API.post('/auth/signin', formData);
+export const signUp = (formData) => API.post('/auth/signup', formData);
 
 // convert profile/me to profile/userName/tasks/ ... so as to avoid duplicate links
