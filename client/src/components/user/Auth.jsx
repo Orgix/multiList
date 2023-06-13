@@ -6,7 +6,9 @@ import useToggle from '../../hooks/useToggle';
 import Input from './Input';
 import {useDispatch, useSelector} from 'react-redux';
 import { register,signin } from '../../services/actions/auth';
-
+import Success from './Success';
+import Error from './Error';
+import { useTheme } from '@emotion/react';
 const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' };
 
 export default function Auth() {
@@ -16,7 +18,8 @@ export default function Auth() {
     const [disabled, setDisabled] = useToggle(true)
     const dispatch = useDispatch();
     const {error, success, loading, userInfo} = useSelector((state)=> state.auth)
-
+    const theme = useTheme();
+    
     const switchMode = () => {
         setFormData(initialState);
         setIsSignup();
@@ -95,7 +98,20 @@ export default function Auth() {
   }
 
   return (
+    <>
+      {success && 
+          <Container maxWidth="md" sx={{display:'flex',justifyContent:'center', py:2}}>
+            <Success/>
+          </Container>
+
+      }
+      {error &&
+         <Container maxWidth="md" sx={{my:2, display:'flex', justifyContent:'center', py:2}}>          
+            <Error msg={error}/>
+          </Container>
+      }
       <Container component="main" maxWidth="xs">
+        
         <Box
           sx={{
             marginTop: 8,
@@ -104,14 +120,14 @@ export default function Auth() {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5" sx={{mb:1}}>
             {isSignup? 'Sign up':'Sign In'}
           </Typography>
           <form onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
-            {error && <div> {error} </div>}
+            
             <Grid container spacing={2}>
             {isSignup && (
                 <>
@@ -161,5 +177,6 @@ export default function Auth() {
           </form>
         </Box>
       </Container>
+      </>
   );
 }

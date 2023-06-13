@@ -12,6 +12,11 @@
       sidenav:{
         default:'#afd7e4',
         letters:'#ababab'
+      },
+      success:{
+        //#071318
+        main:'#5dbede',
+        letters:'#fffefe'
       }
     },
     typography:{
