@@ -33,6 +33,7 @@ const authSlice = createSlice({
                   state.error=''
             })   
             .addCase(signin.fulfilled, (state,action)=>{
+                console.log("success")
               state.isLoading =  false
               if(action.payload){
                 state.singleStatus = 'succeeded'

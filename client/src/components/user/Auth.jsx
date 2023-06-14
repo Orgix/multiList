@@ -6,9 +6,9 @@ import useToggle from '../../hooks/useToggle';
 import Input from './Input';
 import {useDispatch, useSelector} from 'react-redux';
 import { register,signin } from '../../services/actions/auth';
+import { validateLoginData, validateRegisterData } from '../../utils/validateInput';
 import Success from './Success';
 import Error from './Error';
-import { useTheme } from '@emotion/react';
 const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' };
 
 export default function Auth() {
@@ -18,14 +18,13 @@ export default function Auth() {
     const [disabled, setDisabled] = useToggle(true)
     const dispatch = useDispatch();
     const {error, success, loading, userInfo} = useSelector((state)=> state.auth)
-    const theme = useTheme();
     
     const switchMode = () => {
         setFormData(initialState);
         setIsSignup();
-        setShowPassword();
+        setShowPassword(false);
         setDisabled(true)
-      };
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -62,39 +61,6 @@ export default function Auth() {
         
     if(check.length === 2) setDisabled(!validateLoginData(formData, check))
     else setDisabled(!validateRegisterData(formData, check))
-  }
-
-
-  const validateLoginData = (state, keys) =>{
-    //validate email and password. email needs to have . and @ and a certain length that is required(about 13) and password min 8 max 20
-    const error = keys.filter(key=>{
-      const val = state[key]
-      if(key === 'password'){
-        if(val.length < 8 || val.length > 20) return true
-      }
-      else if(val.indexOf('@') === -1 || val.indexOf('.')=== -1 || val.length < 15) return true;
-  
-      return false;
-    })
-  
-    return error.length === 0 
-  }
- 
-  const validateRegisterData = (state,keys)=>{
-    const error = keys.filter(key=>{
-      const val = state[key]
-      if(key==="firstName" || key==="lastName"){
-        if(val.length < 5 || val.length > 14) return true
-      }
-      else if(key==="password" || key==="confirmPassword"){
-        if(val.length < 8 || val.length > 20) return true
-      }
-      else{
-        if(val.indexOf('@') === -1 || val.indexOf('.')=== -1 || val.length < 15) return true
-      }
-      return false;
-    })
-    return error.length === 0 && state["password"] === state["confirmPassword"];
   }
 
   return (
