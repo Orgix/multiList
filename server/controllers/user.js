@@ -39,12 +39,34 @@ export const registerUser = async (req,res)=>{
     
 }
 
-export const signin = async (req,res)=>{
-    //get email and password from request body .If no data, return a 401 status code
-    //lookup user in database. if not found, send a 401 code
-    //if found, compare the password with the hash. if it's valid, generate a jwt token(1day length)
-    //set the user field to that token.
+export const loginUser = async (req,res)=>{
+    //get email and password from request body .If no data, return a 401 status code(done from middleware with Joi)
+    const {email, password} = req.body;
     
+    //lookup user in database. if not found, send a 404 code
+    const foundUser = await User.findOne({email}).exec();
+    if(!foundUser) return res.status(404).json({message: 'User does not exist.'})
+    
+    //if found, compare the password with the hash. 
+    const match = await bcrypt.compare(password, foundUser.password)
+    if(!match) return res.status(401).json({message:'Incorrect credentials'})
+
+    //if it's valid, generate a jwt token(1day length)
+    const accessToken = jwt.sign(
+        {
+            "UserInfo": {
+                "email": foundUser.email,
+                "password": foundUser.password
+            }
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '1d' }
+    );
+    
+    res.status(200).json({message: 'Welcome back, ', token:accessToken})
+    //set the user field to that token.
+    foundUser.token = accessToken
+    await foundUser.save();
 }
 
 export const signout = async (req,res)=>{

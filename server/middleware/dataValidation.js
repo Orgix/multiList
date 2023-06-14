@@ -29,7 +29,10 @@ const userSchema = Joi.object({
         email:Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net','uk','gr','fr','in','de','ru','br'] } }).required(),
         password:Joi.string().min(8).max(15).required().alphanum()
 }) 
-
+const loginSchema = Joi.object({
+    email:Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net','uk','gr','fr','in','de','ru','br'] } }).required(),
+    password:Joi.string().min(8).max(15).required().alphanum()
+})
 const taskSchema = Joi.object({
     priority:Joi.number().required().min(0).max(4),
     title:Joi.string().min(5).max(20).required().escapeHTML()
@@ -40,10 +43,10 @@ const taskSchema = Joi.object({
 
 
 export const validateUser = (req,res,next)=>{
-    const {error} = userSchema.validate(req.body)
+    console.log(req)
+    const {error} = req.pathname === '/signup' ? userSchema.validate(req.body) : loginSchema.validate({email:req.body.email, password: req.body.password})
     
     if(error) {
-        console.log("ERROR HERE")
         const msg = error.details.map(el => el.message).join(',')
         throw new ExpressError(msg,400)
     }
