@@ -56,14 +56,16 @@ export const loginUser = async (req,res)=>{
         {
             "UserInfo": {
                 "email": foundUser.email,
-                "password": foundUser.password
+                "firstName": foundUser.firstName,
+                "lastName":foundUser.lastName,
+                "joined" : foundUser.joined
             }
         },
         process.env.JWT_SECRET,
         { expiresIn: '1d' }
     );
     
-    res.status(200).json({message: 'Welcome back, ', token:accessToken})
+    res.status(200).json({message: 'Welcome back, ', token:accessToken, user:{name:foundUser.firstName, surname:foundUser.lastName, id:foundUser._id}})
     //set the user field to that token.
     foundUser.token = accessToken
     await foundUser.save();

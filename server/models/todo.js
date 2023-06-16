@@ -7,7 +7,7 @@ const todoSchema = mongoose.Schema({
         type:String,
         required:true,
         min:6,
-        max:20
+        max:25
     },
     createdAt:{
         type:Date,
