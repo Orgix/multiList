@@ -75,7 +75,7 @@ const TaskDetails = () => {
               <Typography  textAlign={'center'} variant="h5">Tasks Completed:  <b>{completed}</b></Typography>
             </Grid>
             <Grid my={1} item xs={12} sm={6} md={4}>
-              <Typography  textAlign={'center'} variant="h5">Completion Rate:  <b>{Math.floor((completed/task.tasks.length)*100 )} %</b> </Typography>
+              <Typography  textAlign={'center'} variant="h5">Completion Rate:  <b>{task.tasks.length > 0 ? Math.floor((completed/task.tasks.length)*100 ) : 0} %</b> </Typography>
             </Grid>
           </Grid>
           </Paper>

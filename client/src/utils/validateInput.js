@@ -29,3 +29,16 @@ export const validateLoginData = (state, keys) =>{
     })
     return error.length === 0 && state["password"] === state["confirmPassword"];
   }
+
+export const validateTask = (state, keys) =>{
+  //validate the create Task form 
+  const error = keys.filter(key=>{
+    const val = state[key]
+    if(key === 'title' && (val.length === 0 || val.length < 5 || val.length > 25)) return true;
+    else if(key === 'scope' && val === '') return true;
+    else if(key === 'priority' && val === '') return true;
+
+    return false;
+  })
+  return error.length === 0 
+}

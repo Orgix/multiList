@@ -4,7 +4,7 @@ import CardButtons from './CardButtons'
 import {convertToRelativeTime} from '../../../utils/time'
 const Task = ({task}) => {
   const completed = task.tasks.filter((item)=> item.completed).length
-  const percentage = Math.floor((completed/task.tasks.length)*100 )
+  const percentage = task.tasks.length > 0 ? Math.floor((completed/task.tasks.length)*100 ) : 0
   return (
       <Card sx={{margin:'5px',position:'relative'}}>
       <CardContent>

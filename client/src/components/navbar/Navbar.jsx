@@ -1,4 +1,4 @@
-import React,{ useState }  from 'react'
+import React,{ useEffect, useState }  from 'react'
 
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -9,21 +9,18 @@ import {AppBar, Box, Toolbar, IconButton, Typography,
 import {Link} from '@mui/material';
 import {Container} from '@mui/material';
 import { Route, Link as RouterLink } from 'react-router-dom';
-import user from '../../assets/images/user.png';
-
-
+import userImage from '../../assets/images/user.png';
+import { useSelector } from 'react-redux';
+import {linkStyles} from './styles'
 const Navbar = () => {
   const theme = useTheme();
-  const linkStyles={
-    margin: "1rem",
-    fontWeight:600,
-    fontSize: "1.25rem",
-    textDecoration: "none",
-    color: 'white'
-  }
+ 
   
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+
+  let user = useSelector((state) => state.auth.user)
+  
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -40,6 +37,7 @@ const Navbar = () => {
     setAnchorElUser(null);
   };
  
+  
   return (
     <AppBar position='static' color={theme.secondary}>
         
@@ -135,54 +133,59 @@ const Navbar = () => {
                     <Link component={RouterLink} to="/profile/me" style={linkStyles}>
                         My Profile
                     </Link>
+                    <Link component={RouterLink} to="/profile/me/tasks/new" style={linkStyles}>
+                        New Task
+                    </Link>
               </Box>
-              <Box sx={{flexGrow:0}}>
+             {!user ? <Box sx={{flexGrow:0}}>
                 <Button variant="contained" href="/auth" color="inherit" sx={{mx:1,display:{xs:'none', sm:'block'}}}>
                   Sign In
                 </Button>
               </Box>
-              {/* <Box sx={{flexGrow:0, display:{xs:'none', sm:'block'}}}>
-              <Typography variant="subtitle1" sx={{fontWeight:700, color:'white', fontSize:'1.1em'}}>Username here</Typography>
-              </Box>
-              <Box sx={{ flexGrow: 0}}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ px: 1 }}>
-                <Avatar alt="Remy Sharp" src={user} />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >   
-              <Container sx={{display:{xs:'block', sm:'none'}, fontWeight:800}}>
-              <Typography  textAlign="center">Username here</Typography>
-                <Divider/>
-              </Container>
-                
-                <MenuItem key="opt-1" onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">User Settings</Typography>
-                </MenuItem>
-                <MenuItem key="opt-2" onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">My tasks</Typography>
-                </MenuItem>
-                <MenuItem key="opt-3" onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">Logout</Typography>
-                </MenuItem>
-              
-            </Menu>
-          </Box> */}
+                  : <>
+                  <Box sx={{flexGrow:0, display:{xs:'none', sm:'block'}}}>
+                    <Typography variant="subtitle1" sx={{fontWeight:700, color:'white', fontSize:'1.1em'}}>{`${user.name} ${user.surname}`}</Typography>
+                  </Box>
+                  <Box sx={{ flexGrow: 0}}>
+                  <Tooltip title="Open settings">
+                    <IconButton onClick={handleOpenUserMenu} sx={{ px: 1 }}>
+                      <Avatar alt="Remy Sharp" src={userImage} />
+                    </IconButton>
+                  </Tooltip>
+                <Menu
+                  sx={{ mt: '45px' }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >   
+                  <Container sx={{display:{xs:'block', sm:'none'}}}>
+                  <Typography sx={{fontWeight:800}} textAlign="center">{`${user.name} ${user.surname}`}</Typography>
+                    <Divider/>
+                  </Container>
+                    
+                    <MenuItem key="opt-1" onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center">User Settings</Typography>
+                    </MenuItem>
+                    <MenuItem key="opt-2" onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center">My tasks</Typography>
+                    </MenuItem>
+                    <MenuItem key="opt-3" onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center">Logout</Typography>
+                    </MenuItem>
+                  
+                </Menu>
+              </Box> 
+              </>}
           </Toolbar>
       </AppBar>
   )

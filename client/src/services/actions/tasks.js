@@ -34,4 +34,10 @@ export const deleteTask = createAsyncThunk('tasks/deleteTask', async(id)=>{
     console.log(response)
     return response.data
 })
+
+export const createTask = createAsyncThunk('tasks/createTask', async(newTask)=>{
+    const response = await api.createTask(newTask)
+    console.log(response)
+    return response.data
+})
 //fetchTask, createTask, updateTask, deleteTask,

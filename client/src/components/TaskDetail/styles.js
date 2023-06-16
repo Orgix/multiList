@@ -30,5 +30,14 @@ export const styles= {
       textAlign:'center',
       justifyContent:'center',
       paddingTop:'22px'
-    }
+    },
+    div:{
+      display:'flex', 
+      justifyContent:'space-between',
+      alignItems:'center',
+      height:'50px'
+     },
+     icon:{
+          fontSize:'26px'
+      }
   }

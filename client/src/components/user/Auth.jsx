@@ -1,7 +1,6 @@
-import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import {Container, Typography, Box, Grid, Button, Avatar} from '@mui/material/'
+import {Container, Typography, Box, Grid, Button, Avatar, Paper} from '@mui/material/'
 import useToggle from '../../hooks/useToggle';
 import Input from './Input';
 import {useDispatch, useSelector} from 'react-redux';
@@ -9,6 +8,8 @@ import { register,signin } from '../../services/actions/auth';
 import { validateLoginData, validateRegisterData } from '../../utils/validateInput';
 import Success from './Success';
 import Error from './Error';
+import { useNavigate } from 'react-router-dom';
+
 const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' };
 
 export default function Auth() {
@@ -17,7 +18,17 @@ export default function Auth() {
     const [isSignup, setIsSignup] = useToggle(false)
     const [disabled, setDisabled] = useToggle(true)
     const dispatch = useDispatch();
-    const {error, success, loading, userInfo} = useSelector((state)=> state.auth)
+    const navigate = useNavigate();
+    const {error, success, loading, user} = useSelector((state)=> state.auth)
+    
+  
+    useEffect(()=>{
+      if(user){
+        console.log(user)
+        navigate('../profile/me/tasks')
+      }
+    },[user, navigate])
+    
     
     const switchMode = () => {
         setFormData(initialState);
@@ -25,6 +36,9 @@ export default function Auth() {
         setShowPassword(false);
         setDisabled(true)
     };
+
+
+    
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -39,7 +53,10 @@ export default function Auth() {
         if(!disabled){
           //handle the registration or signing in
           if(isSignup) dispatch(register(formData))
-          else dispatch(signin(formData))
+          else {
+            dispatch(signin(formData))
+             
+          }
           clear();
         }
         
@@ -67,7 +84,7 @@ export default function Auth() {
     <>
       {success && 
           <Container maxWidth="md" sx={{display:'flex',justifyContent:'center', py:2}}>
-            <Success/>
+            <Success msg="You can now create your own task Lists! Sign In to get Started!" title="Registration Successful!"/>
           </Container>
 
       }
@@ -78,7 +95,7 @@ export default function Auth() {
       }
       <Container component="main" maxWidth="xs">
         
-        <Box
+        <Box elevation={3}
           sx={{
             marginTop: 8,
             display: 'flex',

@@ -3,8 +3,8 @@ import { signin, register } from "../actions/auth";
 
 const initialState = {
     isLoading: false,
-    token:'',
-    user:{},
+    token:localStorage.getItem('token') ? localStorage.getItem('token'): null,
+    user:localStorage.getItem('user') ? localStorage.getItem('user'): null,
     error:'',
     success:false
 }
@@ -34,11 +34,14 @@ const authSlice = createSlice({
             })   
             .addCase(signin.fulfilled, (state,action)=>{
                 console.log("success")
-              state.isLoading =  false
-              if(action.payload){
-                state.singleStatus = 'succeeded'
-                state.tasks.push(action.payload)
-              }
+                state.isLoading =  false
+                state.success = true;
+                state.token = action.payload.token
+                state.user = action.payload.user 
+
+                localStorage.setItem("user", JSON.stringify(action.payload.user))
+                localStorage.setItem("token",JSON.stringify(action.payload.token))
+            
             })
             .addCase(signin.rejected, (state, action)=>{
                   state.isLoading = false

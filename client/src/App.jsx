@@ -10,6 +10,7 @@ import { Container, CssBaseline } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { themeSettings } from './theme';
 import TaskLayout from './components/TaskLayout';
+import NewTask from './components/Tasks/NewTask/NewTask';
 
 const theme  = createTheme(themeSettings)
 function App() {
@@ -25,17 +26,22 @@ function App() {
             
             <Route path="profile/me">
               <Route path="tasks">
+                {/* home route */}
                 <Route index element={<Home/>}/>
+                {/* create a task route. Needs to be protected */}
+                <Route path="new" element={<NewTask/>}/>
 
+                {/* single task  route */}
                 <Route path=":id" element={<TaskLayout/>}>
                   <Route index element={<TaskDetails/>}/>
+                  {/* edit single task route. needs to be protected */}
                   <Route path="edit" element={<EditTask/>}/>
                 </Route>
               </Route>
             </Route>
-            
+            {/* sign up / sign in  route in case there's a logged in user, redirect*/}
             <Route path="auth" element={<Auth/>} />
-              
+            {/* wildcard route  in case no matches for the routes redirect*/}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Container>
