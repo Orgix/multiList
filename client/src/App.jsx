@@ -11,7 +11,7 @@ import { createTheme, ThemeProvider } from '@mui/material';
 import { themeSettings } from './theme';
 import TaskLayout from './components/TaskLayout';
 import NewTask from './components/Tasks/NewTask/NewTask';
-
+import Profile from './components/userpage/Profile';
 const theme  = createTheme(themeSettings)
 function App() {
   
@@ -25,6 +25,7 @@ function App() {
             <Route  index element={<Navigate to="/profile/me/tasks"/>} />
             
             <Route path="profile/me">
+              <Route index element={<Profile/>}/>
               <Route path="tasks">
                 {/* home route */}
                 <Route index element={<Home/>}/>

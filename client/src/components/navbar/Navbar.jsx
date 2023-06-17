@@ -20,8 +20,8 @@ const Navbar = () => {
   const [anchorElUser, setAnchorElUser] = useState(null);
 
   let user = useSelector((state) => state.auth.user)
-  
 
+  
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };

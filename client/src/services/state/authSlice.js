@@ -4,7 +4,7 @@ import { signin, register } from "../actions/auth";
 const initialState = {
     isLoading: false,
     token:localStorage.getItem('token') ? localStorage.getItem('token'): null,
-    user:localStorage.getItem('user') ? localStorage.getItem('user'): null,
+    user:localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')): null,
     error:'',
     success:false
 }
