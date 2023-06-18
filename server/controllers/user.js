@@ -73,6 +73,7 @@ export const loginUser = async (req,res)=>{
 
 export const signout = async (req,res)=>{
     //get token from header
+    res.status(509).json({msg:'uwu'})
     //search for user in database with that token
     //if any user is found, clear the token field and return 204 code.
     //if no user is found, return 204 code
