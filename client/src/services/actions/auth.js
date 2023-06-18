@@ -14,7 +14,6 @@ export const register = createAsyncThunk('auth/register', async ({firstName, las
 export const signin = createAsyncThunk('auth/signin', async(formData) =>{
     try{
         const response = await api.signIn(formData)
-        console.log(response)
         return response.data
     }
     catch(error){
@@ -25,7 +24,6 @@ export const signin = createAsyncThunk('auth/signin', async(formData) =>{
 export const signout = createAsyncThunk('auth/singout', async()=>{
     try{
         const response = await api.signOut()
-        console.log(response)
         return response.data
     }
     catch(error){

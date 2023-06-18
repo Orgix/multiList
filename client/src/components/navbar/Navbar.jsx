@@ -8,7 +8,7 @@ import {AppBar, Box, Toolbar, IconButton, Typography,
         from '@mui/material';
 import {Link} from '@mui/material';
 import {Container} from '@mui/material';
-import { Route, Link as RouterLink } from 'react-router-dom';
+import { Route, Link as RouterLink, useNavigate} from 'react-router-dom';
 import userImage from '../../assets/images/user.png';
 import { useDispatch, useSelector } from 'react-redux';
 import {linkStyles} from './styles'
@@ -18,6 +18,7 @@ import { signout } from '../../services/actions/auth';
 const Navbar = () => {
   const theme = useTheme();
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -43,6 +44,7 @@ const Navbar = () => {
   const handleLogout = () =>{
     console.log('logout')
     dispatch(signout())
+    navigate('/explore')
   }
   return (
     <AppBar position='static' color={theme.secondary}>

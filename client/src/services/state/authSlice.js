@@ -48,8 +48,15 @@ const authSlice = createSlice({
                   state.singleStatus = 'failed'
                   state.error = action.error.message
             })
-            .addCase(signout.fulfilled, (action,payload)=>{
-                console.log("success")
+            .addCase(signout.fulfilled, (state,action)=>{
+                state.success = true
+                state.user = null
+                state.token = null
+                localStorage.removeItem('user')
+                localStorage.removeItem('token')
+            })
+            .addCase(signout.rejected, (state,action)=>{
+                console.log("error")
             })
     }
 })
