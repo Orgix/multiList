@@ -1,5 +1,5 @@
 import { createSlice} from '@reduxjs/toolkit'
-import { signin, register } from "../actions/auth";
+import { signin, register,signout } from "../actions/auth";
 
 const initialState = {
     isLoading: false,
@@ -47,6 +47,9 @@ const authSlice = createSlice({
                   state.isLoading = false
                   state.singleStatus = 'failed'
                   state.error = action.error.message
+            })
+            .addCase(signout.fulfilled, (action,payload)=>{
+                console.log("success")
             })
     }
 })

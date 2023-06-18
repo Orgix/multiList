@@ -10,11 +10,14 @@ import {Link} from '@mui/material';
 import {Container} from '@mui/material';
 import { Route, Link as RouterLink } from 'react-router-dom';
 import userImage from '../../assets/images/user.png';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {linkStyles} from './styles'
+import { signout } from '../../services/actions/auth';
+
+
 const Navbar = () => {
   const theme = useTheme();
- 
+  const dispatch = useDispatch()
   
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -37,7 +40,10 @@ const Navbar = () => {
     setAnchorElUser(null);
   };
  
-  
+  const handleLogout = () =>{
+    console.log('logout')
+    dispatch(signout())
+  }
   return (
     <AppBar position='static' color={theme.secondary}>
         
@@ -180,7 +186,7 @@ const Navbar = () => {
                       <Typography textAlign="center">My tasks</Typography>
                     </MenuItem>
                     <MenuItem key="opt-3" onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center">Logout</Typography>
+                      <Typography textAlign="center" onClick={handleLogout}>Logout</Typography>
                     </MenuItem>
                   
                 </Menu>

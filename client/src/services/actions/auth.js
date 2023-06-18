@@ -21,3 +21,14 @@ export const signin = createAsyncThunk('auth/signin', async(formData) =>{
         throw new Error('Problem with login ')
     }
 })
+
+export const signout = createAsyncThunk('auth/singout', async()=>{
+    try{
+        const response = await api.signOut()
+        console.log(response)
+        return response.data
+    }
+    catch(error){
+        throw new Error('Problem while logging out')
+    }
+})
