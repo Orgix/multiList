@@ -73,14 +73,19 @@ export const loginUser = async (req,res)=>{
 
 export const signout = async (req,res)=>{
     //get token from header
-    res.status(509).json({msg:'uwu'})
+    const token = req.headers.authorization.split(' ')[1]
     //search for user in database with that token
-    //if any user is found, clear the token field and return 204 code.
     //if no user is found, return 204 code
+    if(!token) return res.status(204).json({msg:'Unauthorized'})
+
+    const foundUser = await User.findOne({token})
+    if(!foundUser) return res.status(204)
+    //if any user is found, clear the token field and return 204 code.
+    foundUser.token = ''
+    const result = await foundUser.save();
+    console.log(result)
+    
+    res.status(200).json({msg:'Successfully signed out! Can\'t wait to see you back.'})
 }
 
-
-const validateAndClean = ({firstName, lastName, email, password})=>{
-
-}
 //IDEALLY, this process will be converted to use cookies with secure option on, so as to not allow xss 
