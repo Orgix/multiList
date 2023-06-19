@@ -20,6 +20,7 @@ const todoSchema = mongoose.Schema({
                     type:Boolean,
                     default: false
                 },
+                _id:false
     }],
     author:{
         //when there are users, there will be a token that authenticates if
