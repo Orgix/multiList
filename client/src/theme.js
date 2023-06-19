@@ -14,10 +14,11 @@
         letters:'#ababab'
       },
       success:{
-        //#071318
+        //#071318 120 187 106
         main:'#5dbede',
-        letters:'#fffefe'
-      }
+        letters:'#fffefe',
+        buttons: '#78BB66'
+      },
     },
     typography:{
       fontFamily: 'Quicksand',

@@ -106,13 +106,7 @@ const Navbar = () => {
                     </Link>
                   </Typography>
                 </MenuItem>
-                <MenuItem key="key-2" onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">
-                    <Link component={RouterLink} to="/profile/me/" underline="none">
-                      My profile
-                    </Link>
-                  </Typography>
-                </MenuItem>
+                
                 <MenuItem key="key-3" onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">
                     <Link component={RouterLink} to="/profile/me/tasks" underline="none">
@@ -120,7 +114,15 @@ const Navbar = () => {
                     </Link>
                   </Typography>
                 </MenuItem>
-              
+                {user && 
+                  <MenuItem key="key-2" onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">
+                    <Link component={RouterLink} to="/profile/me/" underline="none">
+                      My profile
+                    </Link>
+                  </Typography>
+                </MenuItem>}
+                {user &&
                 <MenuItem key="key-4" onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">
                     <Link component={RouterLink} to="/tasks/new" underline="none">
@@ -128,6 +130,8 @@ const Navbar = () => {
                     </Link>
                   </Typography>
                 </MenuItem>
+                }
+              
               
             </Menu>
           </Box>
@@ -138,12 +142,16 @@ const Navbar = () => {
                     <Link component={RouterLink} to="/explore" style={linkStyles}>
                         Explore
                     </Link>
-                    <Link component={RouterLink} to="/profile/me" style={linkStyles}>
+                    
+                    {user && <>
+                      <Link component={RouterLink} to="/profile/me" style={linkStyles}>
                         My Profile
                     </Link>
-                    <Link component={RouterLink} to="/profile/me/tasks/new" style={linkStyles}>
+                      <Link component={RouterLink} to="/profile/me/tasks/new" style={linkStyles}>
                         New Task
                     </Link>
+                    </>}
+                    
               </Box>
              {!user ? <Box sx={{flexGrow:0}}>
                 <Button variant="contained" href="/auth" color="inherit" sx={{mx:1,display:{xs:'none', sm:'block'}}}>

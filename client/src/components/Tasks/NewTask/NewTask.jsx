@@ -1,5 +1,5 @@
 import { Box, Button, Container, Grid, Paper, TextField, Typography,InputAdornment, Select, FormControl, MenuItem,InputLabel} from '@mui/material'
-import React, { useState } from 'react'
+import { useState, useEffect } from 'react'
 import TitleIcon from '@mui/icons-material/Title';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import { styles } from './styles';
@@ -20,46 +20,50 @@ const NewTask = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleDelete = (id) =>{
-    //event triggers  from delete button, delete the task with the given id, by filtering the state and setting 
-    //itemthe one to not have 
-    setTodos(prev=>{
-        return prev.filter(todo=> todo.id !== id)
-    })
-  }
-
-    const handleComplete = (id) =>{
-        //toggle completion status of task with the given id, 
-        //map throught the state and return a state where the 
-        //given task has its complete property toggled
-        setTodos(prev=>{
-            return prev.map(todo=>{
-                if(todo.id === id){
-                    return {...todo, completed: !todo.completed}
-                }
-                return todo
-            })
-        })
-    }
-
-const handleCreate = () =>{
-    //check if the input is empty
-    if(taskData.subtask.trim() !== ''){
-        //create the object
-        const newSubtask = {id: uuid(), name:taskData.subtask.trim(), completed:false}
-        //set the state with the new object
-        setTodos(prev=> [...prev, newSubtask])
-        //empty input field
-        setTaskData(prev=>({...prev, subtask:''}))
-    }
-}
-const handleKeyDown = (event) => {
-    //in case the enter button is press, trigger the create process
-    if (event.key === 'Enter') {
-      handleCreate();
-    }
-  };
   
+  /* TODO LIST FUNCTIONALITIES --- START  */
+        const handleDelete = (id) =>{
+            //event triggers  from delete button, delete the task with the given id, by filtering the state and setting 
+            //itemthe one to not have 
+            setTodos(prev=>{
+                return prev.filter(todo=> todo.id !== id)
+            })
+        }
+
+            const handleComplete = (id) =>{
+                //toggle completion status of task with the given id, 
+                //map throught the state and return a state where the 
+                //given task has its complete property toggled
+                setTodos(prev=>{
+                    return prev.map(todo=>{
+                        if(todo.id === id){
+                            return {...todo, completed: !todo.completed}
+                        }
+                        return todo
+                    })
+                })
+            }
+
+        const handleCreate = () =>{
+            //check if the input is empty
+            if(taskData.subtask.trim() !== ''){
+                //create the object
+                const newSubtask = {id: uuid(), name:taskData.subtask.trim(), completed:false}
+                //set the state with the new object
+                setTodos(prev=> [...prev, newSubtask])
+                //empty input field
+                setTaskData(prev=>({...prev, subtask:''}))
+            }
+        }
+    const handleKeyDown = (event) => {
+        //in case the enter button is press, trigger the create process
+        if (event.key === 'Enter') {
+        handleCreate();
+        }
+    };
+  /* TODO LIST FUNCTIONALITIES --- END  */
+
+
   const handleChange = (e) =>{
     //change the value for the given name of form
     setTaskData({...taskData, [e.target.name]:e.target.value})
@@ -76,7 +80,8 @@ const handleKeyDown = (event) => {
         const newTask = {title: taskData.title, priority: taskData.priority, scope:taskData.scope, author:taskData.author}
         
         if(todos.length > 0){
-           newTask["tasks"] = [...todos]
+           newTask["tasks"] = todos.map(todo=> ({name: todo.name, completed: todo.completed}))
+           console.log(newTask)
         }
         dispatch(createTask(newTask))
         setTaskData(initialState)
@@ -89,6 +94,8 @@ const handleKeyDown = (event) => {
     const task_keys = Object.keys(taskData).filter(key=> key !== 'tasks' && key !== 'subtask' && key !== 'author')
     setDisabled(!validateTask(taskData, task_keys))
   }
+
+
   return (
     <Container component="main">
         <Paper elevation={3} sx={{py:2, my:2}}>

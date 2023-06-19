@@ -11,7 +11,7 @@ import Subtask from './Subtask';
 import HoverableEditButton from './EditButton';
 import useToggle from '../../hooks/useToggle';
 import { styles } from './styles';
-
+import {v4 as uuid} from 'uuid'
 
 const TaskDetails = () => {
   const [active, setActive] = useToggle(true)
@@ -48,9 +48,10 @@ const TaskDetails = () => {
       </section>
     )
   }else if(task){
+    const mutated = task.tasks.map(task=> ({...task, id:uuid()}))
     const completed = task.tasks.filter(task=> task.completed).length
-    const activeTasks = task.tasks.filter(task=> !task.completed)
-    const visible = active ? task.tasks : activeTasks
+    const activeTasks = mutated.filter(task=> !task.completed)
+    const visible = active ? mutated : activeTasks
     return (
       <Box p={3}>
         <Typography variant="h4" mb={2} textAlign={'center'}>Task Details: {task.title}</Typography>
@@ -84,7 +85,7 @@ const TaskDetails = () => {
             
               {visible.map((subtask,index)=>(
                 <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={`${subtask.name}-${index}`}>
-                  <Subtask sub={subtask} />
+                  <Subtask sub={subtask} mode="view"/>
                 </Grid>
               ))}
             </Grid>

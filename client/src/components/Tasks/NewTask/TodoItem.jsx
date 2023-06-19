@@ -4,6 +4,7 @@ import { Button, ButtonGroup, Paper, Grid } from "@mui/material";
 import CheckIcon from '@mui/icons-material/Check';
 import UndoIcon from '@mui/icons-material/Undo';
 import useScreenWidth from "../../../hooks/useScreenWidth";
+
 const TodoItem = ({todo, handleComplete, handleDelete}) => {
   const width = useScreenWidth();
   const handleDeleteClick = () =>{
