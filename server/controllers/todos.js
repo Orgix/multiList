@@ -31,6 +31,7 @@ export const getTask = async(req,res)=>{
 export const updateTask = async(req,res)=>{
     //update task with specific id
     const {id: _id} = req.params;
+    
     const task = req.body
     if(!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).json({message: "No task with such id"})
     
@@ -62,7 +63,7 @@ export const deleteTask = async(req,res)=>{
 
     await Todo.findByIdAndRemove(id);
 
-    res.json({message: 'Task deleted'})
+    res.status(200).json({message: 'Task deleted'})
 }
 
 export const getTasks = async(req,res)=>{   

@@ -19,6 +19,6 @@ router.get('/', getTasks);
 router.patch('/:id',determineUser, updateTask)
 
 //delete post
-router.delete('/task/:id',determineUser, deleteTask)
+router.delete('/:id',determineUser, deleteTask)
 
 export default router;
