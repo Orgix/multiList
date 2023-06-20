@@ -23,14 +23,14 @@ const TaskDetails = () => {
   const task = useSelector((state)=>getTaskById(state,id));
   const status = useSelector(getSinglePostStatus)
   const error = useSelector(getTasksError)
- 
+  
+
 
   useEffect(()=>{
     if(!task){
       dispatch(fetchTask(id))
     }
   },[])
-  
   
  
   

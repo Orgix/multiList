@@ -3,18 +3,24 @@ import { getTaskById, getTasksError} from '../../services/state/taskSlice'
 import {useParams, useNavigate} from 'react-router-dom';
 import { fetchTask } from '../../services/actions/tasks';
 import { Box, Typography, Grid, Paper, CircularProgress,Button, TextField, FormControl, Select, MenuItem, InputLabel,Container } from '@mui/material';
-import { convertToRelativeTime } from '../../utils/time';
-import { useEffect} from 'react';
 import { getLoading } from '../../services/state/taskSlice';
 import Subtask from './Subtask';
 import { styles } from './styles';
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 import { useTheme } from '@emotion/react';
+import useToggle from '../../hooks/useToggle';
 import {v4 as uuid} from 'uuid'
+import {validateTask} from '../../utils/validateInput'
+import { getKeys } from '../../utils/keys';
+import { updateTask, deleteTask } from '../../services/actions/tasks';
+import DialogWindow from './DialogWindow';
+
 
 const EditTask = () => {
   const [taskData, setTaskData] = useState('')
   const [newTask, setNewTask] = useState('')
+  const [disabled, setDisabled] = useToggle(false)
+  const [open, setOpen] = useToggle(false)
   const dispatch = useDispatch();
   //get task identifier
   const {id} = useParams();
@@ -24,9 +30,18 @@ const EditTask = () => {
   const task = useSelector((state)=>getTaskById(state,id));
   const error = useSelector(getTasksError)
   const theme = useTheme()
+  
   const handleSubmit = (event) =>{
+    //in case a change that creates an error happened at submission, deactivate button and do not proceed
+    const keys = getKeys(taskData, ['title', 'privacy', 'priority'])
+    setDisabled(!validateTask(taskData, keys))
     
-    console.log('w')
+    //proceed only here
+    if(!disabled){
+      console.log(taskData)
+      dispatch(updateTask(taskData))
+      navigate('..')
+    }
   }
   const handleSubTaskChange = (evt)=>{
     setNewTask(evt.target.value)
@@ -77,10 +92,21 @@ const handleKeyDown = (event) => {
   }
 };
 
-const handleBlur =()=>{
+const handleBlur = () =>{
+  const keys = getKeys(taskData, ['title', 'privacy', 'priority'])
+  setDisabled(!validateTask(taskData, keys))
+}
+
+//for later on when a task is deemed to be completed, so it won't really show on the feed
+const handleCompleteTask = () =>{
 
 }
 
+const handleDeleteTask = () =>{
+  setOpen(false);
+  dispatch(deleteTask(taskData._id))
+  navigate('/profile/me')
+}
 
   useEffect(()=>{
     if(!task){
@@ -112,7 +138,6 @@ const handleBlur =()=>{
   }
   else if(taskData){
       const completed = task?.tasks.filter(subtask=> subtask.completed).length
-      console.log(taskData)
     return (
       
       <Box p={3}>
@@ -123,13 +148,13 @@ const handleBlur =()=>{
           <Typography variant="h5" mb={2} textAlign={'center'} fontWeight={800}>Main Statistics</Typography>
             
             <Grid container spacing={2} justifyContent={'center'}>
-              <Grid my={1} item xs={12} sm={6} md={4}>
+            <Grid my={1} item xs={12} md={6}>
                   <TextField  variant="outlined" type="text" value={taskData.author}  fullWidth disabled label="Author" name="author"/>
               </Grid>
-              <Grid my={1} item xs={12} sm={6} md={4}>
-                  <TextField variant="outlined" type="text" value={taskData.title} fullWidth onChange={handleChange} label="Title" name="title"/>
+              <Grid my={1} item xs={12} md={6}>
+                  <TextField variant="outlined" type="text" value={taskData.title} fullWidth onChange={handleChange} onBlur={handleBlur} label="Title" name="title"/>
               </Grid>
-              <Grid my={1} item xs={12} sm={6} md={4}>
+              <Grid my={1} item xs={12} md={6}>
               <FormControl fullWidth>
                                 <InputLabel id="Scope">Privacy</InputLabel>
                                 <Select
@@ -146,7 +171,7 @@ const handleBlur =()=>{
                                 </Select>
                             </FormControl>
               </Grid>
-              <Grid my={1} item xs={12} sm={6} md={4}>
+              <Grid my={1} item xs={12} md={6}>
               <FormControl fullWidth>
                                 <InputLabel id="Priority">Priority</InputLabel>
                                 <Select
@@ -166,12 +191,7 @@ const handleBlur =()=>{
                                 </Select>
                             </FormControl>
               </Grid>
-              <Grid my={1} item xs={12} sm={6} md={4}>
-                <Typography  textAlign={'center'} variant="h5">Tasks Completed:  <b>{completed}</b></Typography>
-              </Grid>
-              <Grid my={1} item xs={12} sm={6} md={4}>
-                <Typography  textAlign={'center'} variant="h5">Completion Rate:  <b>{task.tasks.length > 0 ? Math.floor((completed/task.tasks.length)*100 ) : 0} %</b> </Typography>
-              </Grid>
+              
             </Grid>
             
             <Typography variant="h4" textAlign="center" mb={2}>Subtasks:</Typography>
@@ -196,14 +216,16 @@ const handleBlur =()=>{
           <Button
               onClick={handleSubmit}
               variant="contained"
+              disabled={disabled}
             >Save Changes</Button>
             <Button
-              onClick={handleSubmit}
+              onClick={()=>setOpen(true)}
               variant="contained"
               color="error"
             >Delete Task</Button>
+            <DialogWindow open={open} setOpen={setOpen} confirm={handleDeleteTask} title="Actions with consequences: Delete Task" text="You're about to fully delete the whole task and all its subsequent subtasks. Do you agree"/>
             <Button
-              onClick={handleSubmit}
+              onClick={handleCompleteTask}
               variant="contained"
               sx={{backgroundColor: theme.palette.success.buttons, color:'white',"&:hover":{backgroundColor:'#279029'}}}
               

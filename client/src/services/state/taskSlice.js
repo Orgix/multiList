@@ -20,16 +20,17 @@ const taskSlice = createSlice({
               state.isLoading = true
               state.error = ''
           })
-          .addCase(fetchTasks.fulfilled, (state,action)=>{
-              //add map here to handle the posts
-              state.error = ''
-              state.isLoading = false
-              state.status = 'succeeded'
-              action.payload.forEach((newTask)=>{
-                const existingTask = state.tasks.find(task=> task._id === newTask._id)
-                if(!existingTask) state.tasks.push(newTask)
-              })
-              //state.tasks.push(...action.payload)
+          .addCase(fetchTasks.fulfilled, (state, action) => {
+            state.error = '';
+            state.isLoading = false;
+            state.status = 'succeeded';
+          
+            action.payload.forEach((newTask) => {
+              const existingTask = state.tasks.find((task) => task._id === newTask._id);
+              if (!existingTask) {
+                state.tasks.push(newTask);
+              }
+            });
           })
           .addCase(fetchTasks.rejected, (state,action)=>{
                 state.isLoading = false
@@ -40,11 +41,14 @@ const taskSlice = createSlice({
                 state.isLoading = true
                 state.error=''
           })   
-          .addCase(fetchTask.fulfilled, (state,action)=>{
-            state.isLoading =  false
-            if(action.payload){
-              state.singleStatus = 'succeeded'
-              state.tasks.push(action.payload)
+          .addCase(fetchTask.fulfilled, (state, action) => {
+            state.isLoading = false;
+            if (action.payload) {
+              state.singleStatus = 'succeeded';
+              const existingTask = state.tasks.find((task) => task._id === action.payload._id);
+              if (!existingTask) {
+                state.tasks.push(action.payload);
+              }
             }
           })
           .addCase(fetchTask.rejected, (state, action)=>{
@@ -58,6 +62,22 @@ const taskSlice = createSlice({
           })
           .addCase(createTask.rejected, (state, action)=>{
             state.error = action.error.message
+          })
+          .addCase(updateTask.fulfilled, (state,action)=>{
+            const updatedTask = action.payload;
+            state.tasks = state.tasks.map((task) => {
+              if (task._id === updatedTask._id) {
+                return updatedTask;
+              }
+              return task;
+            });
+          })
+          .addCase(updateTask.rejected, (state,action)=> {
+            console.log('rejected')
+          })
+          .addCase(deleteTask.fulfilled, (state,action)=>{
+            const deleted = action.payload.id
+            state.tasks = state.tasks.filter(task=>task._id !== deleted)
           })
   }
 })

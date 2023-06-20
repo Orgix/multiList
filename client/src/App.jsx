@@ -12,7 +12,10 @@ import { themeSettings } from './theme';
 import TaskLayout from './components/TaskLayout';
 import NewTask from './components/Tasks/NewTask/NewTask';
 import Profile from './components/userpage/Profile';
+import UserTasks from './components/Tasks/UserTasks';
+import Landing from './components/home/Landing';
 import { useSelector } from 'react-redux';
+
 const theme  = createTheme(themeSettings)
 
 function App() {
@@ -24,13 +27,13 @@ function App() {
         <Container maxWidth={false} disableGutters>
         <Navbar color="primary"/>
           <Routes>
-            <Route  index element={<Navigate to="/profile/me/tasks"/>} />
-            
+            <Route  index element={<Landing/>} />
+            <Route path="/explore" element={<Home/>}/>
             <Route path="profile/me">
               <Route index element={user ? <Profile/> : <Navigate to="/profile/me/tasks"/>}/>
               <Route path="tasks">
                 {/* home route */}
-                <Route index element={<Home/>}/>
+                <Route index element={<UserTasks/>}/>
                 {/* create a task route. Needs to be protected */}
                 <Route path="new" element={user ? <NewTask/> : <Navigate to=".."/>}/>
 

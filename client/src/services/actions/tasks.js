@@ -23,16 +23,23 @@ export const fetchTask = createAsyncThunk('tasks/fetchTask', async (id) =>{
     }
 })
 
-export const updateTask = createAsyncThunk('tasks/updateTask', async(id, task) =>{
-    const response = await api.updateTask(id, task)
-    console.log(response)
-    return response.data
+export const updateTask = createAsyncThunk('tasks/updateTask', async(taskData) =>{
+    try{
+        
+        const response = await api.updateTask(taskData._id, taskData)
+        console.log(response)
+        return response.data
+    }
+    catch(error){
+        throw new Error('Error updating task.')
+    }
+    
 })
 
 export const deleteTask = createAsyncThunk('tasks/deleteTask', async(id)=>{
     const response = await api.deleteTask(id)
     console.log(response)
-    return response.data
+    return {data:response.data.message, id}
 })
 
 export const createTask = createAsyncThunk('tasks/createTask', async(newTask)=>{

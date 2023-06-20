@@ -136,6 +136,7 @@ const Navbar = () => {
             </Menu>
           </Box>
               <Box sx={{flexGrow:1, display:{xs:'none', md:'flex'}, justifyContent:'center'}}>
+              {user && <>
                     <Link component={RouterLink} to="/profile/me/tasks" style={linkStyles}>
                       Tasks
                     </Link>
@@ -143,7 +144,7 @@ const Navbar = () => {
                         Explore
                     </Link>
                     
-                    {user && <>
+                   
                       <Link component={RouterLink} to="/profile/me" style={linkStyles}>
                         My Profile
                     </Link>

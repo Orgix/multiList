@@ -8,18 +8,20 @@ import {v4 as uuid} from 'uuid';
 import useToggle from '../../../hooks/useToggle'
 import { validateTask } from '../../../utils/validateInput';
 import { createTask } from '../../../services/actions/tasks';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import {useNavigate} from 'react-router-dom'
 
-const initialState = {title:'', priority:'', scope:'', author:'',subtask:''}
+
 
 const NewTask = () => {
+  const user = useSelector((state)=>state.auth.user)
+  const initialState = {title:'', priority:'', scope:'', author:`${user.name} ${user.surname}`,subtask:''}
   const [taskData, setTaskData] = useState(initialState)
   const [todos, setTodos] = useState([])
   const [disabled, setDisabled] = useToggle(true)
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
+  const navigate = useNavigate(); 
+  
   
   /* TODO LIST FUNCTIONALITIES --- START  */
         const handleDelete = (id) =>{
@@ -157,19 +159,6 @@ const NewTask = () => {
                                     <MenuItem value='Private'>Private</MenuItem>
                                 </Select>
                             </FormControl>
-                        </Grid>
-                        <Grid item xs={12} >
-                            <TextField 
-                                fullWidth 
-                                type="text" 
-                                label="Author" 
-                                name="author" 
-                                value={taskData.author} 
-                                onChange={handleChange}
-                                InputProps={{
-                                    endAdornment: <InputAdornment position="start"><AccountBoxIcon sx={{color:'#5dbede'}}/></InputAdornment>,
-                                }}
-                            />
                         </Grid>
                     </Grid>
                     <Typography variant="h3" sx={{textAlign:'center'}}>
