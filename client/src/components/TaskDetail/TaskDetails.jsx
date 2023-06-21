@@ -78,6 +78,11 @@ const TaskDetails = () => {
             <Grid my={1} item xs={12} sm={6} md={4}>
               <Typography  textAlign={'center'} variant="h5">Completion Rate:  <b>{task.tasks.length > 0 ? Math.floor((completed/task.tasks.length)*100 ) : 0} %</b> </Typography>
             </Grid>
+            {task.completed && 
+              <Grid my={1} item xs={12} sm={6} md={4}>
+                <Typography textAlign='center' variant="h2" color='green'><b>COMPLETED</b></Typography>
+              </Grid>
+            }
           </Grid>
           </Paper>
           <Typography variant="h6" textAlign="center" mb={2}>Subtasks:</Typography>

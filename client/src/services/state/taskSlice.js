@@ -1,5 +1,5 @@
 import { createSlice} from '@reduxjs/toolkit'
-import {fetchTasks, fetchTask, updateTask, deleteTask,createTask} from '../actions/tasks'
+import {fetchTasks, fetchTask, updateTask, deleteTask,createTask, completeTask} from '../actions/tasks'
 
 
 const initialState = {
@@ -79,6 +79,10 @@ const taskSlice = createSlice({
             const deleted = action.payload.id
             state.tasks = state.tasks.filter(task=>task._id !== deleted)
           })
+          .addCase(completeTask.fulfilled,(state, action)=>{
+            const completed = action.payload.id
+            state.tasks = state.tasks.filter(task=> task._id !== completed)
+          })
   }
 })
         
@@ -88,4 +92,5 @@ export const getTasksError = (state) => state.tasks.error;
 export const getTaskById = (state, id)=>state.tasks.tasks.find(task => task._id === id)
 export const getSinglePostStatus = (state) => state.tasks.singleStatus;
 export const getLoading = (state) =>state.tasks.isLoading;
+
 export default taskSlice.reducer

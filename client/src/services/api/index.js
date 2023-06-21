@@ -14,6 +14,7 @@ export const fetchTask = (id) => API.get(`/profile/me/tasks/${id}`);
 export const createTask = (newTask) => API.post('/profile/me/tasks', newTask);
 export const updateTask = (id, updatedTask) => API.patch(`profile/me/tasks/${id}`, updatedTask);
 export const deleteTask = (id) => API.delete(`/profile/me/tasks/${id}`);
+export const completeTask = (id) => API.patch(`/profile/me/tasks/${id}/complete`)
 export const signIn = (formData) => API.post('/auth/signin', formData);
 export const signUp = (formData) => API.post('/auth/signup', formData);
 export const signOut = () => API.post('/auth/logout')

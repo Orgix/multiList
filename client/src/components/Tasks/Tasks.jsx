@@ -22,21 +22,23 @@ const Tasks = () => {
   },[tasksStatus, dispatch])
 
   let content;
+  let len;
   //in case status is still loading, until otherwise, render a Loading Component
   if (tasksStatus === 'loading') {
     content = <CircularProgress/>;
 } else if (tasksStatus === 'succeeded') {
     //sort the tasks by date ascending order 
     const orderedTasks = tasks.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    //map through the sorted array and create the JSX that will be rendered
+    //map through the sorted array and keep the completed tasks only and create the JSX that will be rendered
     content = orderedTasks.map(task => <Grid item key={task._id} xs={12} md={6} lg={4} xl={3}><Task task={task} spacing={2}/></Grid>)
+    len = orderedTasks.length
 } else if (tasksStatus === 'failed') {
   //present the error
     content = <p>{error}</p>;
 }
   return (
    <div>
-    <Typography variant="h3" sx={{my:4, textAlign:'center'}}>All user Tasks</Typography>
+    <Typography variant="h3" sx={{my:4, textAlign:'center'}}>All user Tasks : {len}</Typography>
     {singleStatus === 'succeeded' && (
       <Container maxWidth="md" sx={{display:'flex',justifyContent:'center', py:2}}>
         <Success title="Task registered successfully" msg="Navigate to your personal profile to view the new task"/>

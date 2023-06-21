@@ -27,7 +27,6 @@ export const updateTask = createAsyncThunk('tasks/updateTask', async(taskData) =
     try{
         
         const response = await api.updateTask(taskData._id, taskData)
-        console.log(response)
         return response.data
     }
     catch(error){
@@ -38,13 +37,16 @@ export const updateTask = createAsyncThunk('tasks/updateTask', async(taskData) =
 
 export const deleteTask = createAsyncThunk('tasks/deleteTask', async(id)=>{
     const response = await api.deleteTask(id)
-    console.log(response)
     return {data:response.data.message, id}
 })
 
 export const createTask = createAsyncThunk('tasks/createTask', async(newTask)=>{
     const response = await api.createTask(newTask)
-    console.log(response)
     return response.data
+})
+
+export const completeTask = createAsyncThunk('tasks/completeTask', async(id)=>{
+    const response = await api.completeTask(id)
+    return {data:response.data.message, id}
 })
 //fetchTask, createTask, updateTask, deleteTask,

@@ -12,7 +12,7 @@ import useToggle from '../../hooks/useToggle';
 import {v4 as uuid} from 'uuid'
 import {validateTask} from '../../utils/validateInput'
 import { getKeys } from '../../utils/keys';
-import { updateTask, deleteTask } from '../../services/actions/tasks';
+import { updateTask, deleteTask, completeTask } from '../../services/actions/tasks';
 import DialogWindow from './DialogWindow';
 
 
@@ -21,6 +21,7 @@ const EditTask = () => {
   const [newTask, setNewTask] = useState('')
   const [disabled, setDisabled] = useToggle(false)
   const [open, setOpen] = useToggle(false)
+  const [openComp, setOpenComp] = useToggle(false)
   const dispatch = useDispatch();
   //get task identifier
   const {id} = useParams();
@@ -99,9 +100,11 @@ const handleBlur = () =>{
 
 //for later on when a task is deemed to be completed, so it won't really show on the feed
 const handleCompleteTask = () =>{
-
+  setOpenComp(false)
+  dispatch(completeTask(taskData._id))
+  navigate('/profile/me')
 }
-
+//Fully delete task and all it's subsequent subtasks
 const handleDeleteTask = () =>{
   setOpen(false);
   dispatch(deleteTask(taskData._id))
@@ -225,11 +228,12 @@ const handleDeleteTask = () =>{
             >Delete Task</Button>
             <DialogWindow open={open} setOpen={setOpen} confirm={handleDeleteTask} title="Actions with consequences: Delete Task" text="You're about to fully delete the whole task and all its subsequent subtasks. Do you agree"/>
             <Button
-              onClick={handleCompleteTask}
+              onClick={()=>setOpenComp(true)}
               variant="contained"
               sx={{backgroundColor: theme.palette.success.buttons, color:'white',"&:hover":{backgroundColor:'#279029'}}}
               
             >Complete Task</Button>
+            <DialogWindow open={openComp} setOpen={setOpenComp} confirm={handleCompleteTask} title="Actions with consequences: Complete Task" text="You're about to mark the whole task with the completion status. This way, the task will not appear actively in your tasks feed, except requested."/>
           </Container>
           
         </Paper>
