@@ -67,10 +67,23 @@ export const deleteTask = async(req,res)=>{
 }
 
 export const getTasks = async(req,res)=>{   
-    const tasks = await  Todo.find({});
+    const tasks = await  Todo.find({completed:false});
     if(!tasks) res.status(404).json({message: 'No tasks found'})
     res.status(200).json(tasks)
     //get all tasks from specific user. either /me or /:id 
     // /me renders in a different location and only to authorized users
     // /:id renders public only headlines
+}
+
+export const completeTask = async(req,res)=>{
+    const {id} = req.params;
+    if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({msg: 'No such task found'})
+    try{
+        const result = await Todo.findByIdAndUpdate(id,{completed:true}, {new:true})
+        res.status(200).json({msg:'completed'})
+    }
+    catch(error){
+        res.status(500).json({message: error.message})
+    }
+   
 }

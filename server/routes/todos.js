@@ -1,5 +1,5 @@
 import express from "express";
-import {getTask, createTask, updateTask, deleteTask, getTasks} from '../controllers/todos.js'
+import {getTask, createTask, updateTask, deleteTask, getTasks,completeTask} from '../controllers/todos.js'
 import {determineUser, compareTokens} from "../middleware/determineUser.js";
 const router = express.Router({mergeParams:true});
 
@@ -15,10 +15,13 @@ router.post('/',determineUser, createTask)
 //get all tasks for user (if there is an id in params, it's for another user, else, its the author that is requesting)
 router.get('/', getTasks);
 
-//update post
+//update task
 router.patch('/:id',determineUser, updateTask)
 
-//delete post
+//delete task
 router.delete('/:id',determineUser, deleteTask)
+
+//add completion status to the task
+router.patch('/:id/complete', completeTask)
 
 export default router;

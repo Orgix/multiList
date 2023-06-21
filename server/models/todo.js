@@ -39,6 +39,10 @@ const todoSchema = mongoose.Schema({
     },
     team:{
         id:{type:String, default:""}
+    },
+    completed:{
+        type:Boolean,
+        default:false
     }
 },
 {timestamps:true})
