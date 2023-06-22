@@ -46,6 +46,7 @@ const Navbar = () => {
     dispatch(signout())
     navigate('/explore')
   }
+
   return (
     <AppBar position='static' color={theme.secondary}>
         
@@ -137,7 +138,7 @@ const Navbar = () => {
           </Box>
               <Box sx={{flexGrow:1, display:{xs:'none', md:'flex'}, justifyContent:'center'}}>
               {user && <>
-                    <Link component={RouterLink} to="/profile/me/tasks" style={linkStyles}>
+                    <Link component={RouterLink} to={`profile/me/tasks`} style={linkStyles}>
                       Tasks
                     </Link>
                     <Link component={RouterLink} to="/explore" style={linkStyles}>
@@ -145,10 +146,10 @@ const Navbar = () => {
                     </Link>
                     
                    
-                      <Link component={RouterLink} to="/profile/me" style={linkStyles}>
+                      <Link component={RouterLink} to={`profile/me`} style={linkStyles}>
                         My Profile
                     </Link>
-                      <Link component={RouterLink} to="/profile/me/tasks/new" style={linkStyles}>
+                      <Link component={RouterLink} to={`/profile/me/tasks/new`} style={linkStyles}>
                         New Task
                     </Link>
                     </>}

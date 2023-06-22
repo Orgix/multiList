@@ -28,7 +28,8 @@ function App() {
           <Routes>
             <Route  index element={<Landing/>} />
             <Route path="/explore" element={<Home/>}/>
-            <Route path="profile/me">
+            {/* routes defined to be viewed by the logged in user only */}
+            <Route path="profile/me" element={!user ? <Navigate to='/explore'/>: ''}>
               <Route index element={user ? <Profile/> : <Navigate to="/profile/me/tasks"/>}/>
               <Route path="tasks">
                 {/* home route */}
@@ -42,6 +43,22 @@ function App() {
                   <Route index element={<TaskDetails/>}/>
                   {/* edit single task route. needs to be protected. Needs a useEffect inside the Component that confirms if the user matches*/}
                   <Route path="edit" element={<EditTask/>}/>
+                </Route>
+              </Route>
+            </Route>
+            {/* route for viewing other users' profiles and tasks */}
+            <Route path="profile/:userId">
+              <Route index element={<Profile/>}/>
+              <Route path="tasks">
+                {/* home route */}
+                <Route index element={<UserTasks/>}/>
+                {/* single task  route */}
+                <Route path=":id" element={<TaskLayout/>}>
+                  {/* Part of the functionalities here are to be protected. A viewer needs to be readonly whilst the author/authors have different accesss*/}
+                  <Route index element={<TaskDetails/>}/>
+                  {/* edit single task route. needs to be protected. Needs a useEffect inside the Component that confirms if the user matches*/}
+                  <Route path="edit" element={<EditTask/>}/>
+                  {/* the /profile/userId/tasks/:id/edit will be available only once a task can be shared between 2 users */}
                 </Route>
               </Route>
             </Route>

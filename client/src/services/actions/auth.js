@@ -30,3 +30,13 @@ export const signout = createAsyncThunk('auth/singout', async()=>{
         throw new Error('Problem while logging out')
     }
 })
+
+export const fetchUserTasks = createAsyncThunk('auth/fetchUserTasks', async()=>{
+    try{
+        const response = await api.fetchUserTasks();
+        return response.data
+    }
+    catch(err){
+        throw new Error('Problem retrieving user task data.')
+    }
+})

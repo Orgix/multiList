@@ -1,8 +1,8 @@
 import {useSelector, useDispatch} from 'react-redux'
-import { getTaskById, getTasksError, getSinglePostStatus } from '../../services/state/taskSlice'
-import {useParams} from 'react-router-dom';
+import { getTaskById, getTasksError, getSinglePostStatus} from '../../services/state/taskSlice'
+import {useParams, Link as RouterLink} from 'react-router-dom';
 import { fetchTask } from '../../services/actions/tasks';
-import { Box, Typography, Grid, Paper,Container, CircularProgress } from '@mui/material';
+import { Box, Typography, Grid, Paper,Container, CircularProgress , Link } from '@mui/material';
 import { convertToRelativeTime } from '../../utils/time';
 import { useEffect} from 'react';
 import { getLoading } from '../../services/state/taskSlice';
@@ -61,7 +61,7 @@ const TaskDetails = () => {
             
           <Grid container spacing={2} justifyContent={'center'}>
             <Grid my={1} item xs={12} sm={6} md={4}>
-                <Typography variant="h5" textAlign={'center'}>Created By: <b>{task.author}</b></Typography>
+                <Typography variant="h5" textAlign={'center'}>Created By: <b><Link component={RouterLink} to="/profile/me" sx={{color:'black'}} underline="none">{task.author}</Link></b></Typography>
             </Grid>
             <Grid my={1} item xs={12} sm={6} md={4}>
             <Typography textAlign={'center'} variant="h5">Created At: <b>{convertToRelativeTime(task.createdAt)}</b></Typography>
@@ -94,13 +94,15 @@ const TaskDetails = () => {
                 </Grid>
               ))}
             </Grid>
-            <Container maxWidth={false} sx={styles.container} disableGutters>
-                <HoverableEditButton text="edit" type="button" fontSize="16px" path="edit"/>
-                <Box sx={styles.box}>
-                <Typography sx={styles.text}>Show completed</Typography><Checkbox onChange={setActive} checked={active}/>
-                </Box>
-                
-            </Container>
+            {!task.completed && <Container maxWidth={false} sx={styles.container} disableGutters>
+             
+             <HoverableEditButton text="edit" type="button" fontSize="16px" path="edit"/>
+             <Box sx={styles.box}>
+             <Typography sx={styles.text}>Show completed</Typography><Checkbox onChange={setActive} checked={active}/>
+             </Box>
+             
+         </Container>}
+            
         </Box>
     )
   }

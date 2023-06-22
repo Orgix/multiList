@@ -1,5 +1,5 @@
 import { createSlice} from '@reduxjs/toolkit'
-import { signin, register,signout } from "../actions/auth";
+import { signin, register,signout, fetchUserTasks } from "../actions/auth";
 
 const initialState = {
     isLoading: false,
@@ -50,7 +50,6 @@ const authSlice = createSlice({
                   state.error = action.error.message
             })
             .addCase(signout.fulfilled, (state,action)=>{
-                state.success = true
                 state.user = null
                 state.token = null
                 localStorage.removeItem('user')
@@ -59,6 +58,18 @@ const authSlice = createSlice({
             .addCase(signout.rejected, (state,action)=>{
                 console.log("error")
             })
+            .addCase(fetchUserTasks.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+              })
+              .addCase(fetchUserTasks.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.tasks = action.payload;
+              })
+              .addCase(fetchUserTasks.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+              });
     }
 })
 

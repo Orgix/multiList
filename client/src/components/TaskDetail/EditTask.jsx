@@ -164,6 +164,7 @@ const handleDeleteTask = () =>{
                                     labelId="Privacy"
                                     id="privacy"
                                     value={taskData.privacy}
+                                    defaultValue={taskData.privacy}
                                     label="Privacy"
                                     onChange={handleChange}
                                     onBlur={handleBlur}

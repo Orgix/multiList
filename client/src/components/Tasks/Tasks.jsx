@@ -30,7 +30,7 @@ const Tasks = () => {
     //sort the tasks by date ascending order 
     const orderedTasks = tasks.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     //map through the sorted array and keep the completed tasks only and create the JSX that will be rendered
-    content = orderedTasks.map(task => <Grid item key={task._id} xs={12} md={6} lg={4} xl={3}><Task task={task} spacing={2}/></Grid>)
+    content = orderedTasks.map(task => <Grid item key={task._id} xs={12} md={6} lg={4} xl={3}><Task task={task} author={true} spacing={2}/></Grid>)
     len = orderedTasks.length
 } else if (tasksStatus === 'failed') {
   //present the error

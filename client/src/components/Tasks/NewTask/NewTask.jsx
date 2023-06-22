@@ -83,7 +83,6 @@ const NewTask = () => {
         
         if(todos.length > 0){
            newTask["tasks"] = todos.map(todo=> ({name: todo.name, completed: todo.completed}))
-           console.log(newTask)
         }
         dispatch(createTask(newTask))
         setTaskData(initialState)
