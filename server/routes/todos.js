@@ -1,10 +1,15 @@
 import express from "express";
-import {getTask, createTask, updateTask, deleteTask, getTasks,completeTask} from '../controllers/todos.js'
+import {getTask, createTask, updateTask, deleteTask, getTasks,completeTask, fetchUserTasks} from '../controllers/todos.js'
 import {determineUser, compareTokens} from "../middleware/determineUser.js";
 const router = express.Router({mergeParams:true});
 
 //get task edit form with the fields filled in
 router.get('/:id/edit', getTask);
+
+
+
+//get user's tasks
+router.get('/user', fetchUserTasks);
 
 //get task page with details
 router.get('/:id',determineUser, compareTokens, getTask);
@@ -23,5 +28,6 @@ router.delete('/:id',determineUser, deleteTask)
 
 //add completion status to the task
 router.patch('/:id/complete', completeTask)
+
 
 export default router;

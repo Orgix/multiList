@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Todo from "../models/todo.js"
+import jwt from 'jsonwebtoken'
 
 
 export const getTask = async(req,res)=>{
@@ -42,8 +43,8 @@ export const updateTask = async(req,res)=>{
 export const createTask = async(req,res)=>{
     console.log(req.body)
     //create task. only get here when registered user is authorized
-    const task = req.body;
-    const newTask = new Todo({...task, createdAt: new Date().toISOString()});
+    const {title, priority, author, tasks, scope:privacy} = req.body;
+    const newTask = new Todo({title,priority,author,tasks,privacy, createdAt: new Date().toISOString()});
 
     try{
         await newTask.save();
@@ -67,7 +68,7 @@ export const deleteTask = async(req,res)=>{
 }
 
 export const getTasks = async(req,res)=>{   
-    const tasks = await  Todo.find({completed:false});
+    const tasks = await  Todo.find({completed:false, privacy:'Public'});
     if(!tasks) res.status(404).json({message: 'No tasks found'})
     res.status(200).json(tasks)
     //get all tasks from specific user. either /me or /:id 
@@ -86,4 +87,21 @@ export const completeTask = async(req,res)=>{
         res.status(500).json({message: error.message})
     }
    
+}
+
+export const fetchUserTasks = async(req,res)=>{
+    const token = req.headers.authorization.split(' ')[1]
+    const decoded = jwt.decode(token, process.env.JWT_SECRET)
+    
+    console.log(`${decoded.UserInfo.firstName} ${decoded.UserInfo.lastName}`)
+try{
+    const userTasks = await Todo.find({author:`${decoded.UserInfo.firstName} ${decoded.UserInfo.lastName}`})
+    if(userTasks.length > 0) return res.status(200).json(userTasks)
+    else return res.status(404).json({msg:'No tasks found'})
+}
+   catch(err) {
+        res.status(500).json({msg:err.message})
+   }
+
+    
 }

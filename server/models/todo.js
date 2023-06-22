@@ -34,8 +34,7 @@ const todoSchema = mongoose.Schema({
         max:4
     },
     privacy:{
-        type:String,
-        default:"Public"
+        type: String,
     },
     team:{
         id:{type:String, default:""}
