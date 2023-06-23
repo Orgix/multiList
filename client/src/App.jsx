@@ -53,7 +53,7 @@ function App() {
                 {/* home route */}
                 <Route index element={<UserTasks/>}/>
                 {/* single task  route */}
-                <Route path=":id" element={<TaskLayout/>}>
+                <Route path=":id">
                   {/* Part of the functionalities here are to be protected. A viewer needs to be readonly whilst the author/authors have different accesss*/}
                   <Route index element={<TaskDetails/>}/>
                   {/* edit single task route. needs to be protected. Needs a useEffect inside the Component that confirms if the user matches*/}

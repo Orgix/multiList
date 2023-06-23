@@ -24,7 +24,6 @@ export default function Auth() {
   
     useEffect(()=>{
       if(user){
-        console.log(user)
         navigate('../profile/me/tasks')
       }
     },[user, navigate])

@@ -1,17 +1,18 @@
 import {useState, useEffect, Fragment} from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import {Box, Drawer, CssBaseline, Toolbar, List, 
-        Typography,Divider , IconButton, ListItem,
+        Typography, IconButton, ListItem,
         ListItemText,ListItemButton, Container} from '@mui/material'
 import MuiAppBar from '@mui/material/AppBar';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useParams } from 'react-router-dom';
 import {Link} from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { getUser } from '../../services/state/authSlice';
 import { fetchUserTasks } from '../../services/actions/auth';
+import TaskItem from './TaskItem';
 import { convertToRelativeTime } from '../../utils/time';
 
 const drawerWidth = 240;
@@ -45,6 +46,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 export default function TaskBar() {
+  const {id} = useParams()
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const handleDrawerOpen = () => {
@@ -107,29 +109,12 @@ export default function TaskBar() {
           </IconButton>
           
         </DrawerHeader>
-        <Divider />
         {userTasks.length > 0 ?
         <List>
            {userTasks.map(task=>{
             return (
-              <ListItem key={task._id} disablePadding alignItems="flex-start">
-                <ListItemButton>
-                  <Link component={RouterLink} to={`/profile/me/tasks/${task._id}`} color="text.primary" underline="none">
-                  <ListItemText primary={task.title} color="text.primary" secondary={
-                    <Fragment>
-                      <Typography
-                        component="span"
-                        variant="body2"
-                        color={theme.palette.sidenav.letters}
-                      >
-                        Sub Tasks Completed : 3<br/>
-                        Created at : {convertToRelativeTime(task.createdAt)}
-                      </Typography>
-                    </Fragment>
-                  }/>
-                  </Link>
-                </ListItemButton>
-              </ListItem>)
+              <TaskItem task={task} key={task._id}/>
+              )
            })}
         </List> :
         <Container><Typography>No tasks</Typography></Container>

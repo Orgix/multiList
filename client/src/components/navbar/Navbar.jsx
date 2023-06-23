@@ -107,14 +107,14 @@ const Navbar = () => {
                     </Link>
                   </Typography>
                 </MenuItem>
-                
+                {user && 
                 <MenuItem key="key-3" onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">
                     <Link component={RouterLink} to="/profile/me/tasks" underline="none">
                       My Tasks
                     </Link>
                   </Typography>
-                </MenuItem>
+                </MenuItem>}
                 {user && 
                   <MenuItem key="key-2" onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">
@@ -137,16 +137,15 @@ const Navbar = () => {
             </Menu>
           </Box>
               <Box sx={{flexGrow:1, display:{xs:'none', md:'flex'}, justifyContent:'center'}}>
-              {user && <>
-                    <Link component={RouterLink} to={`profile/me/tasks`} style={linkStyles}>
-                      Tasks
-                    </Link>
-                    <Link component={RouterLink} to="/explore" style={linkStyles}>
+                  <Link component={RouterLink} to="/explore" style={linkStyles}>
                         Explore
                     </Link>
+              {user && <>
+                    <Link component={RouterLink} to={`profile/me/tasks`} style={linkStyles}>
+                      My Tasks
+                    </Link>
                     
-                   
-                      <Link component={RouterLink} to={`profile/me`} style={linkStyles}>
+                    <Link component={RouterLink} to={`profile/me`} style={linkStyles}>
                         My Profile
                     </Link>
                       <Link component={RouterLink} to={`/profile/me/tasks/new`} style={linkStyles}>
