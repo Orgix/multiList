@@ -23,9 +23,13 @@ const todoSchema = mongoose.Schema({
                 _id:false
     }],
     author:{
-        //when there are users, there will be a token that authenticates if
-        type:String,
-        required:true,
+        name:{
+            type:String
+        },
+        authorID:{
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: 'User'
+        }
     },
     priority:{
         type:Number,

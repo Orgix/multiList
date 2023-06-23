@@ -41,11 +41,9 @@ export const updateTask = async(req,res)=>{
 }
 
 export const createTask = async(req,res)=>{
-    console.log(req.body)
     //create task. only get here when registered user is authorized
     const {title, priority, author, tasks, scope:privacy} = req.body;
     const newTask = new Todo({title,priority,author,tasks,privacy, createdAt: new Date().toISOString()});
-
     try{
         await newTask.save();
         res.status(201).json(newTask)
@@ -90,12 +88,17 @@ export const completeTask = async(req,res)=>{
 }
 
 export const fetchUserTasks = async(req,res)=>{
+    //determine if there is any token 
+    const header = req.headers.authorization
+    //if undefined, deny access
+    if(!header) return res.status(403).json({msg:'Unauthorized'})
+
+    //get token and decode it
     const token = req.headers.authorization.split(' ')[1]
     const decoded = jwt.decode(token, process.env.JWT_SECRET)
     
-    console.log(`${decoded.UserInfo.firstName} ${decoded.UserInfo.lastName}`)
 try{
-    const userTasks = await Todo.find({author:`${decoded.UserInfo.firstName} ${decoded.UserInfo.lastName}`})
+    const userTasks = await Todo.find({'author.name':`${decoded.UserInfo.firstName} ${decoded.UserInfo.lastName}` })
     if(userTasks.length > 0) return res.status(200).json(userTasks)
     else return res.status(404).json({msg:'No tasks found'})
 }
