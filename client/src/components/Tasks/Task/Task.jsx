@@ -2,9 +2,12 @@ import React from 'react'
 import { Card, CardContent, CardActions, Typography, Box} from '@mui/material'
 import CardButtons from './CardButtons'
 import {convertToRelativeTime} from '../../../utils/time'
+import { useSelector } from 'react-redux'
+
 const Task = ({task,author}) => {
   const completed = task.tasks.filter((item)=> item.completed).length
   const percentage = task.tasks.length > 0 ? Math.floor((completed/task.tasks.length)*100 ) : 0
+  const user = useSelector((state) => state.auth.user)
   return (
       <Card sx={{margin:'5px',position:'relative'}}>
       <CardContent>
@@ -13,7 +16,7 @@ const Task = ({task,author}) => {
             {task.title}
           </Typography>
           {author && <Typography  variant="p" sx={{position:'absolute', right:'5px',top:'5px', fontSize:'12px'}}>
-            By: {task.author}
+            By: {task.author.name}
           </Typography>}
           
         </Box>
@@ -33,7 +36,7 @@ const Task = ({task,author}) => {
         <Typography sx={{position:'absolute', left: '15px'}}>Total tasks: {task.tasks.length}</Typography>
       </CardContent>
       <CardActions>
-        <CardButtons id={task._id}/>
+        <CardButtons id={task._id} auth={task.author.authorID}/>
       </CardActions>
     </Card>
   )

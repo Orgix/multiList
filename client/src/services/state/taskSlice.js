@@ -57,8 +57,10 @@ const taskSlice = createSlice({
                 state.error = action.error.message
           })
           .addCase(createTask.fulfilled, (state,action)=>{
-            state.tasks.push(action.payload)
-            state.singleStatus = 'succeeded'
+            if(action.payload.privacy !== 'Private'){
+              state.tasks.push(action.payload)
+              state.singleStatus = 'succeeded'
+            }
           })
           .addCase(createTask.rejected, (state, action)=>{
             state.error = action.error.message

@@ -23,14 +23,14 @@ const TaskDetails = () => {
   const task = useSelector((state)=>getTaskById(state,id));
   const status = useSelector(getSinglePostStatus)
   const error = useSelector(getTasksError)
-  
+  const user = useSelector((state)=> state.auth.user)
 
 
   useEffect(()=>{
     if(!task){
       dispatch(fetchTask(id))
     }
-  },[])
+  },[id])
   
  
   
@@ -61,7 +61,7 @@ const TaskDetails = () => {
             
           <Grid container spacing={2} justifyContent={'center'}>
             <Grid my={1} item xs={12} sm={6} md={4}>
-                <Typography variant="h5" textAlign={'center'}>Created By: <b><Link component={RouterLink} to="/profile/me" sx={{color:'black'}} underline="none">{task.author}</Link></b></Typography>
+                <Typography variant="h5" textAlign={'center'}>Created By: <b><Link component={RouterLink} to="/profile/me" sx={{color:'black'}} underline="none">{task.author.name}</Link></b></Typography>
             </Grid>
             <Grid my={1} item xs={12} sm={6} md={4}>
             <Typography textAlign={'center'} variant="h5">Created At: <b>{convertToRelativeTime(task.createdAt)}</b></Typography>
@@ -96,7 +96,8 @@ const TaskDetails = () => {
             </Grid>
             {!task.completed && <Container maxWidth={false} sx={styles.container} disableGutters>
              
-             <HoverableEditButton text="edit" type="button" fontSize="16px" path="edit"/>
+             { task.author.authorID === user?.id && <HoverableEditButton text="edit" type="button" fontSize="16px" path="edit"/>}
+             
              <Box sx={styles.box}>
              <Typography sx={styles.text}>Show completed</Typography><Checkbox onChange={setActive} checked={active}/>
              </Box>

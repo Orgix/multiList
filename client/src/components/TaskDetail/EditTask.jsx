@@ -152,7 +152,7 @@ const handleDeleteTask = () =>{
             
             <Grid container spacing={2} justifyContent={'center'}>
             <Grid my={1} item xs={12} md={6}>
-                  <TextField  variant="outlined" type="text" value={taskData.author}  fullWidth disabled label="Author" name="author"/>
+                  <TextField  variant="outlined" type="text" value={taskData.author.name}  fullWidth disabled label="Author" name="author"/>
               </Grid>
               <Grid my={1} item xs={12} md={6}>
                   <TextField variant="outlined" type="text" value={taskData.title} fullWidth onChange={handleChange} onBlur={handleBlur} label="Title" name="title"/>

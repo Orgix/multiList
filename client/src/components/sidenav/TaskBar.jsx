@@ -1,14 +1,18 @@
-import * as React from 'react';
+import {useState, useEffect, Fragment} from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import {Box, Drawer, CssBaseline, Toolbar, List, 
         Typography,Divider , IconButton, ListItem,
-        ListItemText,ListItemButton} from '@mui/material'
+        ListItemText,ListItemButton, Container} from '@mui/material'
 import MuiAppBar from '@mui/material/AppBar';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { Link as RouterLink } from 'react-router-dom';
 import {Link} from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
+import { getUser } from '../../services/state/authSlice';
+import { fetchUserTasks } from '../../services/actions/auth';
+import { convertToRelativeTime } from '../../utils/time';
 
 const drawerWidth = 240;
 
@@ -42,7 +46,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 export default function TaskBar() {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -50,7 +54,14 @@ export default function TaskBar() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const user = useSelector(getUser)
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(fetchUserTasks());
+  }, [dispatch]);
+
+  const userTasks = useSelector((state) => state.auth.tasks);
   return (
     
 <Box sx={{ display: 'flex'}}>
@@ -97,44 +108,32 @@ export default function TaskBar() {
           
         </DrawerHeader>
         <Divider />
+        {userTasks.length > 0 ?
         <List>
-            <ListItem key="task-1" disablePadding alignItems="flex-start">
-              <ListItemButton>
-                <Link component={RouterLink} to="/profile/me/tasks/45869421" color="text.primary" underline="none">
-                  <ListItemText primary="Task 1" color="text.primary" secondary={
-                    <React.Fragment>
+           {userTasks.map(task=>{
+            return (
+              <ListItem key={task._id} disablePadding alignItems="flex-start">
+                <ListItemButton>
+                  <Link component={RouterLink} to={`/profile/me/tasks/${task._id}`} color="text.primary" underline="none">
+                  <ListItemText primary={task.title} color="text.primary" secondary={
+                    <Fragment>
                       <Typography
                         component="span"
                         variant="body2"
                         color={theme.palette.sidenav.letters}
                       >
                         Sub Tasks Completed : 3<br/>
-                        Created at : 4 days ago
+                        Created at : {convertToRelativeTime(task.createdAt)}
                       </Typography>
-                    </React.Fragment>
+                    </Fragment>
                   }/>
-                </Link>
-              </ListItemButton>
-            </ListItem>
-            <ListItem key="task-2" disablePadding alignItems="flex-start">
-              <ListItemButton>
-                <Link component={RouterLink} to="/profile/me/tasks/1232131312" color="text.primary" underline="none">
-                  <ListItemText primary="Task 2" color="text.primary" secondary={
-                    <React.Fragment>
-                      <Typography
-                        component="span"
-                        variant="body2"
-                        color={theme.palette.sidenav.letters}
-                      >
-                        Sub Tasks Completed : 5<br/>
-                        Created at : 2 days ago
-                      </Typography>
-                    </React.Fragment>
-                  }/>
-                </Link>
-              </ListItemButton>
-            </ListItem>
-        </List>
+                  </Link>
+                </ListItemButton>
+              </ListItem>)
+           })}
+        </List> :
+        <Container><Typography>No tasks</Typography></Container>
+        }
       </Drawer>
     </Box> 
   );

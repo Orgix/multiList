@@ -21,7 +21,7 @@ const UserTasks = () => {
     return (
       <Container disableGutters sx={{display:'flex', justifyContent:'center',flexDirection:'column', mt:3}}>
         <Box display='flex' justifyContent='center'>
-          <Typography variant="h4" fontWeight="bold">Tasks for user: {`${user.name} ${user.surname}`}</Typography>
+          <Typography variant="h4" fontWeight="bold">My tasks ({`${userTasks.length}`})</Typography>
         </Box>
         <Grid container spacing={2}>
           {userTasks.map(task => <Grid item key={task._id} xs={12} md={6} lg={4} xl={3}><Task task={task} author={false} spacing={2}/></Grid>)}
@@ -36,9 +36,9 @@ const UserTasks = () => {
     return(
       <Container disableGutters sx={{display:'flex', justifyContent:'center',flexDirection:'column', mt:3}}>
         <Box display='flex' justifyContent='center'>
-          <Typography variant="h4" fontWeight="bold">Tasks for user: {`${user.name} ${user.surname}`}</Typography>
+          <Typography variant="h4" fontWeight="bold">My tasks : {`${user.name} ${user.surname}`}</Typography>
         </Box>
-        <Typography>No tasks found</Typography>
+        <Typography textAlign='center' my={2} variant="h6">No tasks found</Typography>
       </Container>
     )
   }

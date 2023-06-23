@@ -1,5 +1,6 @@
 import { createSlice} from '@reduxjs/toolkit'
 import { signin, register,signout, fetchUserTasks } from "../actions/auth";
+import { deleteTask,updateTask } from '../actions/tasks';
 
 const initialState = {
     isLoading: false,
@@ -69,8 +70,22 @@ const authSlice = createSlice({
               .addCase(fetchUserTasks.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload;
-              });
+              })
+              .addCase(deleteTask.fulfilled, (state,action)=>{
+                const deleted = action.payload.id
+                state.tasks = state.tasks.filter(task=>task._id !== deleted)
+              })
+              .addCase(updateTask.fulfilled, (state,action)=>{
+                const updatedTask = action.payload;
+                state.tasks = state.tasks.map((task) => {
+                  if (task._id === updatedTask._id) {
+                    return updatedTask;
+                  }
+                  return task;
+                });
+              })
     }
 })
 
+export const getUser = (state) => state.auth.user;
 export default authSlice.reducer

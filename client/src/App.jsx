@@ -29,7 +29,7 @@ function App() {
             <Route  index element={<Landing/>} />
             <Route path="/explore" element={<Home/>}/>
             {/* routes defined to be viewed by the logged in user only */}
-            <Route path="profile/me" element={!user ? <Navigate to='/explore'/>: ''}>
+            <Route path="profile/me">
               <Route index element={user ? <Profile/> : <Navigate to="/profile/me/tasks"/>}/>
               <Route path="tasks">
                 {/* home route */}

@@ -79,8 +79,8 @@ const NewTask = () => {
     
     if(!disabled){
         //proceed to create the task
-        const newTask = {title: taskData.title, priority: taskData.priority, scope:taskData.scope, author:taskData.author}
-        
+        const newTask = {title: taskData.title, priority: taskData.priority, scope:taskData.scope, author:{name: taskData.author, authorID:user.id}}
+
         if(todos.length > 0){
            newTask["tasks"] = todos.map(todo=> ({name: todo.name, completed: todo.completed}))
         }
