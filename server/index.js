@@ -19,8 +19,8 @@ app.use(bodyParser.urlencoded({limit:"30mb", extended:true}));
 app.use(cors());
 app.use(morgan('common'))
 
-app.use('/profile/me/tasks',taskRoutes);
-app.use('/profile/:userId/tasks', taskRoutes)
+app.use('/profile/me',taskRoutes);
+app.use('/profile/:userId', taskRoutes)
 app.use('/auth', authRoutes);
 
 

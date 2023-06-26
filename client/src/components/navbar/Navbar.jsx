@@ -161,7 +161,7 @@ const Navbar = () => {
               </Box>
                   : <>
                   <Box sx={{flexGrow:0, display:{xs:'none', sm:'block'}}}>
-                    <Typography variant="subtitle1" sx={{fontWeight:700, color:'white', fontSize:'1.1em'}}>{`${user.name} ${user.surname}`}</Typography>
+                    <Typography variant="subtitle1" sx={{fontWeight:700, color:'white', fontSize:'1.1em'}}>{`${user.firstName} ${user.lastName}`}</Typography>
                   </Box>
                   <Box sx={{ flexGrow: 0}}>
                   <Tooltip title="Open settings">
@@ -186,7 +186,7 @@ const Navbar = () => {
                   onClose={handleCloseUserMenu}
                 >   
                   <Container sx={{display:{xs:'block', sm:'none'}}}>
-                  <Typography sx={{fontWeight:800}} textAlign="center">{`${user.name} ${user.surname}`}</Typography>
+                  <Typography sx={{fontWeight:800}} textAlign="center">{`${user.firstName} ${user.lastName}`}</Typography>
                     <Divider/>
                   </Container>
                     

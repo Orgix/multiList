@@ -1,7 +1,8 @@
 import React from 'react'
-import { Card, CardContent, CardActions, Typography, Box} from '@mui/material'
+import { Card, CardContent, CardActions, Typography, Box, Link} from '@mui/material'
 import CardButtons from './CardButtons'
 import {convertToRelativeTime} from '../../../utils/time'
+import {Link as RouterLink} from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 const Task = ({task,author}) => {
@@ -15,9 +16,13 @@ const Task = ({task,author}) => {
           <Typography  variant="p">
             {task.title}
           </Typography>
-          {author && <Typography  variant="p" sx={{position:'absolute', right:'5px',top:'5px', fontSize:'12px'}}>
-            By: {task.author.name}
-          </Typography>}
+          {author && 
+          
+          <Typography  variant="p" sx={{position:'absolute', right:'5px',top:'5px', fontSize:'12px'}}>
+            By: <Link component={RouterLink} underline='none' to={user?.id === task.author.authorID ? `/profile/me` : `/profile/${task.author.authorID}`}>{task.author.name}</Link>
+          </Typography>
+          
+          }
           
         </Box>
         

@@ -30,7 +30,7 @@ function App() {
             <Route path="/explore" element={<Home/>}/>
             {/* routes defined to be viewed by the logged in user only */}
             <Route path="profile/me">
-              <Route index element={user ? <Profile/> : <Navigate to="/profile/me/tasks"/>}/>
+              <Route index element={user ? <Profile/> : <Navigate to="/explore"/>}/>
               <Route path="tasks">
                 {/* home route */}
                 <Route index element={<UserTasks/>}/>

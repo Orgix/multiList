@@ -1,6 +1,6 @@
 import { createSlice} from '@reduxjs/toolkit'
 import { signin, register,signout, fetchUserTasks } from "../actions/auth";
-import { deleteTask,updateTask } from '../actions/tasks';
+import { deleteTask,updateTask,completeTask } from '../actions/tasks';
 
 const initialState = {
     isLoading: false,

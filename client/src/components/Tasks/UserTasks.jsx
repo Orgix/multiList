@@ -3,17 +3,22 @@ import Task from "./Task/Task"
 import { useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { fetchUserTasks } from "../../services/actions/auth"
-import { Link as RouterLink } from "react-router-dom"
+import { Link as RouterLink, useNavigate } from "react-router-dom"
 
 
 
 const UserTasks = () => {
   const user = useSelector((state)=> state.auth.user)
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(fetchUserTasks());
-  }, [dispatch]);
+    if (!user) {
+      navigate('/explore');
+    } else {
+      dispatch(fetchUserTasks());
+    }
+  }, [user, navigate, dispatch]);
 
   const userTasks = useSelector((state) => state.auth.tasks);
 
@@ -31,6 +36,9 @@ const UserTasks = () => {
         </Link>
       </Container>
     )
+  }
+  else if(!user){
+    return null
   }
   else{
     return(

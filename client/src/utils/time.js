@@ -1,4 +1,4 @@
-export const convertToRelativeTime = (date) => {
+export const convertToRelativeTime = date => {
     const currentDate = new Date();
     const inputDate = new Date(date);
   
@@ -25,4 +25,19 @@ export const convertToRelativeTime = (date) => {
     } else {
       return `less than a minute ago`;
     }
-  }
+}
+/*
+INPUT: string => '2023-06-16T15:48:19.855Z'
+OUTPUT: string => 'June 16,2023'
+
+*/
+export const convertTimeToDate = string =>{
+  //use Date object
+  const date = new Date(string);
+  //define options 
+  const options = { day: 'numeric', month: 'long', year: 'numeric' };
+  //convert to desired format 
+  const formattedDate = date.toLocaleDateString('en-US', options);
+
+  return formattedDate 
+}

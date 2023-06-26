@@ -1,8 +1,10 @@
 import  jwt  from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-
+import mongoose from "mongoose";
 import User from "../models/user.js";
+import Todo from "../models/todo.js"
 import { ExpressError } from "../middleware/errHandle.js";
+
 
 
 export const registerUser = async (req,res)=>{
@@ -64,8 +66,10 @@ export const loginUser = async (req,res)=>{
         process.env.JWT_SECRET,
         { expiresIn: '1d' }
     );
-    
-    res.status(200).json({message: 'Welcome back, ', token:accessToken, user:{name:foundUser.firstName, surname:foundUser.lastName, id:foundUser._id}})
+    //get statistics (all tasks, even incomplete in tuples of (task_id, task_title,task_completed))
+    const tasks = await Todo.find({'author.authorID':foundUser._id})
+    const mutated = tasks.map(task=> ({id: task._id, title: task.title, completed:task.completed }))
+    res.status(200).json({message: 'Welcome back, ', token:accessToken, user:{firstName:foundUser.firstName, lastName:foundUser.lastName, id:foundUser._id,joined:foundUser.joined, tasks:mutated}})
     //set the user field to that token.
     foundUser.token = accessToken
     await foundUser.save();
@@ -89,3 +93,28 @@ export const signout = async (req,res)=>{
 }
 
 //IDEALLY, this process will be converted to use cookies with secure option on, so as to not allow xss 
+
+/*since front-end is not requesting anything in the event the route is profile/me, 
+there will be a check for any requests that are done outside the front-end
+*/ 
+export const fetchUserProfile = async(req,res)=>{
+    //fetch the userId from the req parameters
+    const {userId} = req.params;
+    //if invalid simply end request here
+    if(!mongoose.Types.ObjectId.isValid(userId)) return res.status(400).json({msg: 'No such user'})
+
+    //find user 
+    const foundUser =await User.findOne({_id:userId})
+    //if not found end request here
+    if(!foundUser) return res.status(404).json({msg: 'No such user found'})
+
+    //get all tasks
+    const userTasks = await Todo.find({'author.authorID':userId })
+    //get only public tasks(later on there has to be a filter to return private tasks that are giving you access.)
+    const allTasks = userTasks.filter(task=> task.privacy === 'Public')
+    //get active tasks(not completed)
+    const activeTasks = allTasks.filter(task=> task.completed === false)
+    const tasks = activeTasks.map(task=> ({id:task._id,title: task.title, completed: task.completed}))
+    
+    res.status(200).json({firstName: foundUser.firstName, lastName:foundUser.lastName, joined:foundUser.joined, alltasks: allTasks.length, active: activeTasks.length, completed: allTasks.length-activeTasks.length, tasks:tasks})
+}
