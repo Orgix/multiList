@@ -27,11 +27,8 @@ const Tasks = () => {
   if (tasksStatus === 'loading') {
     content = <CircularProgress/>;
 } else if (tasksStatus === 'succeeded') {
-    //sort the tasks by date ascending order 
-    const orderedTasks = tasks.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    //map through the sorted array and keep the completed tasks only and create the JSX that will be rendered
-    content = orderedTasks.map(task => <Grid item key={task._id} xs={12} md={6} lg={4} xl={3}><Task task={task} author={true} spacing={2}/></Grid>)
-    len = orderedTasks.length
+    content = tasks.map(task => <Grid item key={task._id} xs={12} md={6} lg={4} xl={3}><Task task={task} author={true} spacing={2}/></Grid>)
+    len = tasks.length
 } else if (tasksStatus === 'failed') {
   //present the error
     content = <p>{error}</p>;

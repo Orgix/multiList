@@ -20,3 +20,4 @@ export const fetchUserProfile = (userId) => API.get(`/profile/${userId}`)
 export const signIn = (formData) => API.post('/auth/signin', formData);
 export const signUp = (formData) => API.post('/auth/signup', formData);
 export const signOut = () => API.post('/auth/logout')
+export const syncrhonizeUser = () => API.get('/profile/me/sync')

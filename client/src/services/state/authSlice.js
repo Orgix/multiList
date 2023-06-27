@@ -1,6 +1,7 @@
 import { createSlice} from '@reduxjs/toolkit'
 import { signin, register,signout, fetchUserTasks } from "../actions/auth";
 import { deleteTask,updateTask,completeTask } from '../actions/tasks';
+import { synchronizeUser } from '../actions/profile';
 
 const initialState = {
     isLoading: false,
@@ -84,6 +85,16 @@ const authSlice = createSlice({
                   return task;
                 });
               })
+              .addCase(synchronizeUser.fulfilled, (state,action)=>{
+                const data = JSON.parse(localStorage.getItem('user'))
+                
+                data.tasks = action.payload.tasks;
+                data.synced = action.payload.synced
+
+                localStorage.setItem('user', JSON.stringify(data))
+                console.log(localStorage.getItem('user'))
+                state.user = data
+            })
     }
 })
 

@@ -6,3 +6,10 @@ export const fetchUserProfile = createAsyncThunk('profile/fetchUserProfile', asy
     console.log(response)
    return response.data;
 })
+
+
+export const synchronizeUser = createAsyncThunk('profile/syncrhonizeUser', async()=>{
+    const response = await api.syncrhonizeUser()
+    console.log(response)
+    return response.data;
+})

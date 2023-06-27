@@ -23,6 +23,7 @@ const UserTasks = () => {
   const userTasks = useSelector((state) => state.auth.tasks);
 
   if(userTasks.length > 0 ){
+    const ordered = userTasks.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     return (
       <Container disableGutters sx={{display:'flex', justifyContent:'center',flexDirection:'column', mt:3}}>
         <Box display='flex' justifyContent='center'>

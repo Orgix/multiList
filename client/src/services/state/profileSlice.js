@@ -1,5 +1,5 @@
 import { createSlice} from '@reduxjs/toolkit'
-import { fetchUserProfile } from '../actions/profile.js'
+import { fetchUserProfile,synchronizeUser } from '../actions/profile.js'
 
 
 const profileSlice = createSlice({
@@ -25,7 +25,7 @@ const profileSlice = createSlice({
                 state.isLoading = false;
                 state.error = action.error
             } ) 
-            
+           
     }
 })
 
