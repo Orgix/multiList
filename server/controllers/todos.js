@@ -45,6 +45,7 @@ export const createTask = async(req,res)=>{
     const {title, priority, author, tasks, scope:privacy} = req.body;
     const newTask = new Todo({title,priority,author,tasks,privacy, createdAt: new Date().toISOString()});
     try{
+        console.log(newTask)
         await newTask.save();
         res.status(201).json(newTask)
     }
@@ -66,7 +67,7 @@ export const deleteTask = async(req,res)=>{
 }
 
 export const getTasks = async(req,res)=>{   
-    const tasks = await  Todo.find({completed:false, privacy:'Public'});
+    const tasks = await  Todo.find({completed:false, privacy:'Public'}).sort({createdAt: -1});
     if(!tasks) res.status(404).json({message: 'No tasks found'})
     res.status(200).json(tasks)
     //get all tasks from specific user. either /me or /:id 
@@ -98,7 +99,7 @@ export const fetchUserTasks = async(req,res)=>{
     const decoded = jwt.decode(token, process.env.JWT_SECRET)
     
 try{
-    const userTasks = await Todo.find({'author.name':`${decoded.UserInfo.firstName} ${decoded.UserInfo.lastName}` })
+    const userTasks = await Todo.find({'author.name':`${decoded.UserInfo.firstName} ${decoded.UserInfo.lastName}` }).sort({ createdAt: -1 })
     if(userTasks.length > 0) return res.status(200).json(userTasks)
     else return res.status(404).json({msg:'No tasks found'})
 }

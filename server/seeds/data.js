@@ -19,6 +19,8 @@ mongoose.connect(process.env.CONNECTION_URL,
 // const result = await Todo.updateMany({},
 //     { $set: { completed: false}},{upsert:true})
 
+
+/* start of mutation */
 //add authorid in existing tasks. for simplicity, existing tasks  will take 648c902c951696c55b28004c 648cb275951696c55b281953
 //fetch all tasks
 const tasks = await Todo.find({}).exec()
@@ -42,4 +44,5 @@ const mutated = tasks.map((task, idx)=>{
 await Todo.deleteMany({})
 await Todo.insertMany(mutated)
 console.log(mutated)
+/* end of mutation */
 process.exit()

@@ -1,6 +1,6 @@
 import express from "express";
 import {getTask, createTask, updateTask, deleteTask, getTasks,completeTask, fetchUserTasks,} from '../controllers/todos.js'
-import {fetchUserProfile} from '../controllers/user.js'
+import {fetchUserProfile, synchronizeUser} from '../controllers/user.js'
 import {determineUser, compareTokens} from "../middleware/determineUser.js";
 const router = express.Router({mergeParams:true});
 
@@ -30,5 +30,7 @@ router.delete('/tasks/:id',determineUser, deleteTask)
 //add completion status to the task
 router.patch('/tasks/:id/complete', completeTask)
 
+//retrieve updated task tuples for own profile
+router.get('/sync', synchronizeUser)
 
 export default router;

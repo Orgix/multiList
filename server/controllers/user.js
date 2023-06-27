@@ -66,13 +66,15 @@ export const loginUser = async (req,res)=>{
         process.env.JWT_SECRET,
         { expiresIn: '1d' }
     );
+    //before sending the response, handle saving the token, so the updatedAt field gets updated. this will basically be done likewisely on the sync feature
+    foundUser.token = accessToken
+    await foundUser.save();
     //get statistics (all tasks, even incomplete in tuples of (task_id, task_title,task_completed))
     const tasks = await Todo.find({'author.authorID':foundUser._id})
     const mutated = tasks.map(task=> ({id: task._id, title: task.title, completed:task.completed }))
-    res.status(200).json({message: 'Welcome back, ', token:accessToken, user:{firstName:foundUser.firstName, lastName:foundUser.lastName, id:foundUser._id,joined:foundUser.joined, tasks:mutated}})
+    res.status(200).json({message: 'Welcome back, ', token:accessToken, user:{firstName:foundUser.firstName, lastName:foundUser.lastName, id:foundUser._id,joined:foundUser.joined,synced:foundUser.updatedAt, tasks:mutated}})
     //set the user field to that token.
-    foundUser.token = accessToken
-    await foundUser.save();
+    
 }
 
 export const signout = async (req,res)=>{
@@ -117,4 +119,34 @@ export const fetchUserProfile = async(req,res)=>{
     const tasks = activeTasks.map(task=> ({id:task._id,title: task.title, completed: task.completed}))
     
     res.status(200).json({firstName: foundUser.firstName, lastName:foundUser.lastName, joined:foundUser.joined, alltasks: allTasks.length, active: activeTasks.length, completed: allTasks.length-activeTasks.length, tasks:tasks})
+   
+}
+
+export const synchronizeUser = async(req,res)=>{
+    //determine if there is any token 
+    const header = req.headers.authorization
+    //if undefined, deny access
+    if(!header) return res.status(403).json({msg:'Unauthorized'})
+
+    //get token and decode it
+    const token = req.headers.authorization.split(' ')[1]
+    const decoded = jwt.decode(token, process.env.JWT_SECRET)
+    
+    //get user
+    const foundUser = await User.findOne({email:decoded.UserInfo.email})
+    if(!foundUser) return res.status(404).json({msg:'User not found!'})
+
+    //save user, so as to get an updatedAt new value to return
+    foundUser.updatedAt = new Date()
+    await foundUser.save();
+    
+    //find user's tasks
+    const userTasks = await Todo.find({'author.authorID': foundUser._id})
+    
+    //since this is a profile/me operation, no need to filter the tasks. Both public/private and complete/incomplete are included
+    //bundle them as tuples
+    const mutated = userTasks.map(task=> ({id: task._id, title:task.title, completed:task.completed}))
+
+    //send response
+    res.status(200).json({tasks:mutated, synced:foundUser.updatedAt})
 }
