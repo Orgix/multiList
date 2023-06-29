@@ -1,5 +1,5 @@
 import { createSlice} from '@reduxjs/toolkit'
-import {fetchTasks, fetchTask, updateTask, deleteTask,createTask, completeTask} from '../actions/tasks'
+import {fetchTasks, fetchTask, updateTask, deleteTask,createTask, completeTask, fetchPaginatedTasks} from '../actions/tasks'
 
 
 const initialState = {
@@ -7,7 +7,9 @@ const initialState = {
   tasks:[],
   status: 'idle', //'idle' | 'loading' | 'succeeded' | 'failed',
   singleStatus: 'idle',//'idle'  | 'succeeded' | 'failed',
-  error: null
+  error: null,
+  currentPage:1,
+  numberOfPages: 1
 }
 
 const taskSlice = createSlice({
@@ -84,6 +86,18 @@ const taskSlice = createSlice({
           .addCase(completeTask.fulfilled,(state, action)=>{
             const completed = action.payload.id
             state.tasks = state.tasks.filter(task=> task._id !== completed)
+          })
+          .addCase(fetchPaginatedTasks.fulfilled, (state,action)=>{
+            state.tasks = []
+            state.status = 'succeeded'
+            state.currentPage = action.payload.currentPage;
+            state.numberOfPages = action.payload.numberOfPages
+            action.payload.data.forEach((newTask) => {
+              const existingTask = state.tasks.find((task) => task._id === newTask._id);
+              if (!existingTask) {
+                state.tasks.push(newTask);
+              }
+            });
           })
   }
 })

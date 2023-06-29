@@ -50,6 +50,16 @@ export const completeTask = createAsyncThunk('tasks/completeTask', async(id)=>{
     return {data:response.data.message, id}
 })
 
-
+export const fetchPaginatedTasks = createAsyncThunk('tasks/fetchPaginatedTasks', async(page)=>{
+    try{
+        const response = await api.fetchPaginatedTasks(page)
+        return response.data
+    }
+    catch(error){
+        throw new Error('Error updating task.')
+    }
+    
+    
+})
 
 //fetchTask, createTask, updateTask, deleteTask,
