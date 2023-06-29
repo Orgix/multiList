@@ -41,7 +41,6 @@ const Profile = () => {
   //depending on toggle value, show only active 
   const visible = active ? filter_active : userData?.tasks;
 
-  console.log(filter_active)
   return (
     <Container disableGutters >
       
@@ -82,15 +81,18 @@ const Profile = () => {
                 Tasks
             </Typography>
             <Grid container columnSpacing={3} rowSpacing={1}>
-              {visible.map(task=>{
+              {visible?.map(task=>{
                 return <TaskShort task={task} key={task.id} self={userId}/>
               })}
             </Grid>
           </Container>
       </Paper>
+      {!userId && 
       <Box sx={styles.box}>
-        <Typography sx={styles.text}>Show completed</Typography><Checkbox onChange={setActive} checked={active}/>
-      </Box>
+      <Typography sx={styles.text}>Show completed</Typography><Checkbox onChange={setActive} checked={active}/>
+    </Box>
+      }
+      
     </Container>
     
   )

@@ -52,6 +52,7 @@ const TaskDetails = () => {
     const completed = task.tasks.filter(task=> task.completed).length
     const activeTasks = mutated.filter(task=> !task.completed)
     const visible = active ? mutated : activeTasks
+    console.log(task)
     return (
       <Box p={3}>
         <Typography variant="h4" mb={2} textAlign={'center'}>Task Details: {task.title}</Typography>
@@ -84,6 +85,11 @@ const TaskDetails = () => {
               </Grid>
             }
           </Grid>
+          <Box>
+            <Typography variant="h4" textAlign='center' sx={{my:2}}>About: </Typography>
+            {task.description ?  <Typography textAlign='center'>{task.description}</Typography> : <Typography textAlign='center'>No description provided</Typography>}
+            
+          </Box>
           </Paper>
           <Typography variant="h6" textAlign="center" mb={2}>Subtasks:</Typography>
             <Grid container spacing={2} justifyContent="center">
@@ -99,7 +105,7 @@ const TaskDetails = () => {
              { task.author.authorID === user?.id && <HoverableEditButton text="edit" type="button" fontSize="16px" path="edit"/>}
              
              <Box sx={styles.box}>
-             <Typography sx={styles.text}>Show completed</Typography><Checkbox                                                                                     />
+             <Typography sx={styles.text}>Show completed</Typography><Checkbox  onChange={setActive} checked={active}/>
              </Box>
              
          </Container>}

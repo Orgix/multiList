@@ -15,7 +15,7 @@ import {useNavigate} from 'react-router-dom'
 
 const NewTask = () => {
   const user = useSelector((state)=>state.auth.user)
-  const initialState = {title:'', priority:'', scope:'', author:`${user.firstName} ${user.lastName}`,subtask:''}
+  const initialState = {title:'', priority:'', scope:'',description:'', author:`${user.firstName} ${user.lastName}`,subtask:''}
   const [taskData, setTaskData] = useState(initialState)
   const [todos, setTodos] = useState([])
   const [disabled, setDisabled] = useToggle(true)
@@ -79,7 +79,8 @@ const NewTask = () => {
     
     if(!disabled){
         //proceed to create the task
-        const newTask = {title: taskData.title, priority: taskData.priority, scope:taskData.scope, author:{name: `${user.firstName} ${user.lastName}`, authorID:user.id}}
+        const newTask = {title: taskData.title, priority: taskData.priority, scope:taskData.scope, description: taskData.description, author:{name: `${user.firstName} ${user.lastName}`, authorID:user.id}}
+        console.log(newTask)
         if(todos.length > 0){
            newTask["tasks"] = todos.map(todo=> ({name: todo.name, completed: todo.completed}))
         }
@@ -157,6 +158,18 @@ const NewTask = () => {
                                     <MenuItem value='Private'>Private</MenuItem>
                                 </Select>
                             </FormControl>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                multiline
+                                rows={4}
+                                name="description"
+                                label="Description"
+                                placeholder="Add a description for this new task"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                            />
                         </Grid>
                     </Grid>
                     <Typography variant="h3" sx={{textAlign:'center'}}>

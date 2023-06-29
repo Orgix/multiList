@@ -37,7 +37,7 @@ export const validateTask = (state, keys) =>{
     if(key === 'title' && (val.length === 0 || val.length < 5 || val.length > 25)) return true;
     else if(key === 'scope' && val === '') return true;
     else if(key === 'priority' && val === '') return true;
-
+    else if(key === 'description' && val.length >120) return true;
     return false;
   })
   return error.length === 0 

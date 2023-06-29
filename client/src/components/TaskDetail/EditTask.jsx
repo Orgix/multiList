@@ -195,7 +195,19 @@ const handleDeleteTask = () =>{
                                 </Select>
                             </FormControl>
               </Grid>
-              
+              <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                multiline
+                                rows={4}
+                                name="description"
+                                label="Description"
+                                placeholder="Add a description for this new task"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={taskData.description}
+                            />
+                </Grid>
             </Grid>
             
             <Typography variant="h4" textAlign="center" mb={2}>Subtasks:</Typography>
