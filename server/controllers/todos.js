@@ -42,8 +42,8 @@ export const updateTask = async(req,res)=>{
 
 export const createTask = async(req,res)=>{
     //create task. only get here when registered user is authorized
-    const {title, priority, author, tasks, scope:privacy} = req.body;
-    const newTask = new Todo({title,priority,author,tasks,privacy, createdAt: new Date().toISOString()});
+    const {title, priority, author, tasks,description, scope:privacy} = req.body;
+    const newTask = new Todo({title,priority,author,tasks,privacy,description, createdAt: new Date().toISOString()});
     try{
         console.log(newTask)
         await newTask.save();

@@ -37,6 +37,10 @@ const todoSchema = mongoose.Schema({
         min:0,
         max:4
     },
+    description:{
+        type:String,
+        max:120
+    },
     privacy:{
         type: String,
     },
