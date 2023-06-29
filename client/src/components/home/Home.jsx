@@ -5,13 +5,13 @@ import { Container, Grid } from '@mui/material'
 import { fetchTasks } from '../../services/api';
 import TaskBar from '../sidenav/TaskBar'
 import Tasks from '../Tasks/Tasks'
+
 const Home = () => {
   
   return (
-
-      <Grid container spacing={2} sx={{px:3}}>
+    <Grid container spacing={2} sx={{px:3}}>
           <Tasks />
-      </Grid>
+    </Grid> 
   )
 }
 

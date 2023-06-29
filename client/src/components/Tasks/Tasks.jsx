@@ -3,8 +3,9 @@ import Task from './Task/Task'
 import { useSelector, useDispatch } from 'react-redux'
 import { getTasksStatus, getTasks, getTasksError, getSinglePostStatus} from '../../services/state/taskSlice'
 import { fetchTasks } from '../../services/actions/tasks'
-import { CircularProgress, Grid, Typography, Container } from '@mui/material'
+import { CircularProgress, Grid, Typography, Container, Box } from '@mui/material'
 import Success from '../user/Success'
+import CustomPagination from '../CustomPagination'
 
 const Tasks = () => {
   const dispatch = useDispatch();
@@ -41,6 +42,7 @@ const Tasks = () => {
         <Success title="Task registered successfully" msg="Navigate to your personal profile to view the new task"/>
       </Container>
     )}
+    {tasksStatus === 'succeeded' && <Box sx={{display:'flex', justifyContent:'center'}}><CustomPagination /></Box>}
     <Grid container spacing={2} sx={{marginLeft:'8px'}}>
         {content}
     </Grid>

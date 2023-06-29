@@ -9,6 +9,8 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
+
+export const fetchPaginatedTasks = (page) => API.get(`/tasks?page=${page}`);
 export const fetchTasks = () => API.get('/profile/me/tasks');
 export const fetchTask = (id) => API.get(`/profile/me/tasks/${id}`);
 export const createTask = (newTask) => API.post('/profile/me/tasks', newTask);
