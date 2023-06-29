@@ -7,6 +7,7 @@ import morgan from 'morgan'
 import { ExpressError } from './middleware/errHandle.js';
 import taskRoutes from './routes/todos.js'
 import authRoutes from './routes/user.js'
+import genRoutes from './routes/general.js'
 //activate config to access .env
 dotenv.config();
 
@@ -22,7 +23,7 @@ app.use(morgan('common'))
 app.use('/profile/me',taskRoutes);
 app.use('/profile/:userId', taskRoutes)
 app.use('/auth', authRoutes);
-
+app.use('/tasks', genRoutes)
 
 
 // "/" route wont have anything initially as it will be serving the landing page content in case the landing page needs server data
