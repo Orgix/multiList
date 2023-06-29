@@ -1,4 +1,4 @@
-import { Container, Paper, Typography,Grid, List, ListItem, ButtonBase,Link, Button,Box} from '@mui/material'
+import { Container, Paper, Typography,Grid, List, ListItem, ButtonBase,Link, Button,Box, Checkbox} from '@mui/material'
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useNavigate, Link as RouterLink} from 'react-router-dom'
@@ -6,23 +6,42 @@ import { fetchUserProfile, synchronizeUser } from '../../services/actions/profil
 import { convertTimeToDate, convertToRelativeTime } from '../../utils/time'
 import TaskShort from './taskShort'
 import { styles } from './styles'
+import useToggle from '../../hooks/useToggle'
 
 const Profile = () => {
+  //dispatch and navigate 
   const navigate = useNavigate()
   const dispatch = useDispatch()
+
+  //get user , if exists
   const user = useSelector((state)=> state.auth.user)
+  //get userId for profile
   const {userId} = useParams();
-  
+
+  //set a toggle hook for the tasks 
+  const [active, setActive] = useToggle(false)
+
+  //if there was no userId in the params and user is null, no reason to be to this link, redirect
+  //if there is user id, dispatch a fetcher action to the backedn to bring back the user's profile data
   useEffect(()=>{
     if(!userId && !user) navigate('/explore')
     if(userId) dispatch(fetchUserProfile(userId))
   },[])
   
+  //sync authenticated user's profile data
   const handleSync = () =>{
     dispatch(synchronizeUser())
   }
+
+  //fetch User data depending on wether the link is for a user or authenticated user's
   const userData = useSelector((state)=>userId ? state.profile.profile : state.auth.user)
-  console.log(userData)
+
+  //filter active only tasks
+  const filter_active = !userId ? userData?.tasks?.filter(task=> !task.completed) : []
+  //depending on toggle value, show only active 
+  const visible = active ? filter_active : userData?.tasks;
+
+  console.log(filter_active)
   return (
     <Container disableGutters >
       
@@ -63,12 +82,15 @@ const Profile = () => {
                 Tasks
             </Typography>
             <Grid container columnSpacing={3} rowSpacing={1}>
-              {userData?.tasks?.map(task=>{
+              {visible.map(task=>{
                 return <TaskShort task={task} key={task.id} self={userId}/>
               })}
             </Grid>
           </Container>
       </Paper>
+      <Box sx={styles.box}>
+        <Typography sx={styles.text}>Show completed</Typography><Checkbox onChange={setActive} checked={active}/>
+      </Box>
     </Container>
     
   )

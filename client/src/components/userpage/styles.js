@@ -10,5 +10,22 @@ export const styles = {
           color:'#5dbede',
           backgroundColor:'#efefef'
       }
+    },
+    paper:{
+      position:'relative'
+    },
+    taskIcons:{
+      position:'absolute',
+      top:'14px',
+      right:'5px',
+    },
+    text:{
+      fontSize:'20px',
+      fontWeight:500
+    },
+    box:{
+      display:'flex',
+      alignItems:'center'
     }
+
 }

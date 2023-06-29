@@ -71,7 +71,7 @@ export const loginUser = async (req,res)=>{
     await foundUser.save();
     //get statistics (all tasks, even incomplete in tuples of (task_id, task_title,task_completed))
     const tasks = await Todo.find({'author.authorID':foundUser._id})
-    const mutated = tasks.map(task=> ({id: task._id, title: task.title, completed:task.completed }))
+    const mutated = tasks.map(task=> ({id: task._id, title: task.title, completed:task.completed, privacy: task.privacy }))
     res.status(200).json({message: 'Welcome back, ', token:accessToken, user:{firstName:foundUser.firstName, lastName:foundUser.lastName, id:foundUser._id,joined:foundUser.joined,synced:foundUser.updatedAt, tasks:mutated}})
     //set the user field to that token.
     
@@ -116,7 +116,7 @@ export const fetchUserProfile = async(req,res)=>{
     const allTasks = userTasks.filter(task=> task.privacy === 'Public')
     //get active tasks(not completed)
     const activeTasks = allTasks.filter(task=> task.completed === false)
-    const tasks = activeTasks.map(task=> ({id:task._id,title: task.title, completed: task.completed}))
+    const tasks = activeTasks.map(task=> ({id:task._id,title: task.title, completed: task.completed, privacy:task.privacy}))
     
     res.status(200).json({firstName: foundUser.firstName, lastName:foundUser.lastName, joined:foundUser.joined, alltasks: allTasks.length, active: activeTasks.length, completed: allTasks.length-activeTasks.length, tasks:tasks})
    
@@ -145,7 +145,7 @@ export const synchronizeUser = async(req,res)=>{
     
     //since this is a profile/me operation, no need to filter the tasks. Both public/private and complete/incomplete are included
     //bundle them as tuples
-    const mutated = userTasks.map(task=> ({id: task._id, title:task.title, completed:task.completed}))
+    const mutated = userTasks.map(task=> ({id: task._id, title:task.title, completed:task.completed, privacy: task.privacy}))
 
     //send response
     res.status(200).json({tasks:mutated, synced:foundUser.updatedAt})
