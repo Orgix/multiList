@@ -70,7 +70,7 @@ export const loginUser = async (req,res)=>{
     foundUser.token = accessToken
     await foundUser.save();
     //get statistics (all tasks, even incomplete in tuples of (task_id, task_title,task_completed))
-    const tasks = await Todo.find({'author.authorID':foundUser._id})
+    const tasks = await Todo.find({'author.authorID':foundUser._id}).sort({createdAt: -1});
     const mutated = tasks.map(task=> ({id: task._id, title: task.title, completed:task.completed, privacy: task.privacy }))
     res.status(200).json({message: 'Welcome back, ', token:accessToken, user:{firstName:foundUser.firstName, lastName:foundUser.lastName, id:foundUser._id,joined:foundUser.joined,synced:foundUser.updatedAt, tasks:mutated}})
     //set the user field to that token.
@@ -111,7 +111,7 @@ export const fetchUserProfile = async(req,res)=>{
     if(!foundUser) return res.status(404).json({msg: 'No such user found'})
 
     //get all tasks
-    const userTasks = await Todo.find({'author.authorID':userId })
+    const userTasks = await Todo.find({'author.authorID':userId }).sort({createdAt: -1});
     //get only public tasks(later on there has to be a filter to return private tasks that are giving you access.)
     const allTasks = userTasks.filter(task=> task.privacy === 'Public')
     //get active tasks(not completed)
@@ -141,7 +141,7 @@ export const synchronizeUser = async(req,res)=>{
     await foundUser.save();
     
     //find user's tasks
-    const userTasks = await Todo.find({'author.authorID': foundUser._id})
+    const userTasks = await Todo.find({'author.authorID': foundUser._id}).sort({createdAt: -1});
     
     //since this is a profile/me operation, no need to filter the tasks. Both public/private and complete/incomplete are included
     //bundle them as tuples
