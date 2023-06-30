@@ -2,7 +2,7 @@ import {useSelector, useDispatch} from 'react-redux'
 import { getTaskById, getTasksError, getSinglePostStatus} from '../../services/state/taskSlice'
 import {useParams, Link as RouterLink} from 'react-router-dom';
 import { fetchTask } from '../../services/actions/tasks';
-import { Box, Typography, Grid, Paper,Container, CircularProgress , Link } from '@mui/material';
+import { Box, Typography, Grid, Paper,Container, CircularProgress , Link, Card, CardHeader, CardContent } from '@mui/material';
 import { convertToRelativeTime } from '../../utils/time';
 import { useEffect} from 'react';
 import { getLoading } from '../../services/state/taskSlice';
@@ -10,6 +10,7 @@ import Checkbox from '@mui/material/Checkbox';
 import Subtask from './Subtask';
 import HoverableEditButton from './EditButton';
 import useToggle from '../../hooks/useToggle';
+import Suggestions from './Suggestions';
 import { styles } from './styles';
 import {v4 as uuid} from 'uuid'
 
@@ -25,6 +26,7 @@ const TaskDetails = () => {
   const error = useSelector(getTasksError)
   const user = useSelector((state)=> state.auth.user)
 
+  console.log(task)
 
   useEffect(()=>{
     if(!task){
@@ -41,13 +43,7 @@ const TaskDetails = () => {
       </article>
     )
   }
-  if(loading){
-    return(
-      <section style={styles.loading}>
-        <CircularProgress/>
-      </section>
-    )
-  }else if(task){
+  if(task && status === 'succeeded'){
     const mutated = task.tasks.map(task=> ({...task, id:uuid()}))
     const completed = task.tasks.filter(task=> task.completed).length
     const activeTasks = mutated.filter(task=> !task.completed)
@@ -109,7 +105,10 @@ const TaskDetails = () => {
              </Box>
              
          </Container>}
-            
+            <Container sx={{mt:3}} disableGutters>
+                <Typography variant="h4" textAlign='center' sx={{mb:2}}>Discussion and suggestions section : </Typography>
+                <Suggestions/>
+            </Container>
         </Box>
     )
   }

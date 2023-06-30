@@ -54,7 +54,6 @@ export const styles= {
   input:{
       height:'30px', 
       width:'80%', 
-      transform:"translateX('32323px')",
       padding:0, 
       lineHeight:'30px', 
       border:'none',
@@ -82,5 +81,31 @@ export const styles= {
         left:0,
         top:'50px',
         color:'rgba(0,0,0,0.5)'
-  }
+  },
+    suggestionBtn:{
+      width:'10%',
+      position:'absolute',
+      right:0,
+      top:0,
+      height:'55px',
+      margin:0,
+      padding:0,
+      backgroundColor:'#5dbede',
+      borderRadius:0
+    },
+    suggestionInput:{
+      height:'30px', 
+      width:'90%', 
+      padding:0, 
+      lineHeight:'30px', 
+      border:'none',
+  },
+    suggestionHeader:{
+      backgroundColor:'#5dbede',
+      textAlign:'center',
+      "& span":{
+        color:'white'
+      }
+    },
+    
   }

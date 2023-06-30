@@ -44,9 +44,8 @@ const taskSlice = createSlice({
                 state.error=''
           })   
           .addCase(fetchTask.fulfilled, (state, action) => {
-            state.isLoading = false;
+            state.singleStatus = 'succeeded';
             if (action.payload) {
-              state.singleStatus = 'succeeded';
               const existingTask = state.tasks.find((task) => task._id === action.payload._id);
               if (!existingTask) {
                 state.tasks.push(action.payload);

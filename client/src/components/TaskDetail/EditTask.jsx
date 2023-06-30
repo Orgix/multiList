@@ -1,5 +1,5 @@
 import {useSelector, useDispatch} from 'react-redux'
-import { getTaskById, getTasksError} from '../../services/state/taskSlice'
+import { getTaskById, getTasksError, getSinglePostStatus} from '../../services/state/taskSlice'
 import {useParams, useNavigate} from 'react-router-dom';
 import { fetchTask } from '../../services/actions/tasks';
 import { Box, Typography, Grid, Paper, CircularProgress,Button, TextField, FormControl, Select, MenuItem, InputLabel,Container } from '@mui/material';
@@ -27,7 +27,7 @@ const EditTask = () => {
   const {id} = useParams();
   const navigate = useNavigate();
   //get the task from the state, if exists. also get the rest of the state via other selectors
-  const loading = useSelector(getLoading)
+  const status = useSelector(getSinglePostStatus)
   const task = useSelector((state)=>getTaskById(state,id));
   const error = useSelector(getTasksError)
   const theme = useTheme()
@@ -132,14 +132,14 @@ const handleDeleteTask = () =>{
  
   
   
-  if(loading){
+  if(error){
     return(
-      <section style={styles.loading}>
-        <CircularProgress/>
-      </section>
+      <article style={styles.error}>
+        {error}
+      </article>
     )
   }
-  else if(taskData){
+  if(taskData && status === 'succeeded'){
       const completed = task?.tasks.filter(subtask=> subtask.completed).length
     return (
       
