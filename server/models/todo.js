@@ -50,7 +50,15 @@ const todoSchema = mongoose.Schema({
     completed:{
         type:Boolean,
         default:false
-    }
+    },
+    suggestions:[
+        {
+            id:{
+                type:mongoose.Schema.Types.ObjectId,
+                ref:'Suggestion'
+            }, 
+        }
+    ]
 },
 {timestamps:true})
 

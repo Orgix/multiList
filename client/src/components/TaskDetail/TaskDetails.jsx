@@ -10,7 +10,7 @@ import Checkbox from '@mui/material/Checkbox';
 import Subtask from './Subtask';
 import HoverableEditButton from './EditButton';
 import useToggle from '../../hooks/useToggle';
-import Suggestions from './Suggestions';
+import Suggestions from './CommentSection/Suggestions';
 import { styles } from './styles';
 import {v4 as uuid} from 'uuid'
 
@@ -43,7 +43,7 @@ const TaskDetails = () => {
       </article>
     )
   }
-  if(task && status === 'succeeded'){
+  if(task){
     const mutated = task.tasks.map(task=> ({...task, id:uuid()}))
     const completed = task.tasks.filter(task=> task.completed).length
     const activeTasks = mutated.filter(task=> !task.completed)
@@ -58,7 +58,7 @@ const TaskDetails = () => {
             
           <Grid container spacing={2} justifyContent={'center'}>
             <Grid my={1} item xs={12} sm={6} md={4}>
-                <Typography variant="h5" textAlign={'center'}>Created By: <b><Link component={RouterLink} to={user.id === task.author.authorID ? '/profile/me' : `/profile/${task.author.authorID}` } sx={{color:'black'}} underline="none">{task.author.name}</Link></b></Typography>
+                <Typography variant="h5" textAlign={'center'}>Created By: <b><Link component={RouterLink} to={user?.id === task.author.authorID ? '/profile/me' : `/profile/${task.author.authorID}` } sx={{color:'black'}} underline="none">{task.author.name}</Link></b></Typography>
             </Grid>
             <Grid my={1} item xs={12} sm={6} md={4}>
             <Typography textAlign={'center'} variant="h5">Created At: <b>{convertToRelativeTime(task.createdAt)}</b></Typography>
@@ -107,7 +107,10 @@ const TaskDetails = () => {
          </Container>}
             <Container sx={{mt:3}} disableGutters>
                 <Typography variant="h4" textAlign='center' sx={{mb:2}}>Discussion and suggestions section : </Typography>
-                <Suggestions/>
+                {user ? <Suggestions taskID={task._id}/> 
+                : 
+                <Typography variant="h6" textAlign="center">To view or leave a suggestion, please sign in</Typography>
+              }
             </Container>
         </Box>
     )

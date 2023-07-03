@@ -1,9 +1,11 @@
 import React from 'react'
 import { Card, CardHeader, CardContent, Typography,Box, CardActions, TextField, Button, IconButton } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send';
-import { styles } from './styles';
+import Comment from './Comment';
+import { styles } from '../styles';
 
-const Suggestions = () => {
+const Suggestions = ({taskID}) => {
+  console.log(taskID)
   return (
     <Card elevation={3} sx={{width:1}}>
         <CardHeader

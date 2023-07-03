@@ -1,5 +1,5 @@
 import { createSlice} from '@reduxjs/toolkit'
-import {fetchTasks, fetchTask, updateTask, deleteTask,createTask, completeTask, fetchPaginatedTasks} from '../actions/tasks'
+import {fetchTasks, fetchTask, updateTask, deleteTask,createTask, completeTask, fetchPaginatedTasks, fetchTaskSuggestions} from '../actions/tasks'
 
 
 const initialState = {
