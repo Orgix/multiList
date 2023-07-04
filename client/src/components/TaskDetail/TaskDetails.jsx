@@ -26,7 +26,6 @@ const TaskDetails = () => {
   const error = useSelector(getTasksError)
   const user = useSelector((state)=> state.auth.user)
 
-  console.log(task)
 
   useEffect(()=>{
     if(!task){
@@ -48,7 +47,6 @@ const TaskDetails = () => {
     const completed = task.tasks.filter(task=> task.completed).length
     const activeTasks = mutated.filter(task=> !task.completed)
     const visible = active ? mutated : activeTasks
-    console.log(task)
     return (
       <Box p={3}>
         <Typography variant="h4" mb={2} textAlign={'center'}>Task Details: {task.title}</Typography>
@@ -83,7 +81,12 @@ const TaskDetails = () => {
           </Grid>
           <Box>
             <Typography variant="h4" textAlign='center' sx={{my:2}}>About: </Typography>
-            {task.description ?  <Typography textAlign='center'>{task.description}</Typography> : <Typography textAlign='center'>No description provided</Typography>}
+            {task.description ?  
+              <Box sx={{overflowWrap:'break-word'}}>
+                <Typography sx={{flexShrink:1}} textAlign='center'>{task.description}</Typography> 
+              </Box>
+              
+              : <Typography textAlign='center'>No description provided</Typography>}
             
           </Box>
           </Paper>
@@ -107,7 +110,7 @@ const TaskDetails = () => {
          </Container>}
             <Container sx={{mt:3}} disableGutters>
                 <Typography variant="h4" textAlign='center' sx={{mb:2}}>Discussion and suggestions section : </Typography>
-                {user ? <Suggestions taskID={task._id}/> 
+                {user ? <Suggestions user={user} taskID={task._id} title={task.title}/> 
                 : 
                 <Typography variant="h6" textAlign="center">To view or leave a suggestion, please sign in</Typography>
               }

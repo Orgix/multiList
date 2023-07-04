@@ -1,38 +1,66 @@
-import React from 'react'
+import {useEffect, useState} from 'react'
 import { Card, CardHeader, CardContent, Typography,Box, CardActions, TextField, Button, IconButton } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send';
 import Comment from './Comment';
+import {useSelector, useDispatch} from 'react-redux'
+import { getComments} from '../../../services/state/commentSlice';
+import { fetchTaskSuggestions,postSuggestion } from '../../../services/actions/tasks';
 import { styles } from '../styles';
 
-const Suggestions = ({taskID}) => {
-  console.log(taskID)
+const Suggestions = ({taskID, user, title}) => {
+  const [suggData, setsuggData] = useState('')
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    dispatch(fetchTaskSuggestions(taskID))
+  },[taskID])
+
+  const comments = useSelector(getComments)
+  
+  const handleChange = (event) =>{
+    setsuggData(event.target.value)
+  }
+
+  const handleSuggestion = () =>{
+    //if not empty proceed
+    if(suggData.trim() !== ''){
+      const newSuggestion = {
+        text:suggData,
+        author:{
+          name:`${user.firstName} ${user.lastName}`,
+          authorID: user.id
+        }
+      }
+      dispatch(postSuggestion({id : taskID,suggestion:  newSuggestion}))
+    }
+  }
+  const handleKeyDown = (event) => {
+    //in case the enter button without the shift is pressed, proceed
+    if (event.key === 'Enter' && !event.shiftKey) {
+      handleSuggestion();
+      event.preventDefault();
+    }
+  };
   return (
     <Card elevation={3} sx={{width:1}}>
         <CardHeader
         title="Discuss and suggest"
-        subheader="For task: react header"
+        subheader={`For task: ${title}`}
         sx={styles.suggestionHeader}
       />
         <CardContent>
-        <Box sx={{my:1}}>
-                <Typography> <b>Username1</b>: Break down the tasks, make them more manageable</Typography><Typography variant="subtitle1">6 days ago</Typography>
-            </Box>
+          {comments.length > 0 ? 
+            comments.map(comment=>{
+              return <Comment key={comment.id} comment={comment}/>
+            }) : 
             <Box sx={{my:1}}>
-                <Typography> <b>Username2</b>: Break down the tasks, make them more manageable</Typography><Typography variant="subtitle1">6 days ago</Typography>
+              <Typography>Be the first to leave a task-related suggestion to the author!</Typography>
             </Box>
-            <Box sx={{my:1}}>
-                <Typography> <b>Username3</b>: Break down the tasks, make them more manageable</Typography><Typography variant="subtitle1">6 days ago</Typography>
-            </Box>
-            <Box sx={{my:1}}>
-                <Typography> <b>Username4</b>: Break down the tasks, make them more manageable</Typography><Typography variant="subtitle1">6 days ago</Typography>
-            </Box>
-            <Box sx={{my:1}}>
-                <Typography><b>Username5</b>: Break down the tasks, make them more manageable</Typography> <Typography variant="subtitle1">6 days ago</Typography>
-            </Box>
+          }
         </CardContent>
         <CardActions sx={styles.Editcontainer}>
-                    <TextField sx={styles.suggestionInput} fullWidth type="text" label="Suggest" name="comment" placeholder='Make a suggestion'/>
-                    <IconButton sx={styles.suggestionBtn}><SendIcon/></IconButton>
+                    <TextField sx={styles.suggestionInput} fullWidth type="text" label="Suggest" name="comment" value={suggData} onChange={handleChange} onKeyDown={handleKeyDown} multiline={true} placeholder='Make a suggestion'/>
+                    <IconButton sx={styles.suggestionBtn} onClick={handleSuggestion}><SendIcon/></IconButton>
         </CardActions>
     </Card>
   )
