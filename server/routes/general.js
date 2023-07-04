@@ -1,10 +1,11 @@
 import express from  'express'
-import { getTasksByPage, getTaskSuggestions } from '../controllers/general.js';
+import { getTasksByPage, getTaskSuggestions,postSuggestion } from '../controllers/general.js';
 
 const router = express.Router();
 
 router.get('/', getTasksByPage)
-router.get('/:id/suggestions', getTaskSuggestions)
+router.get('/:taskId/suggestions', getTaskSuggestions)
+router.post('/:taskId/suggestions', postSuggestion)
 
 
 export default router

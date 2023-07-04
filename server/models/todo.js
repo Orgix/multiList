@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { v4 as uuid } from 'uuid'; 
+import Suggestion from "./suggestion.js";
 
 
 const todoSchema = mongoose.Schema({
@@ -52,11 +53,9 @@ const todoSchema = mongoose.Schema({
         default:false
     },
     suggestions:[
-        {
-            id:{
-                type:mongoose.Schema.Types.ObjectId,
-                ref:'Suggestion'
-            }, 
+       { 
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Suggestions'
         }
     ]
 },

@@ -1,5 +1,6 @@
 import Todo from "../models/todo.js";
 import mongoose from "mongoose";
+import jwt from 'jsonwebtoken'
 
 export const getTasksByPage = async (req,res) =>{
     //get page from query
@@ -33,6 +34,45 @@ export const getTaskSuggestions = async(req,res)=>{
     //if invalid, return bad request code
     if(!mongoose.Types.ObjectId.isValid(taskId)) return res.status(400).json({msg: 'Invalid task id'})
 
-    //look for the suggestions through the suggestions through the id
+    //look for the suggestions through the suggestions through the task id, and populate the reference fields
+    const foundTask = await Todo.findOne({_id : taskId}).populate('suggestions');
+    //if there was not any task with the given taskId, return a 404 code
+    if(!foundTask) return res.status(404).json({msg:'Task not found'})
+
+    //create the comments object for the front end
+    const suggestions = foundTask.suggestions.length > 0 ? foundTask.suggestions.map(suggestion=>{
+        return {id: suggestion._id, text: suggestion.text, author: suggestion.author, created: suggestion.createdAt}
+    }) : [] ;
     
+    
+    //return the response
+    res.status(200).json(suggestions)
+}
+
+
+export const postSuggestion = async(req,res)=>{
+    //determine if there is any token 
+    const header = req.headers.authorization
+    //if undefined, deny access
+    if(!header) return res.status(403).json({msg:'Unauthorized'})
+
+    //get token and decode it
+    const token = req.headers.authorization.split(' ')[1]
+    const decoded = jwt.decode(token, process.env.JWT_SECRET)
+    //if token information doesnt match the information from the body, do not proceed
+    const newSuggestion = req.body;
+    const {taskId} = req.params;
+
+    if(!taskId || !validateSuggestion(newSuggestion)) return res.status(404).json({msg:'Incomplete data for the creation request'})
+    //setup suggestion
+}
+
+const validateSuggestion = (obj) =>{
+     // Check if the required keys exist in the object
+  if (obj.hasOwnProperty('text') && obj.hasOwnProperty('author'))
+  {
+    if(obj.author.hasOwnProperty('name') && obj.author.hasOwnProperty('authorID')) return true; // Object is valid
+  }
+
+  return false; // Object is invalid
 }

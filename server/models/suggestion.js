@@ -14,7 +14,13 @@ const suggestionSchema = mongoose.Schema({
         type:String,
         max: 60,
         min:6
-    }
-})
+    },
+    createdAt:{
+        type:Date,
+        default: new Date()
+    },
+},{timestamps:true})
 
 const Suggestion = mongoose.model('Suggestions', suggestionSchema)
+
+export default Suggestion;
