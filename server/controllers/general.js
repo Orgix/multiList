@@ -1,6 +1,9 @@
 import Todo from "../models/todo.js";
+import Suggestion from "../models/suggestion.js";
 import mongoose from "mongoose";
 import jwt from 'jsonwebtoken'
+import { validateSuggestion } from "../utils/helpers.js";
+
 
 export const getTasksByPage = async (req,res) =>{
     //get page from query
@@ -46,7 +49,7 @@ export const getTaskSuggestions = async(req,res)=>{
     
     
     //return the response
-    res.status(200).json(suggestions)
+    res.status(200).json(suggestions.sort((a, b) => new Date(b.created) - new Date(a.created)))
 }
 
 
@@ -63,16 +66,72 @@ export const postSuggestion = async(req,res)=>{
     const newSuggestion = req.body;
     const {taskId} = req.params;
 
-    if(!taskId || !validateSuggestion(newSuggestion)) return res.status(404).json({msg:'Incomplete data for the creation request'})
-    //setup suggestion
+    //if either task id is invalid or the request body is malformed, return a 400
+    if(!taskId || !validateSuggestion(newSuggestion)) return res.status(400).json({msg:'Incomplete data for the creation request'})
+    
+    //check if the task author  matches the one inside the decoded token, proceed only this way
+    const foundTask = await Todo.findOne({_id:taskId}).exec();
+
+    if(!foundTask) return res.status(404).json({msg:'Not found!'})
+    if(`${decoded.UserInfo.firstName} ${decoded.UserInfo.lastName}` !== newSuggestion.author.name) return res.status(403).json({msg:'Unauthorized'})
+    
+    //If the route reaches this point, this means that the comment post is cleared for creation.
+    //create and save the new suggestion
+    const savedSuggestion = new Suggestion({
+        ...newSuggestion,
+        createdAt: new Date()
+    });
+    await savedSuggestion.save();
+    //push the generated id to the associated task
+    foundTask.suggestions.push(savedSuggestion._id);
+    await foundTask.save();
+
+    //return the new suggestion
+    res.status(201).json({id:savedSuggestion._id, text: savedSuggestion.text, author:savedSuggestion.author, created:savedSuggestion.createdAt})
 }
 
-const validateSuggestion = (obj) =>{
-     // Check if the required keys exist in the object
-  if (obj.hasOwnProperty('text') && obj.hasOwnProperty('author'))
-  {
-    if(obj.author.hasOwnProperty('name') && obj.author.hasOwnProperty('authorID')) return true; // Object is valid
-  }
 
-  return false; // Object is invalid
+export const deleteSuggestion = async(req,res)=>{
+    const {taskId, suggestionId} = req.params;
+
+    //determine if there is any token 
+    const header = req.headers.authorization
+    //if undefined, deny access
+    if(!header) return res.status(403).json({msg:'Unauthorized'})
+
+    //get token and decode it
+    const token = req.headers.authorization.split(' ')[1]
+    const decoded = jwt.decode(token, process.env.JWT_SECRET)
+
+    //if any of the parameters are malformed, abort request
+    if(!mongoose.Types.ObjectId.isValid(taskId) || !mongoose.Types.ObjectId.isValid(suggestionId)) return res.status(400).json({msg:'At least one of the parameters is not valid.'})
+    
+    //ensure that either the task author or the suggestion author are deleting the suggestion, else abort
+    //if deleter isn't task author, deleter can only delete suggestions that much the ids,
+    //task author can delete all suggestions
+    const foundSuggestion = await Suggestion.findOne({_id: suggestionId});
+    const foundTask = await Todo.findOne({_id: taskId})
+    
+    //task author
+    const author = foundTask.author.name
+    //suggestion author
+    const suggestionAuthor = foundSuggestion.author.name 
+
+    //user that requested the deletion
+    const deleter = `${decoded.UserInfo.firstName} ${decoded.UserInfo.lastName}`
+    
+    //user is not author or suggestionAuthor, hence can't proceed to deleting
+    if(deleter !==  author && deleter !== suggestionAuthor) return res.status(403).json({msg:'Unauthorized'})
+
+    //delete the suggestion from the task
+    foundTask.suggestions = foundTask.suggestions.filter(suggestion=> suggestion.toString() !== suggestionId )
+    await foundTask.save();
+
+    //delete suggestion 
+    await Suggestion.deleteOne({_id: suggestionId})
+
+    //return id so it can be deleted from the state at the front end
+    res.status(200).json({id: suggestionId})
+
+
 }
