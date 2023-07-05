@@ -62,6 +62,7 @@ export const fetchPaginatedTasks = createAsyncThunk('tasks/fetchPaginatedTasks',
     
 })
 
+//fetch all suggestions for task with the given taskId
 export const fetchTaskSuggestions = createAsyncThunk('comments/fetchTasksSuggestions', async(taskId)=>{
     try{
         const response = await api.fetchTaskSuggestions(taskId);
@@ -72,13 +73,25 @@ export const fetchTaskSuggestions = createAsyncThunk('comments/fetchTasksSuggest
     }
 })
 
+//create a new suggestion for task with given id
 export const postSuggestion = createAsyncThunk('comments/postSuggestion',async(NewTaskSuggestion)=>{
     try{
-        console.log(NewTaskSuggestion)
         const response = await api.postSuggestion(NewTaskSuggestion.id, NewTaskSuggestion.suggestion)
+        console.log(response)
+        return response.data
     }
     catch(err){
-        throw new Error('Error updating task.')
+        throw new Error('Error updating suggestion.')
     }
 })
-//fetchTask, createTask, updateTask, deleteTask,
+
+//delete suggestion from task with given taskId
+export const deleteSuggestion = createAsyncThunk('comments/deleteSuggestion', async(suggestionObj)=>{
+    try{
+        const response = await api.deleteSuggestion(suggestionObj.taskId, suggestionObj.suggestionId)
+        return response.data;
+    }
+    catch(err){
+        throw new Error('Error while deleting suggestion')
+    }
+})

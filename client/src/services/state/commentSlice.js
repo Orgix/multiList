@@ -1,5 +1,6 @@
 import { createSlice} from '@reduxjs/toolkit'
-import { fetchTaskSuggestions} from '../actions/tasks';
+import { fetchTaskSuggestions, postSuggestion, deleteSuggestion} from '../actions/tasks';
+
 
 
 const initialState = {
@@ -23,6 +24,13 @@ const suggestionSlice = createSlice({
                 state.isLoading = false
                 state.success = true
                 state.suggestions = action.payload
+            })
+            .addCase(postSuggestion.fulfilled , (state,action)=>{
+                state.suggestions.unshift(action.payload)
+            })
+            .addCase(deleteSuggestion.fulfilled, (state,action)=>{
+                const {id} = action.payload;
+                state.suggestions = state.suggestions.filter(suggestion => suggestion.id !== id)
             })
            
     }

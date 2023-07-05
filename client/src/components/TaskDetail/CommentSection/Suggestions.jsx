@@ -4,7 +4,7 @@ import SendIcon from '@mui/icons-material/Send';
 import Comment from './Comment';
 import {useSelector, useDispatch} from 'react-redux'
 import { getComments} from '../../../services/state/commentSlice';
-import { fetchTaskSuggestions,postSuggestion } from '../../../services/actions/tasks';
+import { fetchTaskSuggestions,postSuggestion, deleteSuggestion } from '../../../services/actions/tasks';
 import { styles } from '../styles';
 
 const Suggestions = ({taskID, user, title}) => {
@@ -32,6 +32,7 @@ const Suggestions = ({taskID, user, title}) => {
         }
       }
       dispatch(postSuggestion({id : taskID,suggestion:  newSuggestion}))
+      setsuggData('')
     }
   }
   const handleKeyDown = (event) => {
@@ -41,6 +42,10 @@ const Suggestions = ({taskID, user, title}) => {
       event.preventDefault();
     }
   };
+
+  const deleteComment = (suggestionId) =>{
+    dispatch(deleteSuggestion({taskId: taskID, suggestionId: suggestionId}))
+  }
   return (
     <Card elevation={3} sx={{width:1}}>
         <CardHeader
@@ -51,7 +56,7 @@ const Suggestions = ({taskID, user, title}) => {
         <CardContent>
           {comments.length > 0 ? 
             comments.map(comment=>{
-              return <Comment key={comment.id} comment={comment}/>
+              return <Comment key={comment.id} comment={comment} deleteComment={deleteComment}/>
             }) : 
             <Box sx={{my:1}}>
               <Typography>Be the first to leave a task-related suggestion to the author!</Typography>
