@@ -95,3 +95,13 @@ export const deleteSuggestion = createAsyncThunk('comments/deleteSuggestion', as
         throw new Error('Error while deleting suggestion')
     }
 })
+
+export const editSuggestion = createAsyncThunk('comments/editSuggestion', async(suggestionObj)=>{
+    try{
+        const response = await api.editSuggestion(suggestionObj.id, {suggestion: suggestionObj.suggestion});
+        return response.data;
+    }
+    catch(err){
+        throw new Error('Error while deleting suggestion')
+    }
+})

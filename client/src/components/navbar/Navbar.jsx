@@ -29,12 +29,13 @@ const Navbar = () => {
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
+  
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
+  };
+
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
   };
 
   const handleCloseUserMenu = () => {
@@ -166,7 +167,7 @@ const Navbar = () => {
                   <Box sx={{ flexGrow: 0}}>
                   <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenUserMenu} sx={{ px: 1 }}>
-                      <Avatar alt="Remy Sharp" src={userImage} />
+                      <Avatar alt="user Image" src={userImage} />
                     </IconButton>
                   </Tooltip>
                 <Menu
