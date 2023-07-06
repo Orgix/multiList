@@ -19,6 +19,10 @@ const suggestionSchema = mongoose.Schema({
         type:Date,
         default: new Date()
     },
+    edited:{
+        type:Boolean,
+        default:false
+    }
 },{timestamps:true})
 
 const Suggestion = mongoose.model('Suggestions', suggestionSchema)

@@ -44,7 +44,7 @@ export const getTaskSuggestions = async(req,res)=>{
 
     //create the comments object for the front end
     const suggestions = foundTask.suggestions.length > 0 ? foundTask.suggestions.map(suggestion=>{
-        return {id: suggestion._id, text: suggestion.text, author: suggestion.author, created: suggestion.createdAt}
+        return {id: suggestion._id, text: suggestion.text, author: suggestion.author, created: suggestion.createdAt, edited: suggestion.edited}
     }) : [] ;
     
     
@@ -134,4 +134,24 @@ export const deleteSuggestion = async(req,res)=>{
     res.status(200).json({id: suggestionId})
 
 
+}
+
+export const editSuggestion = async(req,res)=>{
+    //validate parameter and body
+    const {suggestionId} = req.params;
+    const {suggestion} = req.body;
+
+    //if id is null or not a valid id, return code 400
+    if(!suggestionId || !mongoose.Types.ObjectId.isValid(suggestionId))return res.status(400).json({msg:'Invalid id.'})
+    //if suggestion was empty, return code 400
+    if(!suggestion) return res.status(400).json({msg:'Malformed data'})
+
+    const foundSuggestion = await Suggestion.findOne({_id:suggestionId});
+
+    foundSuggestion.text = suggestion;
+    foundSuggestion.edited = true;
+
+    await foundSuggestion.save();
+
+    res.status(200).json({id:foundSuggestion._id, author:foundSuggestion.author, text:foundSuggestion.text, edited: foundSuggestion.edited, created: foundSuggestion.createdAt })
 }
