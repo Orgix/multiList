@@ -7,7 +7,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useDispatch } from 'react-redux'
 import { editSuggestion } from '../../../services/actions/tasks'
 
-const Comment = ({comment, deleteComment}) => {
+const Comment = ({comment, deleteComment, authorAccess, suggestionAuthorAccess}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedComment, setEditedComment] = useState(comment.text);
   const [commentActions, setCommentActions] = useState(null);
@@ -49,10 +49,12 @@ const Comment = ({comment, deleteComment}) => {
           {comment.text}
         </Typography>
         {/* <IconButton onClick={()=>deleteComment(comment.id)} sx={{position:'absolute', right:0, bottom:'20%', color:'#5dbede'}}><DeleteForeverIcon/></IconButton> */}
-        <Tooltip title="Actions" placement="right-start">
-          <IconButton onClick={handleOpenUserMenu} sx={{position:'absolute', right:0, bottom:'20%', color:'#5dbede'}}>
-            <MoreVertIcon/>
-          </IconButton>
+        {(authorAccess || suggestionAuthorAccess) && 
+        <>
+          <Tooltip title="Actions" placement="right-start">
+            <IconButton onClick={handleOpenUserMenu} sx={{position:'absolute', right:0, bottom:'20%', color:'#5dbede'}}>
+              <MoreVertIcon/>
+            </IconButton>
         </Tooltip>
         <Menu
                   sx={{ mb: '25px'}}
@@ -70,16 +72,19 @@ const Comment = ({comment, deleteComment}) => {
                   open={Boolean(commentActions)}
                   onClose={handleCloseUserMenu}
                 >   
-                
+                  {suggestionAuthorAccess && 
                     <MenuItem key="opt-1" onClick={handleCloseUserMenu}>
-                        <Typography textAlign='center' onClick={handleEditClick}>Edit</Typography>
-                        
+                      <Typography textAlign='center' onClick={handleEditClick}>Edit</Typography>
                     </MenuItem>
+                  }
+                    
                     <MenuItem key="opt-2" onClick={handleCloseUserMenu}>
                         <Typography textAlign='center' onClick={()=>deleteComment(comment.id)}>Delete</Typography>
                         
                     </MenuItem>
                 </Menu>
+                </>
+        }
       </Box>
       : 
       <Box>
@@ -92,5 +97,6 @@ const Comment = ({comment, deleteComment}) => {
       
   )
 }
-
+//authorization time task author may delete all comments(not edit other comments)
+//suggesiton author may delete/edit only the self-generated comments
 export default Comment

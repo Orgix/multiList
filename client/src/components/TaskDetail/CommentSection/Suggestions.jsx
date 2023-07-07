@@ -7,7 +7,7 @@ import { getComments} from '../../../services/state/commentSlice';
 import { fetchTaskSuggestions,postSuggestion, deleteSuggestion } from '../../../services/actions/tasks';
 import { styles } from '../styles';
 
-const Suggestions = ({taskID, user, title}) => {
+const Suggestions = ({taskID, user, title,authorId}) => {
   const [suggData, setsuggData] = useState('')
   const dispatch = useDispatch();
 
@@ -56,7 +56,8 @@ const Suggestions = ({taskID, user, title}) => {
         <CardContent>
           {comments.length > 0 ? 
             comments.map(comment=>{
-              return <Comment key={comment.id} comment={comment} deleteComment={deleteComment}/>
+             
+              return <Comment key={comment.id} comment={comment} deleteComment={deleteComment} authorAccess={user.id === authorId} suggestionAuthorAccess={user.id === comment.author.authorID} />
             }) : 
             <Box sx={{my:1}}>
               <Typography>Be the first to leave a task-related suggestion to the author!</Typography>

@@ -110,7 +110,7 @@ const TaskDetails = () => {
          </Container>}
             <Container sx={{mt:3}} disableGutters>
                 <Typography variant="h4" textAlign='center' sx={{mb:2}}>Discussion and suggestions section : </Typography>
-                {user ? <Suggestions user={user} taskID={task._id} title={task.title}/> 
+                {user ? <Suggestions authorId={task.author.authorID} user={user} taskID={task._id} title={task.title}/> 
                 : 
                 <Typography variant="h6" textAlign="center">To view or leave a suggestion, please sign in</Typography>
               }
