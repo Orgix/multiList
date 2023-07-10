@@ -46,6 +46,7 @@ const Suggestions = ({taskID, user, title,authorId}) => {
   const deleteComment = (suggestionId) =>{
     dispatch(deleteSuggestion({taskId: taskID, suggestionId: suggestionId}))
   }
+  
   return (
     <Card elevation={3} sx={{width:1}}>
         <CardHeader

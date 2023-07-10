@@ -4,11 +4,8 @@ import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '@emotion/react';
 import {AppBar, Box, Toolbar, IconButton, Typography, 
-        Menu, MenuItem, Avatar, Tooltip, Divider, Button } 
-        from '@mui/material';
-import {Link} from '@mui/material';
-import {Container} from '@mui/material';
-import { Route, Link as RouterLink, useNavigate} from 'react-router-dom';
+        Menu, MenuItem, Avatar, Tooltip, Divider, Button,Link, Container } from '@mui/material';
+import { Link as RouterLink, useNavigate} from 'react-router-dom';
 import userImage from '../../assets/images/user.png';
 import { useDispatch, useSelector } from 'react-redux';
 import {linkStyles} from './styles'
@@ -192,10 +189,14 @@ const Navbar = () => {
                   </Container>
                     
                     <MenuItem key="opt-1" onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center">User Settings</Typography>
+                      <Link component={RouterLink} to='/profile/me/edit' underline='none' color='inherit'>
+                        <Typography textAlign="center">User Settings</Typography>
+                      </Link>
                     </MenuItem>
                     <MenuItem key="opt-2" onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center">My tasks</Typography>
+                      <Link component={RouterLink} to='/profile/me/tasks/' underline='none' color='inherit'>
+                        <Typography textAlign="center">My tasks</Typography>
+                      </Link>
                     </MenuItem>
                     <MenuItem key="opt-3" onClick={handleCloseUserMenu}>
                       <Typography textAlign="center" onClick={handleLogout}>Logout</Typography>

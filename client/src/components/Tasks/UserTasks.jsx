@@ -21,7 +21,6 @@ const UserTasks = () => {
   }, [user, navigate, dispatch]);
 
   const userTasks = useSelector((state) => state.auth.tasks);
-
   if(userTasks.length > 0 ){
     const ordered = userTasks.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     return (
@@ -45,9 +44,9 @@ const UserTasks = () => {
     return(
       <Container disableGutters sx={{display:'flex', justifyContent:'center',flexDirection:'column', mt:3}}>
         <Box display='flex' justifyContent='center'>
-          <Typography variant="h4" fontWeight="bold">My tasks : {`${user.name} ${user.surname}`}</Typography>
+          <Typography variant="h4" fontWeight="bold">My tasks : {`${user.firstName} ${user.lastName}`}</Typography>
         </Box>
-        <Typography textAlign='center' my={2} variant="h6">No tasks found</Typography>
+        <Typography textAlign='center' my={2} variant="h6">No tasks found: Create and Organize your first task <b><Link component={RouterLink} to='/profile/me/tasks/new' underline="none">here</Link></b></Typography>
       </Container>
     )
   }
