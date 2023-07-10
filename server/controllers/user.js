@@ -60,20 +60,23 @@ export const loginUser = async (req,res)=>{
                 "email": foundUser.email,
                 "firstName": foundUser.firstName,
                 "lastName":foundUser.lastName,
-                "joined" : foundUser.joined
+                "joined" : foundUser.joined,
+                "id": foundUser._id
             }
         },
         process.env.JWT_SECRET,
         { expiresIn: '1d' }
     );
     //before sending the response, handle saving the token, so the updatedAt field gets updated. this will basically be done likewisely on the sync feature
+    //set the user field to that token.
     foundUser.token = accessToken
     await foundUser.save();
+    
     //get statistics (all tasks, even incomplete in tuples of (task_id, task_title,task_completed))
     const tasks = await Todo.find({'author.authorID':foundUser._id}).sort({createdAt: -1});
     const mutated = tasks.map(task=> ({id: task._id, title: task.title, completed:task.completed, privacy: task.privacy }))
-    res.status(200).json({message: 'Welcome back, ', token:accessToken, user:{firstName:foundUser.firstName, lastName:foundUser.lastName, id:foundUser._id,joined:foundUser.joined,synced:foundUser.updatedAt, tasks:mutated}})
-    //set the user field to that token.
+    res.status(200).json({message: 'Welcome back, ', token:accessToken, user:{firstName:foundUser.firstName, lastName:foundUser.lastName,email: foundUser.email, id:foundUser._id,joined:foundUser.joined,synced:foundUser.updatedAt, tasks:mutated}})
+    
     
 }
 

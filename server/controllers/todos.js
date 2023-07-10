@@ -41,11 +41,30 @@ export const updateTask = async(req,res)=>{
 }
 
 export const createTask = async(req,res)=>{
+
+    //look for the user's token in the headers
+    let token = req.headers.authorization;
+    
+    if(!token) return res.status(403).json({msg: 'Unauthorized request'})
+    //get actual token and validate it
+    token = jwt.decode(token.split(' ')[1], process.env.JWT_SECRET);
+
+    console.log(token)
+
     //create task. only get here when registered user is authorized
     const {title, priority, author, tasks,description, scope:privacy} = req.body;
+    
+    //in case a request is sent from anywhere else except the front end, check for the body. This check needs to be asigned to a middleware
+    if(!title || !priority || !author || !tasks || !description || !privacy) return res.status(400).json({msg:'Malformed Request'})
+
+    // if id from token and author id do not match, send a 403 code
+    if(token.UserInfo.id !== author.authorID) return res.status(403).json({msg: 'Unauthorized request: ID Mismatch'})
+    
+    //create the new object to be saved
     const newTask = new Todo({title,priority,author,tasks,privacy,description, createdAt: new Date().toISOString()});
+    
     try{
-        console.log(newTask)
+        //save task and send it as response to the front end
         await newTask.save();
         res.status(201).json(newTask)
     }
@@ -99,7 +118,7 @@ export const fetchUserTasks = async(req,res)=>{
     const decoded = jwt.decode(token, process.env.JWT_SECRET)
     
 try{
-    const userTasks = await Todo.find({'author.name':`${decoded.UserInfo.firstName} ${decoded.UserInfo.lastName}` }).sort({ createdAt: -1 })
+    const userTasks = await Todo.find({'author.authorID':decoded.UserInfo.id }).sort({ createdAt: -1 })
     if(userTasks.length > 0) return res.status(200).json(userTasks)
     else return res.status(404).json({msg:'No tasks found'})
 }
