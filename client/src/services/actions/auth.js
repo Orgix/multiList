@@ -40,3 +40,14 @@ export const fetchUserTasks = createAsyncThunk('auth/fetchUserTasks', async()=>{
         throw new Error('Problem retrieving user task data.')
     }
 })
+
+export const updateUserData = createAsyncThunk('auth/updateUserData', async(updatedUser)=>{
+    console.log(updatedUser)
+    try{
+        const response = await api.updateUserData(updatedUser)
+        console.log(response)
+    }
+    catch(err){
+
+    }
+})

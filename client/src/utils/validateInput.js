@@ -42,3 +42,21 @@ export const validateTask = (state, keys) =>{
   })
   return error.length === 0 
 }
+
+export const validateSettings = (state, keys)=>{
+  const error = keys.filter(key=>{
+      const val = state[key]
+      if(key==="firstName" || key==="lastName"){
+          if(val.length < 5 || val.length > 14) return true
+      }
+      else if(key === "email"){
+          if(val.indexOf('@') === -1 || val.indexOf('.')=== -1 || val.length < 15) return true
+      }
+      return false;
+  })
+  if(state['passwordOld'].length === 0 && (state['passwordNew'].length > 0 && state['passwordNewConfirm'].length > 0)) error.push('passwordOld')
+  else if(state['passwordOld'].length > 0 &&(state['passwordNew'].length ===0 && state['passwordNewConfirm'].length ===0)) error.push('passwordNew')
+  else if(state['passwordNew'] !== state['passwordNewConfirm']) error.push('passwordNew1')
+  else if((state['passwordNew'].length > 20 || state['passwordNew'].length < 8) && state['passwordNew'].length !== 0) error.push('passwordNew')
+  return error.length === 0
+}

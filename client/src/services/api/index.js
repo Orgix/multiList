@@ -23,6 +23,7 @@ export const fetchTaskSuggestions = (taskId) => API.get(`/tasks/${taskId}/sugges
 export const postSuggestion = (taskId, newSuggestion) => API.post(`/tasks/${taskId}/suggestions`, newSuggestion)
 export const deleteSuggestion = (taskId, suggestionId) => API.delete(`/tasks/${taskId}/suggestions/${suggestionId}`);
 export const editSuggestion = (suggestionId, updatedSuggestion) => API.patch(`/tasks/suggestions/${suggestionId}`,updatedSuggestion)
+export const updateUserData = (updatedUser) => API.patch('/auth/update',updatedUser)
 export const signIn = (formData) => API.post('/auth/signin', formData);
 export const signUp = (formData) => API.post('/auth/signup', formData);
 export const signOut = () => API.post('/auth/logout')
