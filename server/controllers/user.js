@@ -153,3 +153,31 @@ export const synchronizeUser = async(req,res)=>{
     //send response
     res.status(200).json({tasks:mutated, synced:foundUser.updatedAt})
 }
+
+export const updateUser = async(req,res) =>{
+    //destructure data from the body
+    const {modObj, data, id} = req.body;
+
+    //determine if there is any token 
+    const header = req.headers.authorization
+    //if undefined, deny access
+    if(!header) return res.status(403).json({msg:'Unauthorized'})
+
+    //get token and decode it
+    const token = req.headers.authorization.split(' ')[1]
+    const decoded = jwt.decode(token, process.env.JWT_SECRET)
+
+
+
+
+    //if the variables weren't defined return 401 code
+    if(!modObj || !data || !id) return res.status(401).json({msg:'Malformed body'})
+
+    //in case this is not coming from the front-end , there's a possibility the user Ids do not match
+    if(id !== decoded.UserInfo.id) return res.status(403).json({msg:'Unauthorized'})
+
+    //update depending on modObj, if email or username are to be changed, they need to not exist already, else forbit the change
+    //if passwords Change mode is true, compare the password with the existing one and if they match, facilitate the change, else
+    //send 401 code with wrong password
+    res.status(200).json({msg:'ew'})
+}
