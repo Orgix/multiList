@@ -24,6 +24,7 @@ export const postSuggestion = (taskId, newSuggestion) => API.post(`/tasks/${task
 export const deleteSuggestion = (taskId, suggestionId) => API.delete(`/tasks/${taskId}/suggestions/${suggestionId}`);
 export const editSuggestion = (suggestionId, updatedSuggestion) => API.patch(`/tasks/suggestions/${suggestionId}`,updatedSuggestion)
 export const updateUserData = (updatedUser) => API.patch('/auth/update',updatedUser)
+export const deleteUser = (userId) => API.delete(`/auth/delete/${userId}`)
 export const signIn = (formData) => API.post('/auth/signin', formData);
 export const signUp = (formData) => API.post('/auth/signup', formData);
 export const signOut = () => API.post('/auth/logout')

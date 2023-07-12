@@ -1,5 +1,5 @@
 import { createSlice} from '@reduxjs/toolkit'
-import { signin, register,signout, fetchUserTasks } from "../actions/auth";
+import { signin, register,signout, fetchUserTasks, updateUserData } from "../actions/auth";
 import { deleteTask,updateTask,completeTask } from '../actions/tasks';
 import { synchronizeUser } from '../actions/profile';
 
@@ -94,6 +94,11 @@ const authSlice = createSlice({
                 localStorage.setItem('user', JSON.stringify(data))
                 console.log(localStorage.getItem('user'))
                 state.user = data
+            })
+            .addCase(updateUserData.fulfilled, (state,action)=>{
+              const data = action.payload
+              localStorage.setItem('user', JSON.stringify(data))
+              state.user = data
             })
     }
 })

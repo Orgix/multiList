@@ -2,7 +2,7 @@ import { Container, TextField, Typography,Grid,Box, Button } from '@mui/material
 import { useSelector, useDispatch } from 'react-redux'
 import { useState } from 'react'
 import { validateSettings } from '../../utils/validateInput'
-import { updateUserData } from '../../services/actions/auth'
+import { updateUserData, deleteUser } from '../../services/actions/auth'
 import useToggle from '../../hooks/useToggle'
 import DialogWindow from '../TaskDetail/DialogWindow'
 
@@ -30,7 +30,7 @@ const UserSettings = () => {
   }
   const handleDelete = () =>{
     //handle the deletion process for the user. Delete all suggestions/tasks created and the user itself
-    console.log('deleted')
+    dispatch(deleteUser(user.id))
     setOpen(false)
   }
   const handleSave = () =>{
@@ -50,11 +50,14 @@ const UserSettings = () => {
     keys.forEach(key=>{
         if(settings[key] !== user[key]) modes.remainderChange.push(key)
     })
+    
     //if password mode is true or there's even a modification in the modification array, proceed updating
     if(modes.passwordChange || modes.remainderChange.length > 0){
         //bundle an object with all the needed data.
         //the state data and the modes
+        
         dispatch(updateUserData({modObj: modes, data: settings, id:user.id}))
+        setSettings({...settings, passwordNew:'',passwordOld:'', passwordNewConfirm:''})
     }
 }
 
