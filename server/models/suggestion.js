@@ -22,6 +22,10 @@ const suggestionSchema = mongoose.Schema({
     edited:{
         type:Boolean,
         default:false
+    },
+    task:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Todo'
     }
 },{timestamps:true})
 

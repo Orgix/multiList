@@ -38,7 +38,13 @@ const userSchema = mongoose.Schema ({
     token:{
         type:String,
         default:''
-    }
+    },
+     username:{
+        type:String,
+        required:true,
+        min:6,
+        max:15
+     }
 }, {timestamps:true})
 
 const User = mongoose.model("User", userSchema);

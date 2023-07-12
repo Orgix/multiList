@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import User from "../models/user.js";
 import Todo from "../models/todo.js"
 import { ExpressError } from "../middleware/errHandle.js";
+import Suggestion from "../models/suggestion.js";
 
 
 
@@ -167,17 +168,83 @@ export const updateUser = async(req,res) =>{
     const token = req.headers.authorization.split(' ')[1]
     const decoded = jwt.decode(token, process.env.JWT_SECRET)
 
-
-
-
     //if the variables weren't defined return 401 code
     if(!modObj || !data || !id) return res.status(401).json({msg:'Malformed body'})
-
+    
     //in case this is not coming from the front-end , there's a possibility the user Ids do not match
     if(id !== decoded.UserInfo.id) return res.status(403).json({msg:'Unauthorized'})
 
     //update depending on modObj, if email or username are to be changed, they need to not exist already, else forbit the change
-    //if passwords Change mode is true, compare the password with the existing one and if they match, facilitate the change, else
-    //send 401 code with wrong password
-    res.status(200).json({msg:'ew'})
+    const userEmailExists = await User.findOne({email: data.email})
+    //const usernameExists = await User.findOne({username: data.username})
+
+    if(userEmailExists && modObj.remainderChange.includes('email')){
+        //once usernames are on, this check will contain to check the usernameExists variable too
+        return res.status(403).json({msg:'Given email is already in use.'})
+    }
+
+    //find user
+    const user = await User.findOne({_id: id}).exec();
+    
+    if(!user) return res.status(404).json({msg:'User not found'}) 
+    //update depending on the modes. if remainder array has anything in, it means at least one property is to be patched
+    if(modObj.remainderChange.length > 0){
+        
+        //loop throught the keys and update the user object
+        modObj.remainderChange.forEach(mode=>{
+            user[mode] = data[mode]
+        })
+    }   
+    //if there is a passwordChange request, proceed and compare the given old password before assigning the new one
+    if(modObj.passwordChange){
+        //this if clause is only valid in case a password change is requested outside of the front-end
+        if(data.passwordNew !== data.passwordNewConfirm) return res.status(403).json({msg:'New passwords need to match'})
+        
+        //compare passwords
+        const match = await bcrypt.compare(data.passwordOld, user.password)
+        if(!match) return res.status(403).json({msg:'Incorrect password'})
+
+        //if the hash of the new password is a match, this means the same password was given
+        const matchesOldPassword = await bcrypt.compare(data.passwordNew, user.password)
+        if(matchesOldPassword){
+            return res.status(403).json({msg:'New password should not be a match to the new password'})
+        }
+        const newPwd = await bcrypt.hash(data.passwordNew, 12)
+        user.password = newPwd
+    }
+    //save all changes
+    await user.save();
+    
+    //perform a sync for the tasks
+    const tasks = await Todo.find({'author.authorID':user._id}).sort({createdAt: -1});
+    const mutated = tasks.map(task=> ({id: task._id, title: task.title, completed:task.completed, privacy: task.privacy }))
+    res.status(200).json({ user:{firstName:user.firstName, lastName:user.lastName,email: user.email, id:user._id,joined:user.joined,synced:user.updatedAt, tasks:mutated}})
+}
+
+export const deleteUser = async(req,res)=>{
+    const header = req.headers.authorization
+    //if undefined, deny access
+    if(!header) return res.status(403).json({msg:'Unauthorized'})
+
+    //get token and decode it
+    const token = req.headers.authorization.split(' ')[1]
+    const decoded = jwt.decode(token, process.env.JWT_SECRET)
+    
+    const {userId} = req.params;
+
+    if(!userId || !mongoose.Types.ObjectId.isValid(userId)) return res.status(401).json({msg:'Bad request'})
+
+    //ids need to match to authenticate who the user is
+    if(userId !== decoded.UserInfo.id) return res.status(403).json({msg:'IDs not matching'})
+
+    //delete all Suggestions user made 
+    //delete all Tasks and all suggestions they have
+    //total number of suggestions of user = suggestion on user's own posts + suggestions on other user's posts
+    //delete user
+    const suggs = await Suggestion.find({'author.authorID': userId})
+    const tasks = await Todo.find({'author.authorID':decoded.UserInfo.id }).exec()
+    const ownTaskComments = tasks.map(task=>{
+        console.log(task.suggestions.length)
+    })
+    console.log(`user has ${suggs.length} suggestions made`)
 }
