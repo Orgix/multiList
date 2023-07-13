@@ -10,30 +10,32 @@ import Suggestion from "../models/suggestion.js";
 
 export const registerUser = async (req,res)=>{
     //take the register data from body. if no data, return a 401 status code
-    const {firstName,lastName, email, password} = req.body;
-    if(!firstName || !lastName || !email || !password) return res.status(401).json({message:'incomplete data for registration'})
-    
+    const {firstName,lastName, email, password, username} = req.body;
+     if(!firstName || !lastName || !email || !password || !username) return res.status(401).json({message:'incomplete data for registration'})
+    console.log(req.body)
     
     try{
         //if user exists send 409 code( confict )
         const existingUser = await User.findOne({ email }).exec();
-        if(existingUser) return res.status(409).json({message: "User already exists"});
+        const existingUserEmail = await User.exists({username}).exec();
+        if(existingUser || existingUserEmail) return res.status(409).json({message: "User already exists"});
         // validate data (need to be passed to the schema. e.g. password minlength:8, name lastname lengths. )
         //encrypt the password
 
 
         const hash = await bcrypt.hash(password, 12);
         const newUser = new User({
+            username: username,
             firstName: firstName,
             lastName: lastName,
             email:email,
             password: hash
         })
+        console.log(newUser)
+       await newUser.save();
     
-        await newUser.save();
-    
-        //create the user inside the database and save. send request code 201 and front should redirect user to login
-        //anything else goes wrong, sent code 500(internal server error)
+        // create the user inside the database and save. send request code 201 and front should redirect user to login
+        // anything else goes wrong, sent code 500(internal server error)
         res.status(201).json({message: 'Registration successfully complete!'})
     }
     catch(error){
@@ -58,6 +60,7 @@ export const loginUser = async (req,res)=>{
     const accessToken = jwt.sign(
         {
             "UserInfo": {
+                "username": foundUser.username,
                 "email": foundUser.email,
                 "firstName": foundUser.firstName,
                 "lastName":foundUser.lastName,
@@ -76,7 +79,7 @@ export const loginUser = async (req,res)=>{
     //get statistics (all tasks, even incomplete in tuples of (task_id, task_title,task_completed))
     const tasks = await Todo.find({'author.authorID':foundUser._id}).sort({createdAt: -1});
     const mutated = tasks.map(task=> ({id: task._id, title: task.title, completed:task.completed, privacy: task.privacy }))
-    res.status(200).json({message: 'Welcome back, ', token:accessToken, user:{firstName:foundUser.firstName, lastName:foundUser.lastName,email: foundUser.email, id:foundUser._id,joined:foundUser.joined,synced:foundUser.updatedAt, tasks:mutated}})
+    res.status(200).json({message: 'Welcome back, ', token:accessToken, user:{username:foundUser.username, firstName:foundUser.firstName, lastName:foundUser.lastName,email: foundUser.email, id:foundUser._id,joined:foundUser.joined,synced:foundUser.updatedAt, tasks:mutated}})
     
     
 }
@@ -175,12 +178,14 @@ export const updateUser = async(req,res) =>{
     if(id !== decoded.UserInfo.id) return res.status(403).json({msg:'Unauthorized'})
 
     //update depending on modObj, if email or username are to be changed, they need to not exist already, else forbit the change
-    const userEmailExists = await User.findOne({email: data.email})
-    //const usernameExists = await User.findOne({username: data.username})
+    const userEmailExists = await User.exists({email: data.email})
+    const usernameExists = await User.exists({username: data.username})
 
     if(userEmailExists && modObj.remainderChange.includes('email')){
-        //once usernames are on, this check will contain to check the usernameExists variable too
         return res.status(403).json({msg:'Given email is already in use.'})
+    }
+    if(usernameExists && modObj.remainderChange.includes('username')){
+        return res.status(403).json({msg:'Username already in use.'})
     }
 
     //find user
@@ -218,7 +223,7 @@ export const updateUser = async(req,res) =>{
     //perform a sync for the tasks
     const tasks = await Todo.find({'author.authorID':user._id}).sort({createdAt: -1});
     const mutated = tasks.map(task=> ({id: task._id, title: task.title, completed:task.completed, privacy: task.privacy }))
-    res.status(200).json({ user:{firstName:user.firstName, lastName:user.lastName,email: user.email, id:user._id,joined:user.joined,synced:user.updatedAt, tasks:mutated}})
+    res.status(200).json({ user:{username: user.username, firstName:user.firstName, lastName:user.lastName,email: user.email, id:user._id,joined:user.joined,synced:user.updatedAt, tasks:mutated}})
 }
 
 export const deleteUser = async(req,res)=>{

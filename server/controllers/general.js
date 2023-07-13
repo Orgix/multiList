@@ -79,6 +79,7 @@ export const postSuggestion = async(req,res)=>{
     //create and save the new suggestion
     const savedSuggestion = new Suggestion({
         ...newSuggestion,
+        task: taskId,
         createdAt: new Date()
     });
     await savedSuggestion.save();
