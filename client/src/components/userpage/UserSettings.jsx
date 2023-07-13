@@ -21,7 +21,7 @@ const UserSettings = () => {
   const user = useSelector((state)=> state.auth.user)
   const [disabled, setDisabled] = useToggle(true)
   const [settings, setSettings] = useState({
-    ...initialState, firstName:user.firstName, lastName: user.lastName, email: user.email, username:'sample name'
+    ...initialState, firstName:user.firstName, lastName: user.lastName, email: user.email, username:user.username
   })
   const [open, setOpen] = useState(false)
   
@@ -44,7 +44,7 @@ const UserSettings = () => {
     if(settings.passwordOld.length > 0) modes.passwordChange = true
 
     //get keys of the remaining fields
-    const keys = Object.keys(settings).filter(key=> key!=='username' && key.indexOf('password') === -1)
+    const keys = Object.keys(settings).filter(key=> key.indexOf('password') === -1)
 
     //if the state has modfied values , push the key value to the mode
     keys.forEach(key=>{
@@ -62,7 +62,7 @@ const UserSettings = () => {
 }
 
   const handleBlur = () =>{
-    const settingKeys = Object.keys(settings).filter(key=> key !== 'username')
+    const settingKeys = Object.keys(settings)
     setDisabled(!validateSettings(settings, settingKeys))
   }
   

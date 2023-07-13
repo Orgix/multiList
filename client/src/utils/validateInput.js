@@ -16,7 +16,10 @@ export const validateLoginData = (state, keys) =>{
  export const validateRegisterData = (state,keys)=>{
     const error = keys.filter(key=>{
       const val = state[key]
-      if(key==="firstName" || key==="lastName"){
+      if(key === "username"){
+        if(val.length < 6 || val.length > 16) return true
+      }
+      else if(key==="firstName" || key==="lastName"){
         if(val.length < 5 || val.length > 14) return true
       }
       else if(key==="password" || key==="confirmPassword"){
@@ -46,6 +49,9 @@ export const validateTask = (state, keys) =>{
 export const validateSettings = (state, keys)=>{
   const error = keys.filter(key=>{
       const val = state[key]
+      if(key === 'username'){
+        if(val.length < 6 || val.length > 16) return true;
+      }
       if(key==="firstName" || key==="lastName"){
           if(val.length < 5 || val.length > 14) return true
       }

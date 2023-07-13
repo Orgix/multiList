@@ -1,7 +1,6 @@
 import { Box, Button, Container, Grid, Paper, TextField, Typography,InputAdornment, Select, FormControl, MenuItem,InputLabel} from '@mui/material'
 import { useState, useEffect } from 'react'
 import TitleIcon from '@mui/icons-material/Title';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import { styles } from './styles';
 import TodoItem from './TodoItem'
 import {v4 as uuid} from 'uuid';

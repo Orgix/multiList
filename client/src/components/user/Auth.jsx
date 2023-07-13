@@ -10,7 +10,7 @@ import Success from './Success';
 import Error from './Error';
 import { useNavigate } from 'react-router-dom';
 
-const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' };
+const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '', username:''};
 
 export default function Auth() {
     const [showPassword, setShowPassword] = useToggle(false);
@@ -74,7 +74,6 @@ export default function Auth() {
 
   const handleOnBlur = (e) =>{
     const check = isSignup ? Object.keys(formData) : Object.keys(formData).filter(field => field === 'email' || field==='password')
-        
     if(check.length === 2) setDisabled(!validateLoginData(formData, check))
     else setDisabled(!validateRegisterData(formData, check))
   }
@@ -113,6 +112,9 @@ export default function Auth() {
             <Grid container spacing={2}>
             {isSignup && (
                 <>
+                    <Grid item xs={12}>
+                        <Input name="username" value={formData.username} label="Username" handleOnBlur={handleOnBlur} handleChange={handleChange} />
+                    </Grid>
                     <Grid item xs={12} sm={6}>
                         <Input name="firstName" value={formData.firstName} label="First Name" handleOnBlur={handleOnBlur} handleChange={handleChange} autoFocus  />
                     </Grid>
