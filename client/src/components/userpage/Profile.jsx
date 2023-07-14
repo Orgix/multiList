@@ -77,6 +77,8 @@ const Profile = () => {
         </Grid>
         <Paper elevation={5} sx={{mt:2, pb:2}}>
           <Container>
+          {visible.length > 0 ? 
+          <>
             <Typography variant="h4" textAlign='center' py={3}> 
                 Tasks
             </Typography>
@@ -85,7 +87,13 @@ const Profile = () => {
                 return <TaskShort task={task} key={task.id} self={userId}/>
               })}
             </Grid>
-          </Container>
+          </>
+          : 
+          <Typography variant="h4" textAlign='center' py={3}>
+            No visible tasks.
+          </Typography>
+        }
+        </Container>
       </Paper>
       {!userId && 
       <Box sx={styles.box}>
