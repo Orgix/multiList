@@ -195,7 +195,7 @@ export const updateUser = async(req,res) =>{
     //update depending on the modes. if remainder array has anything in, it means at least one property is to be patched
     if(modObj.remainderChange.length > 0){
         
-        //loop throught the keys and update the user object
+        //loop through the keys and update the user object
         modObj.remainderChange.forEach(mode=>{
             user[mode] = data[mode]
         })
@@ -242,14 +242,53 @@ export const deleteUser = async(req,res)=>{
     //ids need to match to authenticate who the user is
     if(userId !== decoded.UserInfo.id) return res.status(403).json({msg:'IDs not matching'})
 
-    //delete all Suggestions user made 
-    //delete all Tasks and all suggestions they have
-    //total number of suggestions of user = suggestion on user's own posts + suggestions on other user's posts
-    //delete user
-    const suggs = await Suggestion.find({'author.authorID': userId})
+    //get all tasks for deleted user , flatmap the suggestions for all user's tasks
     const tasks = await Todo.find({'author.authorID':decoded.UserInfo.id }).exec()
-    const ownTaskComments = tasks.map(task=>{
-        console.log(task.suggestions.length)
-    })
-    console.log(`user has ${suggs.length} suggestions made`)
+    const ownTaskComments = tasks.flatMap( task=> task.suggestions )
+    console.log(ownTaskComments)
+    //get all suggestions user made in the app suggestion boxes.
+    const suggs = await Suggestion.find({'author.authorID': userId})
+    
+    //delete the flatmapped suggestions from db
+    const result = await Suggestion.deleteMany({_id: {$in: ownTaskComments}})
+    console.log(result)
+
+    const remainingSuggestions = suggs.filter(suggestion=>!ownTaskComments.includes(suggestion._id.toString())).map(suggestion=> [suggestion._id.toString(), suggestion.task.toString()])
+    //use array reduce and convert this into an object that has taskid properties and array of it's own suggestions to be deleted
+    const grouped = remainingSuggestions.reduce((acc, [suggestionId, taskId]) => {
+        if (acc.hasOwnProperty(taskId)) {
+          acc[taskId].push(suggestionId);
+        } else {
+          acc[taskId] = [suggestionId];
+        }
+        return acc;
+      }, {});
+    
+      //delete tasks
+      const deleted = await Todo.deleteMany({'author.authorID':decoded.UserInfo.id })
+      console.log(deleted)
+
+
+
+      //provide bulk update operations, for each task property id, pull the suggestions
+      const operations = Object.entries(grouped).map(([taskId, suggestionIds]) => ({
+        updateOne: {
+          filter: { _id: taskId },
+          update: { $pull: { suggestions: { $in: suggestionIds } } }
+        }
+      }));
+      //update in bulk
+     const updated = await Todo.bulkWrite(operations);
+     console.log(updated)
+
+     //delete user
+     await User.deleteOne({_id: userId})
+     res.status(200).json({msg:'deleted'})
 }
+
+
+//then using them  filter the array suggs, suggs will definitely include some of the comments
+//the trick is that if user has 10 suggestions, the number of deleted suggestions might be greater, as there might be
+//suggestions from other users on deleted user's tasks.
+//remainder is the suggestions left that user has made in other users' tasks.
+
