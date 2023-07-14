@@ -80,9 +80,7 @@ const NewTask = () => {
         //proceed to create the task
         const newTask = {title: taskData.title, priority: taskData.priority, scope:taskData.scope, description: taskData.description, author:{name: `${user.firstName} ${user.lastName}`, authorID:user.id}}
         console.log(newTask)
-        if(todos.length > 0){
-           newTask["tasks"] = todos.map(todo=> ({name: todo.name, completed: todo.completed}))
-        }
+        newTask["tasks"] = todos.length > 0 ? todos.map(todo=> ({name: todo.name, completed: todo.completed})) : []
        dispatch(createTask(newTask))
         setTaskData(initialState)
         setTodos([])
