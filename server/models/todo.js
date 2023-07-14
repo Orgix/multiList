@@ -40,7 +40,8 @@ const todoSchema = mongoose.Schema({
     },
     description:{
         type:String,
-        max:120
+        max:120,
+        default:''
     },
     privacy:{
         type: String,

@@ -53,15 +53,16 @@ export const createTask = async(req,res)=>{
 
     //create task. only get here when registered user is authorized
     const {title, priority, author, tasks,description, scope:privacy} = req.body;
-    
+
     //in case a request is sent from anywhere else except the front end, check for the body. This check needs to be asigned to a middleware
-    if(!title || !priority || !author || !tasks || !description || !privacy) return res.status(400).json({msg:'Malformed Request'})
+    if(!title || !priority || !author || !privacy) return res.status(400).json({msg:'Malformed Request'})
 
     // if id from token and author id do not match, send a 403 code
     if(token.UserInfo.id !== author.authorID) return res.status(403).json({msg: 'Unauthorized request: ID Mismatch'})
     
+
     //create the new object to be saved
-    const newTask = new Todo({title,priority,author,tasks,privacy,description, createdAt: new Date().toISOString()});
+    const newTask = new Todo({title,priority,author,tasks,privacy,description: description.trim().length > 0 ? description : '', createdAt: new Date().toISOString()});
     
     try{
         //save task and send it as response to the front end
