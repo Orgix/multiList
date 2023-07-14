@@ -55,7 +55,7 @@ export const updateUserData = createAsyncThunk('auth/updateUserData', async(upda
 export const deleteUser = createAsyncThunk('auth/deleteUser', async(userId)=>{
     try{
         const response = await api.deleteUser(userId)
-        console.log(response)
+        return response.data;
     }
     catch(error){
         throw new Error('Problem deleting user\`s personal information.')

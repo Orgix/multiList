@@ -5,6 +5,7 @@ import { validateSettings } from '../../utils/validateInput'
 import { updateUserData, deleteUser } from '../../services/actions/auth'
 import useToggle from '../../hooks/useToggle'
 import DialogWindow from '../TaskDetail/DialogWindow'
+import {useNavigate} from 'react-router-dom'
 
 const initialState = {
     firstName:'',
@@ -17,6 +18,7 @@ const initialState = {
 
 }
 const UserSettings = () => {
+  const navigate = useNavigate()
   const dispatch = useDispatch();
   const user = useSelector((state)=> state.auth.user)
   const [disabled, setDisabled] = useToggle(true)
@@ -32,6 +34,7 @@ const UserSettings = () => {
     //handle the deletion process for the user. Delete all suggestions/tasks created and the user itself
     dispatch(deleteUser(user.id))
     setOpen(false)
+    navigate('/explore')
   }
   const handleSave = () =>{
     //password change mode and remaining fields mode

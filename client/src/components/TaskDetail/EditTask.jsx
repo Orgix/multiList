@@ -139,7 +139,7 @@ const handleDeleteTask = () =>{
       </article>
     )
   }
-  if(taskData && status === 'succeeded'){
+  if(taskData){
       const completed = task?.tasks.filter(subtask=> subtask.completed).length
     return (
       

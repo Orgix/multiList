@@ -1,5 +1,5 @@
 import { createSlice} from '@reduxjs/toolkit'
-import { signin, register,signout, fetchUserTasks, updateUserData } from "../actions/auth";
+import { signin, register,signout, fetchUserTasks, updateUserData, deleteUser } from "../actions/auth";
 import { deleteTask,updateTask,completeTask } from '../actions/tasks';
 import { synchronizeUser } from '../actions/profile';
 
@@ -99,6 +99,12 @@ const authSlice = createSlice({
               const data = action.payload
               localStorage.setItem('user', JSON.stringify(data))
               state.user = data
+            })
+            .addCase(deleteUser.fulfilled, (state,action)=>{
+                state.user = null
+                state.token = null
+                localStorage.removeItem('user')
+                localStorage.removeItem('token')
             })
     }
 })
