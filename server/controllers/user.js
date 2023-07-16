@@ -287,8 +287,3 @@ export const deleteUser = async(req,res)=>{
 }
 
 
-//then using them  filter the array suggs, suggs will definitely include some of the comments
-//the trick is that if user has 10 suggestions, the number of deleted suggestions might be greater, as there might be
-//suggestions from other users on deleted user's tasks.
-//remainder is the suggestions left that user has made in other users' tasks.
-

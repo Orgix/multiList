@@ -35,14 +35,7 @@ const Suggestions = ({taskID, user, title,authorId}) => {
       setsuggData('')
     }
   }
-  const handleKeyDown = (event) => {
-    //in case the enter button without the shift is pressed, proceed
-    if (event.key === 'Enter' && !event.shiftKey) {
-      handleSuggestion();
-      event.preventDefault();
-    }
-  };
-
+  
   const deleteComment = (suggestionId) =>{
     dispatch(deleteSuggestion({taskId: taskID, suggestionId: suggestionId}))
   }
@@ -66,7 +59,7 @@ const Suggestions = ({taskID, user, title,authorId}) => {
           }
         </CardContent>
         <CardActions sx={styles.Editcontainer}>
-                    <TextField sx={styles.suggestionInput} fullWidth type="text" label="Suggest" name="comment" value={suggData} onChange={handleChange} onKeyDown={handleKeyDown} multiline={true} placeholder='Make a suggestion'/>
+                    <TextField sx={styles.suggestionInput} fullWidth type="text" label="Suggest" name="comment" value={suggData} onChange={handleChange} multiline={true} placeholder='Make a suggestion'/>
                     <IconButton sx={styles.suggestionBtn} onClick={handleSuggestion}><SendIcon/></IconButton>
         </CardActions>
     </Card>
