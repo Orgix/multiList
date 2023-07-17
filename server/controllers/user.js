@@ -243,15 +243,15 @@ export const deleteUser = async(req,res)=>{
     if(userId !== decoded.UserInfo.id) return res.status(403).json({msg:'IDs not matching'})
 
     //get all tasks for deleted user , flatmap the suggestions for all user's tasks
-    const tasks = await Todo.find({'author.authorID':decoded.UserInfo.id }).exec()
+    const tasks = await Todo.find({'author.authorID':decoded.UserInfo.id }).exec();
+    const task_ids = tasks.map(task=> task._id)
     const ownTaskComments = tasks.flatMap( task=> task.suggestions )
-    console.log(ownTaskComments)
+    
     //get all suggestions user made in the app suggestion boxes.
     const suggs = await Suggestion.find({'author.authorID': userId})
     
     //delete the flatmapped suggestions from db
     const result = await Suggestion.deleteMany({_id: {$in: ownTaskComments}})
-    console.log(result)
 
     const remainingSuggestions = suggs.filter(suggestion=>!ownTaskComments.includes(suggestion._id.toString())).map(suggestion=> [suggestion._id.toString(), suggestion.task.toString()])
     //use array reduce and convert this into an object that has taskid properties and array of it's own suggestions to be deleted
@@ -263,12 +263,9 @@ export const deleteUser = async(req,res)=>{
         }
         return acc;
       }, {});
-    
+      
       //delete tasks
       const deleted = await Todo.deleteMany({'author.authorID':decoded.UserInfo.id })
-      console.log(deleted)
-
-
 
       //provide bulk update operations, for each task property id, pull the suggestions
       const operations = Object.entries(grouped).map(([taskId, suggestionIds]) => ({
@@ -279,11 +276,11 @@ export const deleteUser = async(req,res)=>{
       }));
       //update in bulk
      const updated = await Todo.bulkWrite(operations);
-     console.log(updated)
 
      //delete user
      await User.deleteOne({_id: userId})
-     res.status(200).json({msg:'deleted'})
+     //return the deleted task ids to the front end. Will be needed for filtering redux state
+     res.status(200).json({ids: task_ids})
 }
 
 
