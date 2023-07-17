@@ -1,6 +1,7 @@
 import { createSlice} from '@reduxjs/toolkit'
 import {fetchTasks, fetchTask, updateTask, deleteTask,createTask, completeTask, fetchPaginatedTasks, fetchTaskSuggestions} from '../actions/tasks'
-
+import {deleteUser} from '../actions/auth'
+import { createSelector } from '@reduxjs/toolkit'
 
 const initialState = {
   isLoading: true,
@@ -97,6 +98,15 @@ const taskSlice = createSlice({
                 state.tasks.push(newTask);
               }
             });
+          })
+          .addCase(deleteUser.fulfilled, (state,action) =>{
+            const deletedTasks = action.payload.ids
+            const updatedTasks = state.tasks.filter(task => {
+              console.log(typeof task._id)
+              //!deletedTasks.includes(task._id.toString())
+              return true
+            });
+            state.tasks = updatedTasks
           })
   }
 })

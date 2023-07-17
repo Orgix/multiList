@@ -35,12 +35,20 @@ const Profile = () => {
 
   //fetch User data depending on wether the link is for a user or authenticated user's
   const userData = useSelector((state)=>userId ? state.profile.profile : state.auth.user)
-
+  
   //filter active only tasks
   const filter_active = !userId ? userData?.tasks?.filter(task=> !task.completed) : []
   //depending on toggle value, show only active 
   const visible = active ? filter_active : userData?.tasks;
-
+  if(!user && Object.keys(userData).length === 0){
+    return(
+      <Container disableGutters>
+        <Typography textAlign='center'>
+          User not found.
+        </Typography>
+      </Container>
+    )
+  }
   return (
     <Container disableGutters >
       
@@ -77,7 +85,7 @@ const Profile = () => {
         </Grid>
         <Paper elevation={5} sx={{mt:2, pb:2}}>
           <Container>
-          {visible.length > 0 ? 
+          {visible?.length > 0 ? 
           <>
             <Typography variant="h4" textAlign='center' py={3}> 
                 Tasks

@@ -1,6 +1,6 @@
 import { createSlice} from '@reduxjs/toolkit'
 import { signin, register,signout, fetchUserTasks, updateUserData, deleteUser } from "../actions/auth";
-import { deleteTask,updateTask,completeTask } from '../actions/tasks';
+import { deleteTask,updateTask,completeTask} from '../actions/tasks';
 import { synchronizeUser } from '../actions/profile';
 
 const initialState = {
