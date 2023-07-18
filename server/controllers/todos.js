@@ -11,10 +11,6 @@ export const getTask = async(req,res)=>{
         const task = await Todo.findById(id)
         if(!task) return res.status(404).json({message:"not found"})
 
-        //const compare = compareTokens(userId, task.team.token) if false user has requested
-        //once user model, login/register is done. Implement compareTokens middleware 
-        //the middleware will replace this if loop and won't fire the route if /me(token) does not 
-        //match the author information. ekse proceed to next middleware
         if(determinedUser === "me"){
             //validate token from user and from user from post if thye match send response with the post, else send error resp
             //
@@ -29,15 +25,21 @@ export const getTask = async(req,res)=>{
     }
 }
 
-export const updateTask = async(req,res)=>{
+export const updateTask = async(req,res,next)=>{
     //update task with specific id
     const {id: _id} = req.params;
     
-    const task = req.body
-    if(!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).json({message: "No task with such id"})
+    //get updated task
+    const {task, activities} = req.body
+    //if id doesnt match to a valid task, end route here
+    if(!mongoose.Types.ObjectId.isValid(_id)) return res.status(401).json({message: "No task with such id"})
     
+
     const updatedTask = await Todo.findByIdAndUpdate(_id,{...task, _id}, {new:true})
-    res.status(200).json(updatedTask)
+    
+    req.task = updatedTask;
+    req.activities = activities
+    next();
 }
 
 export const createTask = async(req,res)=>{

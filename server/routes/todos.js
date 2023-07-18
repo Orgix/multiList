@@ -1,6 +1,7 @@
 import express from "express";
 import {getTask, createTask, updateTask, deleteTask, getTasks,completeTask, fetchUserTasks,} from '../controllers/todos.js'
 import {fetchUserProfile, synchronizeUser} from '../controllers/user.js'
+import { postActivity } from "../controllers/activities.js";
 import {determineUser, compareTokens} from "../middleware/determineUser.js";
 const router = express.Router({mergeParams:true});
 
@@ -22,7 +23,7 @@ router.post('/tasks/',determineUser, createTask)
 router.get('/tasks/', getTasks);
 
 //update task
-router.patch('/tasks/:id',determineUser, updateTask)
+router.patch('/tasks/:id',determineUser, updateTask, postActivity)
 
 //delete task
 router.delete('/tasks/:id',determineUser, deleteTask)
