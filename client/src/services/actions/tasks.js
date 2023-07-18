@@ -26,7 +26,7 @@ export const fetchTask = createAsyncThunk('tasks/fetchTask', async (id) =>{
 export const updateTask = createAsyncThunk('tasks/updateTask', async(taskData) =>{
     try{
         
-        const response = await api.updateTask(taskData._id, taskData)
+        const response = await api.updateTask(taskData.task._id, taskData)
         return response.data
     }
     catch(error){

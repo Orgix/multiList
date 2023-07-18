@@ -40,7 +40,7 @@ const EditTask = () => {
     //proceed only here
     if(!disabled){
       console.log(taskData)
-      dispatch(updateTask(taskData))
+      dispatch(updateTask({task: taskData, activities: ['edit']}))
       navigate('..')
     }
   }
