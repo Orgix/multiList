@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 import { v4 as uuid } from 'uuid'; 
-import Suggestion from "./suggestion.js";
-
 
 const todoSchema = mongoose.Schema({
     title:{
@@ -58,6 +56,12 @@ const todoSchema = mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'Suggestions'
         }
+    ], 
+    log:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Activity',
+          }
     ]
 },
 {timestamps:true})
