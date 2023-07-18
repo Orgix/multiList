@@ -101,11 +101,7 @@ const taskSlice = createSlice({
           })
           .addCase(deleteUser.fulfilled, (state,action) =>{
             const deletedTasks = action.payload.ids
-            const updatedTasks = state.tasks.filter(task => {
-              console.log(typeof task._id)
-              //!deletedTasks.includes(task._id.toString())
-              return true
-            });
+            const updatedTasks = state.tasks.filter(task => !deletedTasks.includes(task._id.toString()))
             state.tasks = updatedTasks
           })
   }
