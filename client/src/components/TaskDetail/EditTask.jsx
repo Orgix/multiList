@@ -2,8 +2,7 @@ import {useSelector, useDispatch} from 'react-redux'
 import { getTaskById, getTasksError, getSinglePostStatus} from '../../services/state/taskSlice'
 import {useParams, useNavigate} from 'react-router-dom';
 import { fetchTask } from '../../services/actions/tasks';
-import { Box, Typography, Grid, Paper, CircularProgress,Button, TextField, FormControl, Select, MenuItem, InputLabel,Container } from '@mui/material';
-import { getLoading } from '../../services/state/taskSlice';
+import { Box, Typography, Grid, Paper,Button, TextField, FormControl, Select, MenuItem, InputLabel,Container } from '@mui/material';
 import Subtask from './Subtask';
 import { styles } from './styles';
 import { useState, useEffect} from 'react';
@@ -12,6 +11,7 @@ import useToggle from '../../hooks/useToggle';
 import {v4 as uuid} from 'uuid'
 import {validateTask} from '../../utils/validateInput'
 import { getKeys } from '../../utils/keys';
+import {compareObjectValues, compareArrays} from '../../utils/compare'
 import { updateTask, deleteTask, completeTask } from '../../services/actions/tasks';
 import DialogWindow from './DialogWindow';
 
@@ -22,6 +22,7 @@ const EditTask = () => {
   const [disabled, setDisabled] = useToggle(false)
   const [open, setOpen] = useToggle(false)
   const [openComp, setOpenComp] = useToggle(false)
+  const [staticState, setStaticState] = useState('')
   const dispatch = useDispatch();
   //get task identifier
   const {id} = useParams();
@@ -31,17 +32,26 @@ const EditTask = () => {
   const task = useSelector((state)=>getTaskById(state,id));
   const error = useSelector(getTasksError)
   const theme = useTheme()
-  
+  const user = useSelector((state)=>state.auth.user)
+
   const handleSubmit = (event) =>{
+    let changes = []
     //in case a change that creates an error happened at submission, deactivate button and do not proceed
     const keys = getKeys(taskData, ['title', 'privacy', 'priority'])
     setDisabled(!validateTask(taskData, keys))
     
     //proceed only here
     if(!disabled){
-      console.log(taskData)
-      dispatch(updateTask({task: taskData, activities: ['edit']}))
-      navigate('..')
+      const changedKeyValues = compareObjectValues(taskData, staticState, ['title', 'privacy','priority','description'])
+      if(changedKeyValues.length > 0) {
+         changes = changedKeyValues.map(key=>{
+          return `<b>${user.firstName} ${user.lastName}</b> changed <b>${key}</b> from ${staticState[key]} to ${taskData[key]}`
+         })
+      } 
+      const subtaskChanges = compareArrays(taskData.tasks, staticState.tasks)
+
+      dispatch(updateTask({task: taskData, activities: [...changes, ...subtaskChanges]}))
+      //navigate('..')
     }
   }
   const handleSubTaskChange = (evt)=>{
@@ -56,6 +66,7 @@ const EditTask = () => {
     setTaskData(prev=>({
         ...prev, tasks: prev.tasks.filter(todo=> todo.id !== id)
     }))
+   
 }
 
     const handleComplete = (id) =>{
@@ -121,6 +132,7 @@ const handleDeleteTask = () =>{
     if (task) {
       const mutatedTask = {...task, tasks: task.tasks.map(todo=> ({...todo, id:uuid()}))}
       setTaskData(mutatedTask);
+      setStaticState(mutatedTask)
     }
   }, [task]);
 
@@ -150,7 +162,7 @@ const handleDeleteTask = () =>{
           <form sx={{ mt: 3 }}>
           <Typography variant="h5" mb={2} textAlign={'center'} fontWeight={800}>Main Statistics</Typography>
             
-            <Grid container spacing={2} justifyContent={'center'}>
+            <Grid container spacing={2} justifyContent='center'>
             <Grid my={1} item xs={12} md={6}>
                   <TextField  variant="outlined" type="text" value={taskData.author.name}  fullWidth disabled label="Author" name="author"/>
               </Grid>
@@ -256,5 +268,4 @@ const handleDeleteTask = () =>{
   }
 };
  
-
 export default EditTask

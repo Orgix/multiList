@@ -2,11 +2,11 @@ import {useSelector, useDispatch} from 'react-redux'
 import { getTaskById, getTasksError, getSinglePostStatus} from '../../services/state/taskSlice'
 import {useParams, Link as RouterLink} from 'react-router-dom';
 import { fetchTask } from '../../services/actions/tasks';
-import { Box, Typography, Grid, Paper,Container, CircularProgress , Link, Card, CardHeader, CardContent } from '@mui/material';
+import { Box, Typography, Grid, Paper,Container , Link, Checkbox } from '@mui/material';
 import { convertToRelativeTime } from '../../utils/time';
 import { useEffect} from 'react';
 import { getLoading } from '../../services/state/taskSlice';
-import Checkbox from '@mui/material/Checkbox';
+import Activity from './ActivityLog/Activity';
 import Subtask from './Subtask';
 import HoverableEditButton from './EditButton';
 import useToggle from '../../hooks/useToggle';
@@ -48,13 +48,14 @@ const TaskDetails = () => {
     const activeTasks = mutated.filter(task=> !task.completed)
     const visible = active ? mutated : activeTasks
     return (
-      <Box p={3}>
+      <Box p={3} sx={{position:'relative'}}>
+        <Activity/>
         <Typography variant="h4" mb={2} textAlign={'center'}>Task Details: {task.title}</Typography>
         
         <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
-          <Typography variant="h5" mb={2} textAlign={'center'} fontWeight={800}>Main Statistics</Typography>
+          <Typography variant="h5" mb={2} textAlign='center' fontWeight={800}>Main Statistics</Typography>
             
-          <Grid container spacing={2} justifyContent={'center'}>
+          <Grid container spacing={2} justifyContent='center'>
             <Grid my={1} item xs={12} sm={6} md={4}>
                 <Typography variant="h5" textAlign={'center'}>Created By: <b><Link component={RouterLink} to={user?.id === task.author.authorID ? '/profile/me' : `/profile/${task.author.authorID}` } sx={{color:'black'}} underline="none">{task.author.name}</Link></b></Typography>
             </Grid>
