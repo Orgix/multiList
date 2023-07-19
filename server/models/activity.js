@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const activitySchema = mongoose.Schema({
     text: String,
+    field:{
+      type:String,
+      enum:['title','privacy','subtasks','priority']
+    },
     createdAt: {
         type: Date,
         default: new Date(),
