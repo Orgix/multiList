@@ -20,7 +20,7 @@ export const getTasksByPage = async (req,res) =>{
         if(Math.ceil(total/LIMIT) < page) return res.status(404).json({msg:'invalid parameter'})
 
         //fetch the tasks requested, set limit ,sort and skip depending on starting index
-        const tasks = await Todo.find({completed:false, privacy:'Public'}).sort({createdAt:-1}).limit(LIMIT).skip(startIndex);
+        const tasks = await Todo.find({completed:false, privacy:'Public'}).populate('log').sort({createdAt:-1}).limit(LIMIT).skip(startIndex);
         //return tasks, current page, number of pages
         res.status(200).json({data: tasks, currentPage: Number(page), numberOfPages: Math.ceil(total/LIMIT)})
     }

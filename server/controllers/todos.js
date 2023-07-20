@@ -8,7 +8,7 @@ export const getTask = async(req,res)=>{
     const {determinedUser} = req;
     
     try{//task with private privacy, cant be retrieved if determined user is from /:id route
-        const task = await Todo.findById(id)
+        const task = await Todo.findById(id).populate('log')
         if(!task) return res.status(404).json({message:"not found"})
 
         if(determinedUser === "me"){
