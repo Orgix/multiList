@@ -60,7 +60,7 @@ const todoSchema = mongoose.Schema({
     log:[
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Activity',
+            ref: 'Activities',
           }
     ]
 },

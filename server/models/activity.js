@@ -4,7 +4,7 @@ const activitySchema = mongoose.Schema({
     text: String,
     field:{
       type:String,
-      enum:['title','privacy','subtasks','priority']
+      enum:['title','privacy','subtasks','priority','subtask','toggle','add','remove']
     },
     createdAt: {
         type: Date,
