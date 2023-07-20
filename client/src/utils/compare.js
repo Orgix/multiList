@@ -51,3 +51,11 @@ export const compareArrays = (finalArray, staticArray) => {
     //return the list 
     return changes;
 }
+//modify the pushes so they are of different types, according to activity schema.
+//['title','privacy','subtasks','priority','subtask','toggle','add','remove']
+//have a from and a to field, and preferably have the user a parameter
+//array entry should be something like this 
+//for editing a subtask changing its name  [username, ,'subtask', 'old_value', 'new_value']
+// for deleting a subtask [username, 'remove', 'name']
+// adding a subtask [username, 'add', 'name']
+//toggling a subtask's completion [username, 'toggle', 'name']
