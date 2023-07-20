@@ -51,7 +51,7 @@ const EditTask = () => {
       const subtaskChanges = compareArrays(taskData.tasks, staticState.tasks)
 
       dispatch(updateTask({task: taskData, activities: [...changes, ...subtaskChanges]}))
-      //navigate('..')
+      navigate('..')
     }
   }
   const handleSubTaskChange = (evt)=>{

@@ -4,8 +4,9 @@ import { Container, Typography,Divider, List, ListItem, ListItemIcon,
     ListItemText,ListItemButton, Drawer,Box,Button } from "@mui/material";
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import { convertToRelativeTime } from "../../../utils/time";
 
-const Activity = () => {
+const Activity = ({activities}) => {
   const [state, setState] = useState({
     right: false
   });
@@ -29,12 +30,13 @@ const Activity = () => {
         </Container>
         <Divider/>
         <List>
-        {['User31238 changed title from titleroo to titling status', 'User31238 completed subtask \'Titling o2o\'', 'User123123 changed scope to Private'].map((text, index) => (
-          <ListItem key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+           {activities.map(activity => (
+          <ListItem key={activity._id} sx={{position:'relative', my:2}} disablePadding>
+              <ListItemIcon sx={{minWidth:'5%'}}>
+                <MailIcon fontSize="small"/>
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={activity.text} sx={{width:'80%'}}/>
+              <ListItemText primary={convertToRelativeTime(activity.createdAt)} sx={{width:'20%'}}/>
           </ListItem>
         ))}
         </List>

@@ -47,9 +47,10 @@ const TaskDetails = () => {
     const completed = task.tasks.filter(task=> task.completed).length
     const activeTasks = mutated.filter(task=> !task.completed)
     const visible = active ? mutated : activeTasks
+    
     return (
       <Box p={3} sx={{position:'relative'}}>
-        <Activity/>
+        <Activity activities={task.log}/>
         <Typography variant="h4" mb={2} textAlign={'center'}>Task Details: {task.title}</Typography>
         
         <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
