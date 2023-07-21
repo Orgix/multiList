@@ -13,10 +13,29 @@ export const postActivity = async(req,res)=>{
     //create activity object, with ids and save them 
     const activityOperations = activities.map(activity=>{
         const doc = {
-            text:activity,
-            field:'title', //hardcoded for now, will be modified once the feature is up
+            user:{
+                username: activity[0].username,
+                userId: activity[0].id
+            },
+            field:activity[1], //hardcoded for now, will be modified once the feature is up
             createdAt: new Date(),
             task: task._id
+        } 
+        //if it's one of the actions in the array, there are 4 fields in the array, from/to fields 
+        //are to be used
+        if(['title','privacy','priority','description','subtask'].includes(activity[1])){
+            doc.from = activity[2]
+            doc.to = activity[3]
+        } 
+        //if it's a toggle action, it doesnt have a from/to, but will take the final value of to 
+        //and toggleStatus will be used
+        else if(activity[1] === 'toggle'){
+            doc.to = activity[2]
+            doc.toggleStatus = activity[3]
+        }
+        //it's either add or delete , so just the 'to' value needed 
+         else{
+            doc.to = activity[2]
         }
         return {
             insertOne: {
@@ -24,6 +43,7 @@ export const postActivity = async(req,res)=>{
             },
           }
     })
+    
     try{
         //perform a bulkwrite to insert all activities
         const result = await Activity.bulkWrite(activityOperations)
@@ -43,7 +63,4 @@ export const postActivity = async(req,res)=>{
     catch(error){
         res.status(500).json({msg:error.message})
     }
-    
-
-    
 }

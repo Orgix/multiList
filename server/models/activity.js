@@ -1,11 +1,19 @@
 import mongoose from "mongoose";
 
 const activitySchema = mongoose.Schema({
-    text: String,
+  user: {
+    type: {
+      username: String,
+      userId:String
+    }
+  },
     field:{
       type:String,
-      enum:['title','privacy','subtasks','priority','subtask','toggle','add','remove']
+      enum:['title','privacy','description','priority','subtask','toggle','add','remove']
     },
+    from:String,
+    to:String,
+    toggleStatus: Boolean,
     createdAt: {
         type: Date,
         default: new Date(),

@@ -35,22 +35,20 @@ const EditTask = () => {
   const user = useSelector((state)=>state.auth.user)
 
   const handleSubmit = (event) =>{
-    let changes = []
+    const userEssentials = {
+      id: user.id,
+      username: user.username
+    }
     //in case a change that creates an error happened at submission, deactivate button and do not proceed
-    const keys = getKeys(taskData, ['title', 'privacy', 'priority'])
+    const keys = getKeys(taskData, ['title', 'privacy', 'priority'], userEssentials)
     setDisabled(!validateTask(taskData, keys))
     
     //proceed only here
     if(!disabled){
-      const changedKeyValues = compareObjectValues(taskData, staticState, ['title', 'privacy','priority','description'])
-      if(changedKeyValues.length > 0) {
-         changes = changedKeyValues.map(key=>{
-          return `<b>${user.firstName} ${user.lastName}</b> changed <b>${key}</b> from ${staticState[key]} to ${taskData[key]}`
-         })
-      } 
-      const subtaskChanges = compareArrays(taskData.tasks, staticState.tasks)
-
-      dispatch(updateTask({task: taskData, activities: [...changes, ...subtaskChanges]}))
+      const basicFieldDifferences = compareObjectValues(taskData, staticState, ['title', 'privacy','priority','description'], userEssentials)
+      const subtaskChanges = compareArrays(taskData.tasks, staticState.tasks, userEssentials )
+    
+      dispatch(updateTask({task: taskData, activities: [...basicFieldDifferences, ...subtaskChanges]}))
       navigate('..')
     }
   }

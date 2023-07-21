@@ -5,6 +5,13 @@ import { Container, Typography,Divider, List, ListItem, ListItemIcon,
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { convertToRelativeTime } from "../../../utils/time";
+import { getDerivedActivityText } from "../../../utils/compare";
+import { capitalizeFirstLetter } from "../../../utils/utility";
+
+
+const BoldText = ({ children }) => (
+  <Typography  fontWeight="bold">{children}</Typography>
+);
 
 const Activity = ({activities}) => {
   const [state, setState] = useState({
@@ -18,6 +25,7 @@ const Activity = ({activities}) => {
 
     setState({ ...state, [anchor]: open });
   };
+  console.log(activities)
   const list = (anchor) => (
     <Box
     sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 500 }}
@@ -35,7 +43,7 @@ const Activity = ({activities}) => {
               <ListItemIcon sx={{minWidth:'5%'}}>
                 <MailIcon fontSize="small"/>
               </ListItemIcon>
-              <ListItemText primary={activity.text} sx={{width:'80%'}}/>
+              <Typography variant="body1" sx={{width:'80%'}}>{activity.text}</Typography>
               <ListItemText primary={convertToRelativeTime(activity.createdAt)} sx={{width:'20%'}}/>
           </ListItem>
         ))}
