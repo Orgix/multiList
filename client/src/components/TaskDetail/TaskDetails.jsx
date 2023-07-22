@@ -6,7 +6,7 @@ import { Box, Typography, Grid, Paper,Container , Link, Checkbox } from '@mui/ma
 import { convertToRelativeTime } from '../../utils/time';
 import { useEffect} from 'react';
 import { getLoading } from '../../services/state/taskSlice';
-import Activity from './ActivityLog/Activity';
+import ActivityLog from './ActivityLog/ActivityLog';
 import Subtask from './Subtask';
 import HoverableEditButton from './EditButton';
 import useToggle from '../../hooks/useToggle';
@@ -50,7 +50,7 @@ const TaskDetails = () => {
     
     return (
       <Box p={3} sx={{position:'relative'}}>
-        <Activity activities={task.log}/>
+        <ActivityLog activities={task.log}/>
         <Typography variant="h4" mb={2} textAlign={'center'}>Task Details: {task.title}</Typography>
         
         <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
