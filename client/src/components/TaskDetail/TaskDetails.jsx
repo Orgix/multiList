@@ -43,14 +43,19 @@ const TaskDetails = () => {
     )
   }
   if(task){
+    //add uuid to the subtasks
     const mutated = task.tasks.map(task=> ({...task, id:uuid()}))
+    //get completed tasks count
     const completed = task.tasks.filter(task=> task.completed).length
-    const activeTasks = mutated.filter(task=> !task.completed)
+    //get incomplete count
+    const activeTasks = task.tasks.length - completed
+    //decide which tasks to display
     const visible = active ? mutated : activeTasks
-    
+    //sort task activity log by most recent date
+    const sortedLog = [...task.log].sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt))
     return (
       <Box p={3} sx={{position:'relative'}}>
-        <ActivityLog activities={task.log}/>
+        <ActivityLog activities={sortedLog}/>
         <Typography variant="h4" mb={2} textAlign={'center'}>Task Details: {task.title}</Typography>
         
         <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
