@@ -4,12 +4,13 @@ const activitySchema = mongoose.Schema({
   user: {
     type: {
       username: String,
-      userId:String
+      userId:String,
+      _id:false
     }
   },
     field:{
       type:String,
-      enum:['title','privacy','description','priority','subtask','toggle','add','remove']
+      enum:['title','privacy','description','priority','subtask','toggle','add','remove','create']
     },
     from:String,
     to:String,
