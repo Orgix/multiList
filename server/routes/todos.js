@@ -1,8 +1,10 @@
 import express from "express";
 import {getTask, createTask, updateTask, deleteTask, getTasks,completeTask, fetchUserTasks,} from '../controllers/todos.js'
 import {fetchUserProfile, synchronizeUser} from '../controllers/user.js'
-import { postActivity } from "../controllers/activities.js";
+import { postActivity, deleteActivities } from "../controllers/activities.js";
+import { deleteSuggestions } from "../controllers/general.js"
 import {determineUser, compareTokens} from "../middleware/determineUser.js";
+;
 const router = express.Router({mergeParams:true});
 
 //get task edit form with the fields filled in
@@ -26,7 +28,7 @@ router.get('/tasks/', getTasks);
 router.patch('/tasks/:id',determineUser, updateTask, postActivity)
 
 //delete task
-router.delete('/tasks/:id',determineUser, deleteTask)
+router.delete('/tasks/:id',determineUser, deleteTask, deleteSuggestions, deleteActivities)
 
 //add completion status to the task
 router.patch('/tasks/:id/complete', completeTask)
