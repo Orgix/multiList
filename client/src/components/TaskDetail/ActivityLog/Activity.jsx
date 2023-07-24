@@ -4,13 +4,13 @@ import {  ListItem, ListItemIcon,ListItemText,ListItemButton, Typography, Box} f
 import { convertToRelativeTime } from "../../../utils/time";
 import { getDerivedActivityText } from "../../../utils/compare";
 import { capitalizeFirstLetter } from "../../../utils/utility";
+import ActivityIcon from './ActivityIcon';
 
 const Activity = ({name, mode, from, to, toggle, createdAt}) => {
-    console.log(name)
         return (
             <>
               <ListItemIcon sx={{minWidth:'5%', ml:1}}>
-                <MailIcon fontSize="small"/>
+                <ActivityIcon mode={mode} toggle={toggle} to={to}/>
               </ListItemIcon>
               {['title','privacy','priority', 'description','subtask'].includes(mode) &&
                 <Typography variant="body1" sx={{width:'80%'}}>
@@ -28,7 +28,11 @@ const Activity = ({name, mode, from, to, toggle, createdAt}) => {
                         <b>{name?.username} </b> <b>{mode==='add' ? 'added' : 'removed'}</b> subtask <b>{to}</b>
                     </Typography>
               }
-
+            {mode === 'create' && 
+                <Typography variant="body1" sx={{width:'80%'}}>
+                  <b>{name?.username} </b> created Task <b>{to}</b>.
+                </Typography>
+            }
               <ListItemText primary={convertToRelativeTime(createdAt)} sx={{width:'20%', mr:1}}/> 
               </>
           )
