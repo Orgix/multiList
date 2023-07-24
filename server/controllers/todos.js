@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import Todo from "../models/todo.js"
+import Activity from "../models/activity.js";
 import jwt from 'jsonwebtoken'
+
 
 
 export const getTask = async(req,res)=>{
@@ -64,9 +66,24 @@ export const createTask = async(req,res)=>{
     
 
     //create the new object to be saved
-    const newTask = new Todo({title,priority,author,tasks,privacy,description: description.trim().length > 0 ? description : '', createdAt: new Date().toISOString()});
+    const newTask = new Todo({title,priority,author,tasks,privacy,description: description.trim().length > 0 ? description : '', createdAt: new Date().toISOString(), log:[]});
+    const newActivity = new Activity({
+        user:{
+            username: author.username,
+            userId: author.authorID
+        },
+        field:'create', //hardcoded for now, will be modified once the feature is up
+        to:newTask.title,
+        createdAt: new Date(),
+        task: newTask._id
+    })
+
     
     try{
+        //save activity
+        await newActivity.save();
+        //push activity in task logs
+        newTask.log.push(newActivity);
         //save task and send it as response to the front end
         await newTask.save();
         res.status(201).json(newTask)
@@ -77,15 +94,17 @@ export const createTask = async(req,res)=>{
     
 }
 
-export const deleteTask = async(req,res)=>{
+export const deleteTask = async(req,res,next)=>{
     
     //delete task with specific id, only if authorized
     const {id} = req.params;
     if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({message: "No task with such id"})
 
-    await Todo.findByIdAndRemove(id);
-
-    res.status(200).json({message: 'Task deleted'})
+    
+    const ress = await Todo.findByIdAndRemove(id);
+    req.suggestions = ress.suggestions
+    req.logs = ress.log
+    next();
 }
 
 export const getTasks = async(req,res)=>{   

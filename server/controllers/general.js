@@ -156,3 +156,13 @@ export const editSuggestion = async(req,res)=>{
 
     res.status(200).json({id:foundSuggestion._id, author:foundSuggestion.author, text:foundSuggestion.text, edited: foundSuggestion.edited, created: foundSuggestion.createdAt })
 }
+
+export const deleteSuggestions = async(req,res,next)=>{
+    try{
+        const deletedSuggestions = await Suggestion.deleteMany({_id:{$in: req.suggestions}})
+        next();
+    }
+    catch(error){
+        res.status(500).json({msg:'Issue deleting suggestions of task'})
+    }
+}

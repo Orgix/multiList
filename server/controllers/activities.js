@@ -2,8 +2,18 @@ import Todo from "../models/todo.js";
 import Activity from "../models/activity.js";
 import mongoose from "mongoose";
 
-export const fetchTaskActivities = async(req,res)=>{
+export const deleteActivities = async(req,res)=>{
+    console.log(req.logs)
+    try{
+        const deletedActivities= await Activity.deleteMany({_id: {$in: req.logs}})
+        console.log(deletedActivities)
 
+        res.status(200).json({msg:'Task Deleted'})
+    }
+    catch(error){
+        res.status(500).json({msg:'Problem deleting task'})
+    }
+    
 }
 
 export const postActivity = async(req,res)=>{
