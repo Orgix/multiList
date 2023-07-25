@@ -5,6 +5,7 @@ import User from "../models/user.js";
 import Todo from "../models/todo.js"
 import { ExpressError } from "../middleware/errHandle.js";
 import Suggestion from "../models/suggestion.js";
+import Activity from "../models/activity.js";
 
 
 
@@ -79,7 +80,7 @@ export const loginUser = async (req,res)=>{
     //get statistics (all tasks, even incomplete in tuples of (task_id, task_title,task_completed))
     const tasks = await Todo.find({'author.authorID':foundUser._id}).sort({createdAt: -1});
     const mutated = tasks.map(task=> ({id: task._id, title: task.title, completed:task.completed, privacy: task.privacy }))
-    res.status(200).json({message: 'Welcome back, ', token:accessToken, user:{username:foundUser.username, firstName:foundUser.firstName, lastName:foundUser.lastName,email: foundUser.email, id:foundUser._id,joined:foundUser.joined,synced:foundUser.updatedAt, tasks:mutated}})
+    res.status(200).json({message: 'Welcome back, ', token:accessToken, user:{username:foundUser.username, firstName:foundUser.firstName, lastName:foundUser.lastName,email: foundUser.email, id:foundUser._id,joined:foundUser.joined,synced:foundUser.updatedAt, tasks:mutated, favorites:foundUser.favorites}})
     
     
 }
@@ -246,13 +247,16 @@ export const deleteUser = async(req,res)=>{
     const tasks = await Todo.find({'author.authorID':decoded.UserInfo.id }).exec();
     const task_ids = tasks.map(task=> task._id)
     const ownTaskComments = tasks.flatMap( task=> task.suggestions )
+    const taskLogs = tasks.flatMap(task=> task.log)
     
     //get all suggestions user made in the app suggestion boxes.
     const suggs = await Suggestion.find({'author.authorID': userId})
     
-    //delete the flatmapped suggestions from db
-    const result = await Suggestion.deleteMany({_id: {$in: ownTaskComments}})
+    //delete the flatmapped suggestions from db & delete all activities
+    await Suggestion.deleteMany({_id: {$in: ownTaskComments}})
+    await Activity.deleteMany({_id: {$in: taskLogs}}) 
 
+    
     const remainingSuggestions = suggs.filter(suggestion=>!ownTaskComments.includes(suggestion._id.toString())).map(suggestion=> [suggestion._id.toString(), suggestion.task.toString()])
     //use array reduce and convert this into an object that has taskid properties and array of it's own suggestions to be deleted
     const grouped = remainingSuggestions.reduce((acc, [suggestionId, taskId]) => {
@@ -283,4 +287,35 @@ export const deleteUser = async(req,res)=>{
      res.status(200).json({ids: task_ids})
 }
 
+export const toggleFavorite = async(req,res)=>{
+    //get task id and the toggle status of it
+    const {taskId} = req.params;
+    const {favorite} = req.body;
 
+    //get authorization token , need user Id to access it 
+    const header = req.headers.authorization
+    //if undefined, deny access
+    if(!header) return res.status(403).json({msg:'Unauthorized'})
+
+    //get token and decode it
+    const token = req.headers.authorization.split(' ')[1]
+    const decoded = jwt.decode(token, process.env.JWT_SECRET)
+
+    //fetch user id and query with it
+    const userId = decoded.UserInfo.id
+    const foundUser = await User.findOne({_id: userId});
+    
+    //if toggle was false, this means the post is not in the list of favorites(front)
+    if(!favorite) {
+        //push the id in
+        foundUser.favorites.push(taskId)
+    }
+    else{
+        //toggle is true, which means this is a request to remove from favorites
+       foundUser.favorites =  foundUser.favorites.filter(favorite=> favorite.toString() !== taskId)
+    }
+    //save user data
+    await foundUser.save()
+    //return favorites with response
+    res.status(200).json({favorites: foundUser.favorites})
+}
