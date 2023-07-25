@@ -2,7 +2,7 @@ import {useSelector, useDispatch} from 'react-redux'
 import { getTaskById, getTasksError, getSinglePostStatus} from '../../services/state/taskSlice'
 import {useParams, Link as RouterLink} from 'react-router-dom';
 import { fetchTask } from '../../services/actions/tasks';
-import { Box, Typography, Grid, Paper,Container , Link, Checkbox } from '@mui/material';
+import { Box, Typography, Grid, Paper,Container , Link, Checkbox} from '@mui/material';
 import { convertToRelativeTime } from '../../utils/time';
 import { useEffect} from 'react';
 import { getLoading } from '../../services/state/taskSlice';
@@ -10,6 +10,7 @@ import ActivityLog from './ActivityLog/ActivityLog';
 import Subtask from './Subtask';
 import HoverableEditButton from './EditButton';
 import useToggle from '../../hooks/useToggle';
+import Favorite from './Favorite';
 import Suggestions from './CommentSection/Suggestions';
 import { styles } from './styles';
 import {v4 as uuid} from 'uuid'
@@ -58,10 +59,10 @@ const TaskDetails = () => {
         <ActivityLog activities={sortedLog}/>
         <Typography variant="h4" mb={2} textAlign={'center'}>Task Details: {task.title}</Typography>
         
-        <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
+        <Paper elevation={3} sx={{ p: 3, mb: 3, position:'relative'}}>
           <Typography variant="h5" mb={2} textAlign='center' fontWeight={800}>Main Statistics</Typography>
-            
-          <Grid container spacing={2} justifyContent='center'>
+            {user && <Favorite id={id}/>}
+          <Grid container spacing={2} justifyContent='center' >
             <Grid my={1} item xs={12} sm={6} md={4}>
                 <Typography variant="h5" textAlign={'center'}>Created By: <b><Link component={RouterLink} to={user?.id === task.author.authorID ? '/profile/me' : `/profile/${task.author.authorID}` } sx={{color:'black'}} underline="none">{task.author.name}</Link></b></Typography>
             </Grid>
