@@ -62,3 +62,13 @@ export const deleteUser = createAsyncThunk('auth/deleteUser', async(userId)=>{
     }
     
 })
+
+export const toggleFavorite = createAsyncThunk('auth/toggleFavorite', async(toggleSettings)=>{
+    try{
+        const response = await api.toggleFavorite(toggleSettings.id, toggleSettings.favorite)
+        return response.data
+    }
+    catch(err){
+        return new Error('error toggling')
+    }
+})
