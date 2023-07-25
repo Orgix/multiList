@@ -1,5 +1,5 @@
 import { createSlice} from '@reduxjs/toolkit'
-import { signin, register,signout, fetchUserTasks, updateUserData, deleteUser } from "../actions/auth";
+import { signin, register,signout, fetchUserTasks, updateUserData, deleteUser, toggleFavorite } from "../actions/auth";
 import { deleteTask,updateTask,completeTask} from '../actions/tasks';
 import { synchronizeUser } from '../actions/profile';
 
@@ -105,6 +105,15 @@ const authSlice = createSlice({
                 state.token = null
                 localStorage.removeItem('user')
                 localStorage.removeItem('token')
+            })
+            .addCase(toggleFavorite.fulfilled, (state,action)=>{
+              const favorites = action.payload.favorites;
+              const user = JSON.parse(localStorage.getItem('user'))
+              
+              user.favorites = favorites
+
+              localStorage.setItem('user', JSON.stringify(user))
+              state.user = user
             })
     }
 })
