@@ -44,7 +44,13 @@ const userSchema = mongoose.Schema ({
         required:true,
         min:6,
         max:15
-     }
+     },
+     favorites:[
+        { 
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'Task'
+            }
+     ]
 }, {timestamps:true})
 
 const User = mongoose.model("User", userSchema);
