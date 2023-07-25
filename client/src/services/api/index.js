@@ -25,6 +25,7 @@ export const deleteSuggestion = (taskId, suggestionId) => API.delete(`/tasks/${t
 export const editSuggestion = (suggestionId, updatedSuggestion) => API.patch(`/tasks/suggestions/${suggestionId}`,updatedSuggestion)
 export const updateUserData = (updatedUser) => API.patch('/auth/update',updatedUser)
 export const deleteUser = (userId) => API.delete(`/auth/delete/${userId}`)
+export const toggleFavorite = (taskId, favorite) => API.patch(`/auth/favorites/${taskId}`,{favorite:favorite})
 export const signIn = (formData) => API.post('/auth/signin', formData);
 export const signUp = (formData) => API.post('/auth/signup', formData);
 export const signOut = () => API.post('/auth/logout')
