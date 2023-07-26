@@ -36,7 +36,7 @@ export const updateTask = async(req,res,next)=>{
     //if id doesnt match to a valid task, end route here
     if(!mongoose.Types.ObjectId.isValid(_id)) return res.status(401).json({message: "No task with such id"})
     
-
+    if(task.completed) return res.status(403).json({msg:'Completed tasks cannot be updated any further.'})
     const updatedTask = await Todo.findByIdAndUpdate(_id,{...task, _id}, {new:true})
     
     req.task = updatedTask;
