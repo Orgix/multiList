@@ -128,6 +128,7 @@ const handleDeleteTask = () =>{
 
   useEffect(() => {
     if (task) {
+      if(task.completed) navigate('..')
       const mutatedTask = {...task, tasks: task.tasks.map(todo=> ({...todo, id:uuid()}))}
       setTaskData(mutatedTask);
       setStaticState(mutatedTask)
