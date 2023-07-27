@@ -1,7 +1,8 @@
 import {useEffect, useState} from 'react'
-import { Card, CardHeader, CardContent, Typography,Box, CardActions, TextField, Button, IconButton } from '@mui/material'
+import { Card, CardHeader, CardContent,Container, Typography,Box, CardActions, TextField, Button, IconButton } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send';
 import Comment from './Comment';
+import ReplyActions from './ReplyLayout/ReplyActions';
 import {useSelector, useDispatch} from 'react-redux'
 import { getComments} from '../../../services/state/commentSlice';
 import { fetchTaskSuggestions,postSuggestion, deleteSuggestion } from '../../../services/actions/tasks';
@@ -51,7 +52,13 @@ const Suggestions = ({taskID, user, title,authorId}) => {
           {comments.length > 0 ? 
             comments.map(comment=>{
              
-              return <Comment key={comment.id} comment={comment} deleteComment={deleteComment} authorAccess={user.id === authorId} suggestionAuthorAccess={user.id === comment.author.authorID} />
+              return (
+                <Container key={comment.id} sx={{position:'relative', my:3}}>
+                   <Comment  comment={comment} deleteComment={deleteComment} authorAccess={user.id === authorId} suggestionAuthorAccess={user.id === comment.author.authorID} />
+                   <ReplyActions />
+                    
+                </Container>
+              )
             }) : 
             <Box sx={{my:1}}>
               <Typography>Be the first to leave a task-related suggestion to the author!</Typography>

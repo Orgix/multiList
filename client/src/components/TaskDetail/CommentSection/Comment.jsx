@@ -48,7 +48,6 @@ const Comment = ({comment, deleteComment, authorAccess, suggestionAuthorAccess})
         <Typography>  
           {comment.text}
         </Typography>
-        {/* <IconButton onClick={()=>deleteComment(comment.id)} sx={{position:'absolute', right:0, bottom:'20%', color:'#5dbede'}}><DeleteForeverIcon/></IconButton> */}
         {(authorAccess || suggestionAuthorAccess) && 
         <>
           <Tooltip title="Actions" placement="right-start">
