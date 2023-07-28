@@ -96,12 +96,34 @@ export const deleteSuggestion = createAsyncThunk('comments/deleteSuggestion', as
     }
 })
 
-export const editSuggestion = createAsyncThunk('comments/editSuggestion', async(suggestionObj)=>{
+export const editSuggestion = createAsyncThunk('suggestions/editSuggestion', async(suggestionObj)=>{
     try{
         const response = await api.editSuggestion(suggestionObj.id, {suggestion: suggestionObj.suggestion});
         return response.data;
     }
     catch(err){
         throw new Error('Error while deleting suggestion')
+    }
+})
+
+export const fetchReplies = createAsyncThunk('suggestions/fetchReplies', async(suggestionId)=>{
+    try{
+        const response = await api.fetchReplies(suggestionId)
+        console.log(response)
+        return {data:response.data, id:suggestionId}
+    }
+    catch(error){
+        throw new Error('Error while deleting suggestion')
+    }
+})
+
+export const postReply = createAsyncThunk('suggestions/postReply', async(replyObj)=>{
+    try{
+        const response = await api.postReply(replyObj.id, {reply: replyObj.reply})
+        console.log(response)
+        return response.data
+    }
+    catch(error){
+        throw new Error('Error while posting suggestion reply')
     }
 })
