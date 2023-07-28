@@ -8,11 +8,13 @@ import { useDispatch } from 'react-redux'
 import { editSuggestion } from '../../../services/actions/tasks'
 
 const Comment = ({comment, deleteComment, authorAccess, suggestionAuthorAccess}) => {
+
   const [isEditing, setIsEditing] = useState(false);
   const [editedComment, setEditedComment] = useState(comment.text);
   const [commentActions, setCommentActions] = useState(null);
   const dispatch = useDispatch()
-
+  const paperStyles = !comment.isReply ? {my:1} : {ml:3, my:1, p:1}
+  
   const handleOpenUserMenu = (event) => {
     setCommentActions(event.currentTarget);
   };
@@ -36,12 +38,12 @@ const Comment = ({comment, deleteComment, authorAccess, suggestionAuthorAccess})
     setEditedComment(evt.target.value)
   }
   return (
-    <Paper sx={{my:1}} elevation={!isEditing ? 3 : 0}>
+    <Paper sx={paperStyles} elevation={!isEditing ? 3 : 0}>
       {!isEditing ? 
       
       <Box sx={{py:1, pl:1, position:'relative'}}>
         <Box sx={{display:'flex'}}> 
-          <Link component={RouterLink} underline="none" sx={styles.authorLink}><b>{comment.author.name}</b></Link> 
+          <Link component={RouterLink} underline="none" to={`/profile/${comment.author.authorID}`} sx={styles.authorLink}><b>{comment.author.name}</b></Link> 
           <Typography variant="subtitle1">&nbsp;- {convertToRelativeTime(comment.created)}</Typography> 
           &nbsp;{comment.edited && <Typography>(edited)</Typography>}
         </Box>
