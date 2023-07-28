@@ -30,7 +30,9 @@ const Suggestions = ({taskID, user, title,authorId}) => {
         author:{
           name:`${user.firstName} ${user.lastName}`,
           authorID: user.id
-        }
+        },
+        isReply:false,
+        replies:[]
       }
       dispatch(postSuggestion({id : taskID,suggestion:  newSuggestion}))
       setsuggData('')
@@ -55,7 +57,7 @@ const Suggestions = ({taskID, user, title,authorId}) => {
               return (
                 <Container key={comment.id} sx={{position:'relative', my:3}}>
                    <Comment  comment={comment} deleteComment={deleteComment} authorAccess={user.id === authorId} suggestionAuthorAccess={user.id === comment.author.authorID} />
-                   <ReplyActions />
+                   <ReplyActions suggestionId={comment.id} replies={comment.replies}/>
                     
                 </Container>
               )
