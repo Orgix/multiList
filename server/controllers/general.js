@@ -44,16 +44,17 @@ export const getTaskSuggestions = async(req,res)=>{
 
     //create the comments object for the front end
     const suggestions = foundTask.suggestions.length > 0 ? foundTask.suggestions.map(suggestion=>{
-        return {id: suggestion._id, text: suggestion.text, author: suggestion.author, created: suggestion.createdAt, edited: suggestion.edited}
+        return {id: suggestion._id, text: suggestion.text, author: suggestion.author, created: suggestion.createdAt, edited: suggestion.edited, replies:suggestion.replies.length}
     }) : [] ;
     
     
-    //return the response
+    //return the response of the comments , sorted by date
     res.status(200).json(suggestions.sort((a, b) => new Date(b.created) - new Date(a.created)))
 }
 
 
-export const postSuggestion = async(req,res)=>{
+export const postSuggestion = async(req,res)=>{ 
+    //if comment is a reply, same procedure happens, but we get to mark it as a reply and there will a commentId
     //determine if there is any token 
     const header = req.headers.authorization
     //if undefined, deny access
@@ -92,7 +93,7 @@ export const postSuggestion = async(req,res)=>{
 }
 
 
-export const deleteSuggestion = async(req,res)=>{
+export const deleteSuggestion = async(req,res)=>{//deleting a suggestion means deleting the replies it has in its replies array
     const {taskId, suggestionId} = req.params;
 
     //determine if there is any token 
@@ -159,10 +160,48 @@ export const editSuggestion = async(req,res)=>{
 
 export const deleteSuggestions = async(req,res,next)=>{
     try{
+        //if suggestions has replies, those have to be deleted as well.
         const deletedSuggestions = await Suggestion.deleteMany({_id:{$in: req.suggestions}})
         next();
     }
     catch(error){
         res.status(500).json({msg:'Issue deleting suggestions of task'})
     }
+}
+
+export const fetchReplies = async(req,res)=>{
+    const {suggestionId: id} = req.params;
+
+    console.log(id)
+
+    try{
+        const comment = await Suggestion.findOne({_id:id}).populate('replies').exec();
+        
+        if(comment.replies.length === 0) res.status(404).json({msg:'No replies found in response to this comment'})
+        
+        res.status(200).json(comment.replies)
+
+    }
+    catch(error){
+        res.status(500).json({msg:'Issue during fetching suggestion replies'})
+    }
+}
+
+export const postReply = async(req,res)=>{
+    const {suggestionId} = req.params;
+    const {reply} = req.body;
+
+    const suggestion = await Suggestion.findOne({_id: suggestionId})
+    const newReply = new Suggestion({
+        ...reply,
+        createdAt: new Date()
+    })
+
+    await newReply.save();
+    suggestion.replies.push(newReply._id);
+
+    
+
+    res.status(201).json(reply)
+    await suggestion.save();
 }
