@@ -26,7 +26,18 @@ const suggestionSchema = mongoose.Schema({
     task:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Todo'
-    }
+    },
+    isReply:{
+        type:Boolean,
+        default:false
+    },
+    replies:[
+        {
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'Suggestions'
+        }
+    ],
+    to:String
 },{timestamps:true})
 
 const Suggestion = mongoose.model('Suggestions', suggestionSchema)
