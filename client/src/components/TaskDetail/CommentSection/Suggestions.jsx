@@ -57,7 +57,7 @@ const Suggestions = ({taskID, user, title,authorId}) => {
               return (
                 <Container key={comment.id} sx={{position:'relative', my:3}}>
                    <Comment  comment={comment} deleteComment={deleteComment} authorAccess={user.id === authorId} suggestionAuthorAccess={user.id === comment.author.authorID} />
-                   <ReplyActions suggestionId={comment.id} replies={comment.replies}/>
+                   <ReplyActions suggestionId={comment.id} replyCount={comment.replies}/>
                     
                 </Container>
               )

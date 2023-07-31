@@ -25,6 +25,7 @@ export const deleteSuggestion = (taskId, suggestionId) => API.delete(`/tasks/${t
 export const editSuggestion = (suggestionId, updatedSuggestion) => API.patch(`/tasks/suggestions/${suggestionId}`,updatedSuggestion)
 export const fetchReplies = (suggestionId) => API.get(`/tasks/suggestions/${suggestionId}/replies`)
 export const postReply = (suggestionId, reply) => API.post(`/tasks/suggestions/${suggestionId}/replies`, reply)
+export const deleteReply = (suggestionId, id) => API.delete(`/tasks/suggestions/${suggestionId}/replies/${id}`)
 export const updateUserData = (updatedUser) => API.patch('/auth/update',updatedUser)
 export const deleteUser = (userId) => API.delete(`/auth/delete/${userId}`)
 export const toggleFavorite = (taskId, favorite) => API.patch(`/auth/favorites/${taskId}`,{favorite:favorite})

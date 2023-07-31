@@ -109,7 +109,6 @@ export const editSuggestion = createAsyncThunk('suggestions/editSuggestion', asy
 export const fetchReplies = createAsyncThunk('suggestions/fetchReplies', async(suggestionId)=>{
     try{
         const response = await api.fetchReplies(suggestionId)
-        console.log(response)
         return {data:response.data, id:suggestionId}
     }
     catch(error){
@@ -125,5 +124,17 @@ export const postReply = createAsyncThunk('suggestions/postReply', async(replyOb
     }
     catch(error){
         throw new Error('Error while posting suggestion reply')
+    }
+})
+
+export const deleteReply = createAsyncThunk('suggestions/deleteReply', async(replyObj)=>{
+    try{
+        console.log(replyObj)
+        const response = await api.deleteReply(replyObj.suggestionId, replyObj.id)
+        console.log(response)
+        return response.data
+    }
+    catch(error){
+        throw new Error('Error while deleting suggestion reply')
     }
 })

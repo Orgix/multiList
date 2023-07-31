@@ -1,5 +1,5 @@
 import { createSlice} from '@reduxjs/toolkit'
-import { fetchTaskSuggestions, postSuggestion, deleteSuggestion, editSuggestion, fetchReplies} from '../actions/tasks';
+import { fetchTaskSuggestions, postSuggestion, deleteSuggestion, editSuggestion, fetchReplies,deleteReply} from '../actions/tasks';
 
 
 
@@ -47,12 +47,21 @@ const suggestionSlice = createSlice({
            .addCase(fetchReplies.fulfilled, (state,action)=>{
                 const {id} = action.payload
                 const replies = action.payload.data
-                console.log(replies)
+
                 state.suggestions = state.suggestions.map(suggestion=> {
                     if(suggestion.id === id){
                         suggestion.replies = replies
                     }
                     return suggestion
+                })
+           })
+           .addCase(deleteReply.fulfilled, (state,action) =>{
+                const {id, suggestion} = action.payload
+                state.suggestions = state.suggestions.map(comment=>{
+                    if(comment.id===suggestion){
+                        comment.replies = comment.replies.filter(reply=> reply._id !== id)
+                    }
+                    return comment
                 })
            })
     }

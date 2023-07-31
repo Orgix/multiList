@@ -2,14 +2,14 @@ import { useState } from 'react'
 import { Button,Typography, Paper, TextField, Container, Box, IconButton,Tooltip, Menu,MenuItem,Link } from '@mui/material'
 import {useDispatch, useSelector} from 'react-redux'
 import {Link as RouterLink, useParams} from 'react-router-dom'
-import { fetchReplies,postReply, deleteSuggestion } from '../../../../services/actions/tasks'
+import { fetchReplies,postReply, deleteReply } from '../../../../services/actions/tasks'
 import { getComment } from '../../../../services/state/commentSlice'
 import Comment from '../Comment'
 import { styles } from './styles'
 import { getTaskById } from '../../../../services/state/taskSlice'
 
-const ReplyActions = ({suggestionId, replies}) => { 
-  
+const ReplyActions = ({suggestionId, replyCount}) => { 
+  const [loaded, setLoaded] = useState(false)
   const [openReply, setOpenReply] = useState(false)
   const [openReplies, setOpenReplies] = useState(false)
   const [replyData, setReplyData] = useState('')
@@ -39,8 +39,8 @@ const ReplyActions = ({suggestionId, replies}) => {
     }
   }
   
-  const deleteComment = (suggestionId) =>{
-    dispatch(deleteSuggestion({taskId: taskID, suggestionId: suggestionId}))
+  const handleDeleteReply = (suggestionId, replyId) =>{
+    dispatch(deleteReply({id: replyId, suggestionId: suggestionId}))
   }
   
   const handleClickReply = () =>{
@@ -48,20 +48,24 @@ const ReplyActions = ({suggestionId, replies}) => {
   }
 
   const handleClickReplies = () =>{
-    dispatch(fetchReplies(suggestionId))
+    if(!openReplies && !loaded){
+      dispatch(fetchReplies(suggestionId))
+      setLoaded(!loaded)
+    } 
     setOpenReplies(!openReplies)
   }
   const replyObjs = useSelector((state)=> getComment(state,suggestionId)).replies
+  
   return (
     <>
         <Button sx={{position:'absolute',top:'60px', left:'13px'}} onClick={handleClickReply} variant="text" >Reply</Button>
-        {replies > 0 && <Button sx={{position:'absolute',top:'60px', left:'66px'}} onClick={handleClickReplies} variant="text" >{!openReplies ? `View replies (${replies})` : 'Hide Replies'}</Button>}
+        {(replyCount > 0 || replyCount?.length > 0)&& <Button sx={{position:'absolute',top:'60px', left:'66px'}} onClick={handleClickReplies} variant="text" >{!openReplies ? `View replies (${Array.isArray(replyCount) ? replyCount.length : replyCount})` : 'Hide Replies'}</Button>}
         {openReplies && 
             <>  
                 <Container sx={{mt:4}} disableGutters>
                 {Array.isArray(replyObjs) ? 
                     replyObjs.map(reply=>{
-                        return <Comment key={reply._id} comment={reply} deleteComment={deleteComment} authorAccess={user.id === author.authorID} suggestionAuthorAccess={user.id === reply.author.authorID} />
+                        return <Comment key={reply?._id} comment={reply} deleteComment={()=>handleDeleteReply(suggestionId, reply._id)} authorAccess={user.id === author?.authorID} suggestionAuthorAccess={user.id === reply?.author?.authorID} />
                     }): '' 
                 }
                 </Container>
