@@ -129,9 +129,11 @@ export const deleteSuggestion = async(req,res)=>{//deleting a suggestion means d
     foundTask.suggestions = foundTask.suggestions.filter(suggestion=> suggestion.toString() !== suggestionId )
     await foundTask.save();
 
-    //delete suggestion 
-    await Suggestion.deleteOne({_id: suggestionId})
-
+    //map suggestion id and its replies ids in a single array
+   const suggestionAndReplies = [new mongoose.Types.ObjectId(suggestionId), ...foundSuggestion.replies]
+   //delete them
+   await Suggestion.deleteMany({_id: {$in: suggestionAndReplies}})
+   
     //return id so it can be deleted from the state at the front end
     res.status(200).json({id: suggestionId})
 
@@ -159,10 +161,20 @@ export const editSuggestion = async(req,res)=>{
 }
 
 export const deleteSuggestions = async(req,res,next)=>{
+    const {suggestions} = req
+    console.log(suggestions)
+    //this controller is triggered when a task is deleted. For simplicity and readability, the suggestions are transfered here for deletion
+    //as they have replies in that need to be mapped too.
     try{
-        //if suggestions has replies, those have to be deleted as well.
-        const deletedSuggestions = await Suggestion.deleteMany({_id:{$in: req.suggestions}})
-        next();
+        const rootSuggestions = await Suggestion.find({_id:{$in: suggestions}})
+        console.log(rootSuggestions)
+        //since both replies and suggestions are on the Suggestion Model
+        //we can flat map them into one big array of to be deleted ids
+        const allSuggestions = [...rootSuggestions.flatMap(suggestion=> suggestion.replies),...suggestions]
+        console.log(allSuggestions)
+        //delete them and proceed to the next controller
+        await Suggestion.deleteMany({_id:{$in: allSuggestions}})
+
     }
     catch(error){
         res.status(500).json({msg:'Issue deleting suggestions of task'})
@@ -177,7 +189,7 @@ export const fetchReplies = async(req,res)=>{
     try{
         const comment = await Suggestion.findOne({_id:id}).populate('replies').exec();
         
-        if(comment.replies.length === 0) res.status(404).json({msg:'No replies found in response to this comment'})
+        if(comment.replies.length === 0) return res.status(404).json({msg:'No replies found in response to this comment'})
         
         res.status(200).json(comment.replies)
 
@@ -204,4 +216,16 @@ export const postReply = async(req,res)=>{
 
     res.status(201).json(reply)
     await suggestion.save();
+}
+
+export const deleteReply = async(req,res)=>{
+    const {suggestionId, replyId} = req.params;
+
+    const suggestion = await Suggestion.findOne({_id: suggestionId}).exec();
+    suggestion.replies = suggestion.replies.filter(reply => reply.toString() !== replyId)
+
+    await Suggestion.deleteOne({_id: replyId})
+    await suggestion.save();
+
+    res.status(200).json({id: replyId, suggestion: suggestionId})
 }

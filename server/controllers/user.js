@@ -227,7 +227,7 @@ export const updateUser = async(req,res) =>{
     res.status(200).json({ user:{username: user.username, firstName:user.firstName, lastName:user.lastName,email: user.email, id:user._id,joined:user.joined,synced:user.updatedAt, tasks:mutated}})
 }
 
-export const deleteUser = async(req,res)=>{
+export const deleteUser = async(req,res,next)=>{
     const header = req.headers.authorization
     //if undefined, deny access
     if(!header) return res.status(403).json({msg:'Unauthorized'})
@@ -250,15 +250,21 @@ export const deleteUser = async(req,res)=>{
     const taskLogs = tasks.flatMap(task=> task.log)
     
     //get all suggestions user made in the app suggestion boxes.
-    const suggs = await Suggestion.find({'author.authorID': userId})
-    
-    //delete the flatmapped suggestions from db & delete all activities
+    const suggs = await Suggestion.find({'author.authorID': userId, isReply:false})
+    const replies = await Suggestion.find({'author.authorID': userId, isReply:true})
+
+    //delete the flatmapped suggestions from db, delete all the activities, delete all replies user has ever made
     await Suggestion.deleteMany({_id: {$in: ownTaskComments}})
     await Activity.deleteMany({_id: {$in: taskLogs}}) 
-
+    
     
     const remainingSuggestions = suggs.filter(suggestion=>!ownTaskComments.includes(suggestion._id.toString())).map(suggestion=> [suggestion._id.toString(), suggestion.task.toString()])
+    const repliesModified = replies.map(reply=> [reply._id.toString(), reply.to.toString()])
+    console.log(repliesModified)
     //use array reduce and convert this into an object that has taskid properties and array of it's own suggestions to be deleted
+    
+    await Suggestion.deleteMany({'author.authorID': userId, isReply:true})
+    
     const grouped = remainingSuggestions.reduce((acc, [suggestionId, taskId]) => {
         if (acc.hasOwnProperty(taskId)) {
           acc[taskId].push(suggestionId);
@@ -267,9 +273,19 @@ export const deleteUser = async(req,res)=>{
         }
         return acc;
       }, {});
-      
-      //delete tasks
-      const deleted = await Todo.deleteMany({'author.authorID':decoded.UserInfo.id })
+
+      const repliesGrouped = repliesModified.reduce((acc, [replyId, suggestionId]) => {
+        console.log
+        if(acc.hasOwnProperty(suggestionId)){
+            acc[suggestionId].push(replyId)
+        }else{
+            acc[suggestionId] = [replyId]
+        }
+      },{})
+      replyOperation
+      //delete tasks & answers
+      await Suggestion.deleteMany()
+      await Todo.deleteMany({'author.authorID':decoded.UserInfo.id })
 
       //provide bulk update operations, for each task property id, pull the suggestions
       const operations = Object.entries(grouped).map(([taskId, suggestionIds]) => ({
@@ -283,6 +299,8 @@ export const deleteUser = async(req,res)=>{
 
      //delete user
      await User.deleteOne({_id: userId})
+    
+     
      //return the deleted task ids to the front end. Will be needed for filtering redux state
      res.status(200).json({ids: task_ids})
 }
