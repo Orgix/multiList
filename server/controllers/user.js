@@ -244,26 +244,37 @@ export const deleteUser = async(req,res,next)=>{
     if(userId !== decoded.UserInfo.id) return res.status(403).json({msg:'IDs not matching'})
 
     //get all tasks for deleted user , flatmap the suggestions for all user's tasks
-    const tasks = await Todo.find({'author.authorID':decoded.UserInfo.id }).exec();
+    const tasks = await Todo.find({'author.authorID':decoded.UserInfo.id }).populate('suggestions').exec()
+    
+    //get all task ids in an array
     const task_ids = tasks.map(task=> task._id)
+    //get all user's task comment
     const ownTaskComments = tasks.flatMap( task=> task.suggestions )
+    //get all activities from user's tasks
     const taskLogs = tasks.flatMap(task=> task.log)
     
     //get all suggestions user made in the app suggestion boxes.
     const suggs = await Suggestion.find({'author.authorID': userId, isReply:false})
+    //replies made by the user in general
     const replies = await Suggestion.find({'author.authorID': userId, isReply:true})
 
+    //get the user's suggestion replies ids that are not generated from the user
+    const repliesIds = replies.map(reply=> reply._id)
+    //all replies on user's tasks
+    const ownTaskReplies = tasks.flatMap(task=> task.suggestions.flatMap(suggestion=> suggestion.replies))
+
+
     //delete the flatmapped suggestions from db, delete all the activities, delete all replies user has ever made
-    await Suggestion.deleteMany({_id: {$in: ownTaskComments}})
-    await Activity.deleteMany({_id: {$in: taskLogs}}) 
+    //await Suggestion.deleteMany({_id: {$in: ownTaskComments}})
+    //await Activity.deleteMany({_id: {$in: taskLogs}}) 
     
     
     const remainingSuggestions = suggs.filter(suggestion=>!ownTaskComments.includes(suggestion._id.toString())).map(suggestion=> [suggestion._id.toString(), suggestion.task.toString()])
     const repliesModified = replies.map(reply=> [reply._id.toString(), reply.to.toString()])
-    console.log(repliesModified)
+    
     //use array reduce and convert this into an object that has taskid properties and array of it's own suggestions to be deleted
     
-    await Suggestion.deleteMany({'author.authorID': userId, isReply:true})
+    //await Suggestion.deleteMany({'author.authorID': userId, isReply:true})
     
     const grouped = remainingSuggestions.reduce((acc, [suggestionId, taskId]) => {
         if (acc.hasOwnProperty(taskId)) {
@@ -273,19 +284,19 @@ export const deleteUser = async(req,res,next)=>{
         }
         return acc;
       }, {});
-
+      
       const repliesGrouped = repliesModified.reduce((acc, [replyId, suggestionId]) => {
-        console.log
-        if(acc.hasOwnProperty(suggestionId)){
-            acc[suggestionId].push(replyId)
-        }else{
-            acc[suggestionId] = [replyId]
+        if (acc.hasOwnProperty(suggestionId)) {
+          acc[suggestionId].push(replyId);
+        } else {
+          acc[suggestionId] = [replyId];
         }
-      },{})
-      replyOperation
-      //delete tasks & answers
-      await Suggestion.deleteMany()
-      await Todo.deleteMany({'author.authorID':decoded.UserInfo.id })
+        return acc;
+      }, {});
+      
+    //   //delete tasks 
+      //
+      //await Todo.deleteMany({'author.authorID':decoded.UserInfo.id })
 
       //provide bulk update operations, for each task property id, pull the suggestions
       const operations = Object.entries(grouped).map(([taskId, suggestionIds]) => ({
@@ -294,15 +305,24 @@ export const deleteUser = async(req,res,next)=>{
           update: { $pull: { suggestions: { $in: suggestionIds } } }
         }
       }));
-      //update in bulk
-     const updated = await Todo.bulkWrite(operations);
+
+      const replyOperations = Object.entries(repliesGrouped).map(([suggestionId, replyIds]) => ({
+        updateOne: {
+          filter: { _id: suggestionId },
+          update: { $pull: { suggestions: { $in: replyIds } } }
+        }
+      }));
+      
+    //update in bulk
+    //await Todo.bulkWrite(operations);
+    //await Suggestion.bulkWrite(replyOperations)
 
      //delete user
-     await User.deleteOne({_id: userId})
+     //await User.deleteOne({_id: userId})
     
      
      //return the deleted task ids to the front end. Will be needed for filtering redux state
-     res.status(200).json({ids: task_ids})
+     //res.status(200).json({ids: task_ids})
 }
 
 export const toggleFavorite = async(req,res)=>{
