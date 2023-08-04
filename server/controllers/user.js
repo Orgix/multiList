@@ -357,3 +357,11 @@ export const toggleFavorite = async(req,res)=>{
     //return favorites with response
     res.status(200).json({favorites: foundUser.favorites})
 }
+
+export const addUser = async(req,res,next)=>{
+
+}
+
+export const searchUser = async(req,res,next)=>{
+  
+}
