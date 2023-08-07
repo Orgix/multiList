@@ -1,12 +1,15 @@
-import { Container, Paper, Typography,Grid, List, ListItem, ButtonBase,Link, Button,Box, Checkbox} from '@mui/material'
+import { Container, Paper, Typography,Grid, Button,Box, Checkbox, Tooltip} from '@mui/material'
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useParams, useNavigate, Link as RouterLink} from 'react-router-dom'
+import { useParams, useNavigate} from 'react-router-dom'
 import { fetchUserProfile, synchronizeUser } from '../../services/actions/profile'
 import { convertTimeToDate, convertToRelativeTime } from '../../utils/time'
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import TaskShort from './taskShort'
 import { styles } from './styles'
 import useToggle from '../../hooks/useToggle'
+import AddFriend from './AddFriend'
 
 const Profile = () => {
   //dispatch and navigate 
@@ -108,6 +111,9 @@ const Profile = () => {
       <Typography sx={styles.text}>Show completed</Typography><Checkbox onChange={setActive} checked={active}/>
     </Box>
       }
+      {/* conditionally render. if it's user's own profile page, no use to render this component */}
+    {userId !== undefined && <AddFriend userId={userId}/>}
+        
       
     </Container>
     

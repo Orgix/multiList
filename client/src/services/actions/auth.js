@@ -72,3 +72,27 @@ export const toggleFavorite = createAsyncThunk('auth/toggleFavorite', async(togg
         return new Error('error toggling')
     }
 })
+
+export const addFriend = createAsyncThunk('auth/addFriend', async(userId)=>{
+    try{
+        const response = await api.addFriend(userId)
+        console.log(response)
+        return response.data;
+    }
+    catch(err){
+        return new Error('error adding user')
+    }
+    
+})
+
+export const deleteFriend = createAsyncThunk('auth/deleteFriend', async(userId)=>{
+    try{
+        const response = await api.deleteFriend(userId)
+        console.log(response)
+        return response.data;
+    }
+    catch(err){
+        return new Error('error deleting user')
+    }
+})
+
