@@ -80,7 +80,7 @@ export const loginUser = async (req,res)=>{
     //get statistics (all tasks, even incomplete in tuples of (task_id, task_title,task_completed))
     const tasks = await Todo.find({'author.authorID':foundUser._id}).sort({createdAt: -1});
     const mutated = tasks.map(task=> ({id: task._id, title: task.title, completed:task.completed, privacy: task.privacy }))
-    res.status(200).json({message: 'Welcome back, ', token:accessToken, user:{username:foundUser.username, firstName:foundUser.firstName, lastName:foundUser.lastName,email: foundUser.email, id:foundUser._id,joined:foundUser.joined,synced:foundUser.updatedAt, tasks:mutated, favorites:foundUser.favorites}})
+    res.status(200).json({token:accessToken, user:{username:foundUser.username, firstName:foundUser.firstName, lastName:foundUser.lastName,email: foundUser.email, id:foundUser._id,joined:foundUser.joined,synced:foundUser.updatedAt, tasks:mutated, favorites:foundUser.favorites, friends: foundUser.friends}})
     
     
 }
@@ -265,8 +265,8 @@ export const deleteUser = async(req,res,next)=>{
 
 
     //delete the flatmapped suggestions from db, delete all the activities, delete all replies user has ever made
-    //await Suggestion.deleteMany({_id: {$in: ownTaskComments}})
-    //await Activity.deleteMany({_id: {$in: taskLogs}}) 
+    await Suggestion.deleteMany({_id: {$in: ownTaskComments}})
+    await Activity.deleteMany({_id: {$in: taskLogs}}) 
     
     
     const remainingSuggestions = suggs.filter(suggestion=>!ownTaskComments.includes(suggestion._id.toString())).map(suggestion=> [suggestion._id.toString(), suggestion.task.toString()])
@@ -274,7 +274,7 @@ export const deleteUser = async(req,res,next)=>{
     
     //use array reduce and convert this into an object that has taskid properties and array of it's own suggestions to be deleted
     
-    //await Suggestion.deleteMany({'author.authorID': userId, isReply:true})
+    await Suggestion.deleteMany({'author.authorID': userId, isReply:true})
     
     const grouped = remainingSuggestions.reduce((acc, [suggestionId, taskId]) => {
         if (acc.hasOwnProperty(taskId)) {
@@ -294,9 +294,7 @@ export const deleteUser = async(req,res,next)=>{
         return acc;
       }, {});
       
-    //   //delete tasks 
-      //
-      //await Todo.deleteMany({'author.authorID':decoded.UserInfo.id })
+      await Todo.deleteMany({'author.authorID':decoded.UserInfo.id })
 
       //provide bulk update operations, for each task property id, pull the suggestions
       const operations = Object.entries(grouped).map(([taskId, suggestionIds]) => ({
@@ -314,15 +312,15 @@ export const deleteUser = async(req,res,next)=>{
       }));
       
     //update in bulk
-    //await Todo.bulkWrite(operations);
-    //await Suggestion.bulkWrite(replyOperations)
+    await Todo.bulkWrite(operations);
+    await Suggestion.bulkWrite(replyOperations)
 
      //delete user
-     //await User.deleteOne({_id: userId})
+     await User.deleteOne({_id: userId})
     
      
      //return the deleted task ids to the front end. Will be needed for filtering redux state
-     //res.status(200).json({ids: task_ids})
+     res.status(200).json({ids: task_ids})
 }
 
 export const toggleFavorite = async(req,res)=>{
@@ -358,10 +356,31 @@ export const toggleFavorite = async(req,res)=>{
     res.status(200).json({favorites: foundUser.favorites})
 }
 
-export const addUser = async(req,res,next)=>{
+export const addUserToFriendList = async(req,res,next)=>{
+  const  {userId} = req.params;
+  //get authorization token , need user Id to access it 
+  const header = req.headers.authorization
+  //if undefined, deny access
+  if(!header) return res.status(403).json({msg:'Unauthorized'})
 
+  //get token and decode it
+  const token = req.headers.authorization.split(' ')[1]
+  const decoded = jwt.decode(token, process.env.JWT_SECRET)
+  const id = decoded.UserInfo.id
+
+  const user = await User.findOne({_id: id}).exec();
+
+  if(!user.friends.includes(userId)) user.friends.push(userId)
+  
+  await user.save();
+
+  res.status(200).json({id:userId})
+}
+
+export const deleteUserFromFriendList = async(req,res,next)=>{
+  console.log(req.params)
 }
 
 export const searchUser = async(req,res,next)=>{
-  
+  console.log(req.params)
 }
