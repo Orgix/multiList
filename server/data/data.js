@@ -293,6 +293,9 @@ export const suggestions = [
     task: tasks[4]._id
   },
 ]
+export const activities = [
+
+]
 
 tasks[0].suggestions.push(suggestions[1]._id, suggestions[2]._id)
 tasks[1].suggestions.push(suggestions[0]._id)

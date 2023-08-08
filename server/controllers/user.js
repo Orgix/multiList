@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import User from "../models/user.js";
 import Todo from "../models/todo.js"
 import { ExpressError } from "../middleware/errHandle.js";
+import Request from "../models/requests.js";
 import Suggestion from "../models/suggestion.js";
 import Activity from "../models/activity.js";
 
@@ -75,12 +76,21 @@ export const loginUser = async (req,res)=>{
     //before sending the response, handle saving the token, so the updatedAt field gets updated. this will basically be done likewisely on the sync feature
     //set the user field to that token.
     foundUser.token = accessToken
+
+    //get user's requests, either ones sent or received.
+    const requests =await Request.find({
+      $or: [
+        { from: foundUser._id },
+        { to: foundUser._id }
+      ]
+    })
+    console.log(requests)
     await foundUser.save();
     
     //get statistics (all tasks, even incomplete in tuples of (task_id, task_title,task_completed))
     const tasks = await Todo.find({'author.authorID':foundUser._id}).sort({createdAt: -1});
     const mutated = tasks.map(task=> ({id: task._id, title: task.title, completed:task.completed, privacy: task.privacy }))
-    res.status(200).json({token:accessToken, user:{username:foundUser.username, firstName:foundUser.firstName, lastName:foundUser.lastName,email: foundUser.email, id:foundUser._id,joined:foundUser.joined,synced:foundUser.updatedAt, tasks:mutated, favorites:foundUser.favorites, friends: foundUser.friends}})
+    res.status(200).json({token:accessToken, user:{username:foundUser.username, firstName:foundUser.firstName, lastName:foundUser.lastName,email: foundUser.email, id:foundUser._id,joined:foundUser.joined,synced:foundUser.updatedAt, tasks:mutated, favorites:foundUser.favorites, friends: foundUser.friends, requests:requests}})
     
     
 }
@@ -368,17 +378,37 @@ export const addUserToFriendList = async(req,res,next)=>{
   const decoded = jwt.decode(token, process.env.JWT_SECRET)
   const id = decoded.UserInfo.id
 
-  const user = await User.findOne({_id: id}).exec();
+  const friendRequest = new Request({
+    from: id,
+    to: userId,
+    requestType: 'FRIEND REQUEST',
+    status: 'PENDING'
+  })
 
-  if(!user.friends.includes(userId)) user.friends.push(userId)
-  
-  await user.save();
+  await friendRequest.save();
 
-  res.status(200).json({id:userId})
+  res.status(200).json({to:userId, from:id, type: friendRequest.requestType, status: friendRequest.status})
 }
 
 export const deleteUserFromFriendList = async(req,res,next)=>{
-  console.log(req.params)
+  const  {userId} = req.params;
+  //get authorization token , need user Id to access it 
+  const header = req.headers.authorization
+  //if undefined, deny access
+  if(!header) return res.status(403).json({msg:'Unauthorized'})
+
+  //get token and decode it
+  const token = req.headers.authorization.split(' ')[1]
+  const decoded = jwt.decode(token, process.env.JWT_SECRET)
+  const id = decoded.UserInfo.id
+ //fetch user
+  const user = await User.findOne({_id: id}).exec();
+//filter the user list. leave the requested id out
+  user.friends = user.friends.filter(friend=> friend.toString() !== userId)
+  //save
+  await user.save()
+//return id to front 
+  res.status(200).json({id:userId});
 }
 
 export const searchUser = async(req,res,next)=>{
