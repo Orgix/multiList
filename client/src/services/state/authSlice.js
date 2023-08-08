@@ -117,16 +117,21 @@ const authSlice = createSlice({
             })
             .addCase(addFriend.fulfilled, (state,action)=>{
               //userId will be in the payload, add it to the user's friend array
-              const {id} = action.payload;
               const user = JSON.parse(localStorage.getItem('user'))
 
-              user.friends.push(id) 
+              user.requests.push(action.payload) 
               localStorage.setItem('user', JSON.stringify(user))
               state.user = user 
             })
             .addCase(deleteFriend.fulfilled, (state,action)=>{
               //userId will be in the payload, filter it from the user's delete array
-              console.log(action.payload)
+              const {id} = action.payload;
+              const user = JSON.parse(localStorage.getItem('user'))
+
+              user.friends = user.friends.filter(friend=> friend !== id)
+
+              localStorage.setItem('user', JSON.stringify(user))
+              state.user = user
             })
     }
 })
