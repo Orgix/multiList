@@ -387,7 +387,7 @@ export const addUserToFriendList = async(req,res,next)=>{
 
   await friendRequest.save();
 
-  res.status(200).json({to:userId, from:id, type: friendRequest.requestType, status: friendRequest.status})
+  res.status(200).json({id:friendRequest._id ,to:userId, from:id, type: friendRequest.requestType, status: friendRequest.status})
 }
 
 export const deleteUserFromFriendList = async(req,res,next)=>{
@@ -409,6 +409,30 @@ export const deleteUserFromFriendList = async(req,res,next)=>{
   await user.save()
 //return id to front 
   res.status(200).json({id:userId});
+}
+
+export const cancelRequest = async(req,res,next)=>{
+  //get parameters of request
+  const {userId, requestId} = req.params;
+
+  
+  
+  const header = req.headers.authorization
+  //if undefined, deny access
+  if(!header) return res.status(403).json({msg:'Unauthorized'})
+  if(!userId || !requestId) return res.status(401).json({msg:'Bad request'}) 
+  //get token and decode it
+  const token = req.headers.authorization.split(' ')[1]
+  const decoded = jwt.decode(token, process.env.JWT_SECRET)
+  const id = decoded.UserInfo.id
+  
+  //confirm user canceling the request matches the user that has the token
+  if(id !== userId) return res.status(403).json({msg:'Unauthorized request. Id mismatch'})
+
+  //find specific request with given id and delete it.
+  await Request.deleteOne({_id: requestId})
+ // return the deleted id to front
+  res.status(200).json({id: requestId})
 }
 
 export const searchUser = async(req,res,next)=>{
