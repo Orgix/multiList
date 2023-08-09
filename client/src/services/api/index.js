@@ -31,6 +31,7 @@ export const deleteUser = (userId) => API.delete(`/auth/delete/${userId}`)
 export const toggleFavorite = (taskId, favorite) => API.patch(`/auth/favorites/${taskId}`,{favorite:favorite})
 export const addFriend = (userId) => API.post(`/auth/add/${userId}`)
 export const deleteFriend = (userId) => API.patch(`/auth/delete/${userId}`)
+export const cancelRequest = (requestId, userId) => API.delete(`/auth/${userId}/requests/cancel/${requestId}`)
 export const signIn = (formData) => API.post('/auth/signin', formData);
 export const signUp = (formData) => API.post('/auth/signup', formData);
 export const signOut = () => API.post('/auth/logout')

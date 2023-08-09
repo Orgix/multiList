@@ -96,3 +96,9 @@ export const deleteFriend = createAsyncThunk('auth/deleteFriend', async(userId)=
     }
 })
 
+export const cancelRequest = createAsyncThunk('auth/cancelRequest', async(request)=>{
+    const {id, from} = request
+    const response = await api.cancelRequest(id, from);
+    console.log(response)
+    return response.data
+})
