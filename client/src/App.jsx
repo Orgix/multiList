@@ -15,6 +15,7 @@ import { Container, CssBaseline } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { themeSettings } from './theme';
 import { useSelector } from 'react-redux';
+import UserActions from './components/userpage/UserActions';
 
 const theme  = createTheme(themeSettings)
 
@@ -32,7 +33,7 @@ function App() {
             {/* routes defined to be viewed by the logged in user only */}
             <Route path="profile/me">
               <Route index element={user ? <Profile/> : <Navigate to="/explore"/>}/>
-              <Route path="edit" element={user  ? <UserSettings/> : <Navigate to="/explore"/>}/>
+              <Route path="edit" element={user  ? <UserActions/> : <Navigate to="/explore"/>}/>
               <Route path="tasks">
                 {/* home route */}
                 <Route index element={<UserTasks/>}/>

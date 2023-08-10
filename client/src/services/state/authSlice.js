@@ -134,13 +134,12 @@ const authSlice = createSlice({
               state.user = user
             })
             .addCase(cancelRequest.fulfilled, (state, action)=>{
-              console.log(action.payload)
                const {id} = action.payload
                const user = JSON.parse(localStorage.getItem('user'))
-               console.log(user)
+               
                user.requests= user.requests.filter(request=> request.id !== id)
-               console.log(user)
                localStorage.setItem('user', JSON.stringify(user))
+               
                state.user = user
             })
     }

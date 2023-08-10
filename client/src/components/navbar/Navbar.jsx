@@ -190,7 +190,7 @@ const Navbar = () => {
                     
                     <MenuItem key="opt-1" onClick={handleCloseUserMenu}>
                       <Link component={RouterLink} to='/profile/me/edit' underline='none' color='inherit'>
-                        <Typography textAlign="center">User Settings</Typography>
+                        <Typography textAlign="center">Actions</Typography>
                       </Link>
                     </MenuItem>
                     <MenuItem key="opt-2" onClick={handleCloseUserMenu}>
