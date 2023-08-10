@@ -83,7 +83,7 @@ export const loginUser = async (req,res)=>{
         { from: foundUser._id },
         { to: foundUser._id }
       ]
-    })
+    }).populate({path:'from', select:'firstName lastName'}).populate({path:'to', select:'firstName lastName'})
     console.log(requests)
     await foundUser.save();
     
