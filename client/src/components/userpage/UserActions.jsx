@@ -5,6 +5,7 @@ import Tab from '@mui/material/Tab';
 import ViewRequests from './ViewRequests';
 import UserSettings from './UserSettings';
 import CustomTabPanel from './CustomTabPanel';
+import FriendList from './FriendList';
 
 const UserActions = () => {
   const [value, setValue] = React.useState(0);
@@ -19,6 +20,7 @@ const UserActions = () => {
         <Tabs value={value} onChange={handleChange}>
           <Tab label="Requests"/>
           <Tab label="User Settings"/>
+          <Tab label="Associates"/>
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -26,6 +28,9 @@ const UserActions = () => {
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <UserSettings/>
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={2}>
+        <FriendList/>
       </CustomTabPanel>
     </Box>
   );
