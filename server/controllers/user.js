@@ -51,7 +51,7 @@ export const loginUser = async (req,res)=>{
     const {email, password} = req.body;
     
     //lookup user in database. if not found, send a 404 code
-    const foundUser = await User.findOne({email}).exec();
+    const foundUser = await User.findOne({email}).populate({path:'friends', select: 'firstName lastName'}).exec();
     if(!foundUser) return res.status(404).json({message: 'User does not exist.'})
     
     //if found, compare the password with the hash. 

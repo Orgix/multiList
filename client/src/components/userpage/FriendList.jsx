@@ -5,6 +5,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { useDispatch, useSelector } from 'react-redux'
 import DialogWindow from '../TaskDetail/DialogWindow';
+import taskShort from './taskShort';
 
 const FriendList = () => {
     const [open,setOpen] = useState(false)
