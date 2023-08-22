@@ -17,6 +17,9 @@ const ViewRequests = () => {
     const closeRequestActions = () =>{
         setRequestActions(null)
       } 
+    const resolveRequest = (requestId, response)=>{
+        console.log(requestId)
+    }
 
   return (
     <Box>
