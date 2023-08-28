@@ -21,7 +21,7 @@ const requestSchema = mongoose.Schema({
             ref:'Team'
         }
     },
-    createdAat:{
+    createdAt:{
         type: Date,
         default: new Date()
     }
