@@ -8,21 +8,24 @@ import ClearIcon from '@mui/icons-material/Clear';
 
 const ViewRequests = () => {
     const requests = useSelector((state)=> state.auth.user)
-    console.log(requests)
     const [requestActions, setRequestActions] = useState(null);
 
     const openRequestOptions = (event) =>{
       setRequestActions(event.currentTarget)
     }
+
     const closeRequestActions = () =>{
         setRequestActions(null)
-      } 
+    } 
+
     const resolveRequest = (requestId, response)=>{
         console.log(requestId)
     }
+
     const cancelRequest = (requestId, response)=>{
 
     }
+    
     const pending = requests.requests.filter(request=> request.from._id === requests.id)
     const incoming = requests.requests.filter(request=> request.to._id === requests.id)
   return (

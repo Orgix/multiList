@@ -112,7 +112,7 @@ const Profile = () => {
     </Box>
       }
       {/* conditionally render. if it's user's own profile page, no use to render this component */}
-    {userId !== undefined && <AddFriend userId={userId}/>}
+    {userId !== undefined && <AddFriend userId={userId} name={`${userData.firstName} ${userData.lastName}`}/>}
         
       
     </Container>
