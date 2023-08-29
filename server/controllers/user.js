@@ -438,3 +438,34 @@ export const cancelRequest = async(req,res,next)=>{
 export const searchUser = async(req,res,next)=>{
   console.log(req.params)
 }
+
+export const resolveRequest = async(req,res) =>{
+  const {requestId, response} = req.params;
+
+  const header = req.headers.authorization
+  //if undefined, deny access
+  if(!header) return res.status(403).json({msg:'Unauthorized'})
+  if(!requestId) return res.status(401).json({msg:'Bad request'}) 
+  //get token and decode it
+  const token = req.headers.authorization.split(' ')[1]
+  const decoded = jwt.decode(token, process.env.JWT_SECRET)
+  const id = decoded.UserInfo.id
+
+  const request = await Request.findOne({_id:requestId})
+  //if the one resolving the request isn't the user, end of route here.
+  if(request.to.toString() !== id) return res.status(401).json({msg:'Id mismatch'})
+  //if it's a deny request resolve, return the message
+  if(!response) return res.status(200).json({msg:'Denied request'})
+
+  const ownUser = await User.findOne({_id:request.to})
+  const otherUser = await User.findOne({_id:request.from})
+  
+  //add one user to the other's friend list
+  ownUser.friends.push(request.from)
+  otherUser.friends.push(request.to)
+
+  //in front-end, use the request's id to filter it from the requests
+  await Request.deleteOne({_id:requestId})
+
+  res.status(200).json({msg:'Accepted request'})
+}
