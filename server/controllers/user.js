@@ -469,3 +469,8 @@ export const resolveRequest = async(req,res) =>{
 
   res.status(200).json({msg:'Accepted request'})
 }
+
+//most controllers that require user authorization, should be refactored
+//ideally, all user authorization could be done with a middleware
+//then save the user verification and proceed to the actual controller
+//if controller is unable to proceed, send a 403 status response
