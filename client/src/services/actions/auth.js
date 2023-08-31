@@ -106,6 +106,6 @@ export const cancelRequest = createAsyncThunk('auth/cancelRequest', async(reques
 export const resolveUserRequest = createAsyncThunk('auth/resolveUserRequest', async(request)=>{
     const {id, resp} = request
     const response = await api.resolveRequest(id, resp);
-    console.log(response)
+    console.log(response.data)
     return response.data;
 })
