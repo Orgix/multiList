@@ -4,7 +4,8 @@ import {fetchUserProfile, synchronizeUser} from '../controllers/user.js'
 import { postActivity, deleteActivities } from "../controllers/activities.js";
 import { deleteSuggestions } from "../controllers/general.js"
 import {determineUser, compareTokens} from "../middleware/determineUser.js";
-;
+import { authorizeUser } from "../middleware/auth.js";
+
 const router = express.Router({mergeParams:true});
 
 //get task edit form with the fields filled in
@@ -13,13 +14,13 @@ router.get('/tasks/:id/edit', getTask);
 
 router.get('/', fetchUserProfile)
 //get user's tasks
-router.get('/tasks/user', fetchUserTasks);
+router.get('/tasks/user',authorizeUser, fetchUserTasks);
 
 //get task page with details
 router.get('/tasks/:id',determineUser, compareTokens, getTask);
 
 //post new task
-router.post('/tasks/',determineUser, createTask)
+router.post('/tasks/', determineUser, authorizeUser, createTask)
 
 //get all tasks for user (if there is an id in params, it's for another user, else, its the author that is requesting)
 router.get('/tasks/', getTasks);
@@ -34,6 +35,6 @@ router.delete('/tasks/:id',determineUser, deleteTask, deleteSuggestions, deleteA
 router.patch('/tasks/:id/complete', completeTask)
 
 //retrieve updated task tuples for own profile
-router.get('/sync', synchronizeUser)
+router.get('/sync', authorizeUser, synchronizeUser)
 
 export default router;
