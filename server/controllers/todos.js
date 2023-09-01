@@ -46,14 +46,7 @@ export const updateTask = async(req,res,next)=>{
 
 export const createTask = async(req,res)=>{
 
-    //look for the user's token in the headers
-    let token = req.headers.authorization;
-    
-    if(!token) return res.status(403).json({msg: 'Unauthorized request'})
-    //get actual token and validate it
-    token = jwt.decode(token.split(' ')[1], process.env.JWT_SECRET);
-
-    console.log(token)
+    const decoded = req.decoded
 
     //create task. only get here when registered user is authorized
     const {title, priority, author, tasks,description, scope:privacy} = req.body;
@@ -62,7 +55,7 @@ export const createTask = async(req,res)=>{
     if(!title || !priority || !author || !privacy) return res.status(400).json({msg:'Malformed Request'})
 
     // if id from token and author id do not match, send a 403 code
-    if(token.UserInfo.id !== author.authorID) return res.status(403).json({msg: 'Unauthorized request: ID Mismatch'})
+    if(decoded.UserInfo.id !== author.authorID) return res.status(403).json({msg: 'Unauthorized request: ID Mismatch'})
     
 
     //create the new object to be saved
@@ -130,14 +123,8 @@ export const completeTask = async(req,res)=>{
 }
 
 export const fetchUserTasks = async(req,res)=>{
-    //determine if there is any token 
-    const header = req.headers.authorization
-    //if undefined, deny access
-    if(!header) return res.status(403).json({msg:'Unauthorized'})
-
-    //get token and decode it
-    const token = req.headers.authorization.split(' ')[1]
-    const decoded = jwt.decode(token, process.env.JWT_SECRET)
+    //fetch decoded token
+    const decoded = req.decoded
     
 try{
     const userTasks = await Todo.find({'author.authorID':decoded.UserInfo.id }).sort({ createdAt: -1 })
