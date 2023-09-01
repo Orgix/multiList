@@ -96,11 +96,7 @@ export const loginUser = async (req,res)=>{
 }
 
 export const signout = async (req,res)=>{
-    //get token from header
-    const token = req.headers.authorization.split(' ')[1]
-    //search for user in database with that token
-    //if no user is found, return 204 code
-    if(!token) return res.status(204).json({msg:'Unauthorized'})
+    const token = req.token;
 
     const foundUser = await User.findOne({token})
     if(!foundUser) return res.status(204)
@@ -141,15 +137,7 @@ export const fetchUserProfile = async(req,res)=>{
 }
 
 export const synchronizeUser = async(req,res)=>{
-    //determine if there is any token 
-    const header = req.headers.authorization
-    //if undefined, deny access
-    if(!header) return res.status(403).json({msg:'Unauthorized'})
-
-    //get token and decode it
-    const token = req.headers.authorization.split(' ')[1]
-    const decoded = jwt.decode(token, process.env.JWT_SECRET)
-    
+    const decoded = req.decoded
     //get user
     const foundUser = await User.findOne({email:decoded.UserInfo.email})
     if(!foundUser) return res.status(404).json({msg:'User not found!'})
@@ -173,14 +161,8 @@ export const updateUser = async(req,res) =>{
     //destructure data from the body
     const {modObj, data, id} = req.body;
 
-    //determine if there is any token 
-    const header = req.headers.authorization
-    //if undefined, deny access
-    if(!header) return res.status(403).json({msg:'Unauthorized'})
-
-    //get token and decode it
-    const token = req.headers.authorization.split(' ')[1]
-    const decoded = jwt.decode(token, process.env.JWT_SECRET)
+    //get decoded information from authorization controller
+    const decoded = req.decoded
 
     //if the variables weren't defined return 401 code
     if(!modObj || !data || !id) return res.status(401).json({msg:'Malformed body'})
@@ -238,14 +220,9 @@ export const updateUser = async(req,res) =>{
 }
 
 export const deleteUser = async(req,res,next)=>{
-    const header = req.headers.authorization
-    //if undefined, deny access
-    if(!header) return res.status(403).json({msg:'Unauthorized'})
-
-    //get token and decode it
-    const token = req.headers.authorization.split(' ')[1]
-    const decoded = jwt.decode(token, process.env.JWT_SECRET)
-    
+    //get decoded information from authorization controller
+    const decoded = req.decoded
+    //get user id
     const {userId} = req.params;
 
     if(!userId || !mongoose.Types.ObjectId.isValid(userId)) return res.status(401).json({msg:'Bad request'})
@@ -338,14 +315,8 @@ export const toggleFavorite = async(req,res)=>{
     const {taskId} = req.params;
     const {favorite} = req.body;
 
-    //get authorization token , need user Id to access it 
-    const header = req.headers.authorization
-    //if undefined, deny access
-    if(!header) return res.status(403).json({msg:'Unauthorized'})
-
-    //get token and decode it
-    const token = req.headers.authorization.split(' ')[1]
-    const decoded = jwt.decode(token, process.env.JWT_SECRET)
+    //get decoded information from authorization controller
+    const decoded = req.decoded
 
     //fetch user id and query with it
     const userId = decoded.UserInfo.id
@@ -368,14 +339,10 @@ export const toggleFavorite = async(req,res)=>{
 
 export const addUserToFriendList = async(req,res,next)=>{
   const  {userId} = req.params;
-  //get authorization token , need user Id to access it 
-  const header = req.headers.authorization
-  //if undefined, deny access
-  if(!header) return res.status(403).json({msg:'Unauthorized'})
+  
+  //get decoded information from authorization controller
+  const decoded = req.decoded
 
-  //get token and decode it
-  const token = req.headers.authorization.split(' ')[1]
-  const decoded = jwt.decode(token, process.env.JWT_SECRET)
   const id = decoded.UserInfo.id
 
   const friendRequest = new Request({
@@ -392,14 +359,10 @@ export const addUserToFriendList = async(req,res,next)=>{
 
 export const deleteUserFromFriendList = async(req,res,next)=>{
   const  {userId} = req.params;
-  //get authorization token , need user Id to access it 
-  const header = req.headers.authorization
-  //if undefined, deny access
-  if(!header) return res.status(403).json({msg:'Unauthorized'})
 
-  //get token and decode it
-  const token = req.headers.authorization.split(' ')[1]
-  const decoded = jwt.decode(token, process.env.JWT_SECRET)
+  //get decoded information from authorization controller
+  const decoded = req.decoded
+
   const id = decoded.UserInfo.id
  //fetch user
   const user = await User.findOne({_id: id}).exec();
@@ -415,15 +378,11 @@ export const cancelRequest = async(req,res,next)=>{
   //get parameters of request
   const {userId, requestId} = req.params;
 
-  
-  
-  const header = req.headers.authorization
-  //if undefined, deny access
-  if(!header) return res.status(403).json({msg:'Unauthorized'})
-  if(!userId || !requestId) return res.status(401).json({msg:'Bad request'}) 
-  //get token and decode it
-  const token = req.headers.authorization.split(' ')[1]
-  const decoded = jwt.decode(token, process.env.JWT_SECRET)
+  if(!userId || !requestId) return res.status(401).json({msg:'Bad request'})
+
+  //get decoded information from authorization controller
+  const decoded = req.decoded
+
   const id = decoded.UserInfo.id
   
   //confirm user canceling the request matches the user that has the token
@@ -442,13 +401,11 @@ export const searchUser = async(req,res,next)=>{
 export const resolveRequest = async(req,res) =>{
   const {requestId, response} = req.params;
 
-  const header = req.headers.authorization
-  //if undefined, deny access
-  if(!header) return res.status(403).json({msg:'Unauthorized'})
-  if(!requestId) return res.status(401).json({msg:'Bad request'}) 
-  //get token and decode it
-  const token = req.headers.authorization.split(' ')[1]
-  const decoded = jwt.decode(token, process.env.JWT_SECRET)
+  if(!requestId) return res.status(401).json({msg:'Bad request'})
+
+  //get decoded information from authorization controller
+  const decoded = req.decoded
+
   const id = decoded.UserInfo.id
 
   const request = await Request.findOne({_id:requestId})
@@ -469,8 +426,3 @@ export const resolveRequest = async(req,res) =>{
 
   res.status(200).json({msg:'Accepted request'})
 }
-
-//most controllers that require user authorization, should be refactored
-//ideally, all user authorization could be done with a middleware
-//then save the user verification and proceed to the actual controller
-//if controller is unable to proceed, send a 403 status response
