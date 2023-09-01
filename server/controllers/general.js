@@ -55,14 +55,8 @@ export const getTaskSuggestions = async(req,res)=>{
 
 export const postSuggestion = async(req,res)=>{ 
     //if comment is a reply, same procedure happens, but we get to mark it as a reply and there will a commentId
-    //determine if there is any token 
-    const header = req.headers.authorization
-    //if undefined, deny access
-    if(!header) return res.status(403).json({msg:'Unauthorized'})
-
-    //get token and decode it
-    const token = req.headers.authorization.split(' ')[1]
-    const decoded = jwt.decode(token, process.env.JWT_SECRET)
+    const decoded = req.decoded
+    
     //if token information doesnt match the information from the body, do not proceed
     const newSuggestion = req.body;
     const {taskId} = req.params;
@@ -96,14 +90,7 @@ export const postSuggestion = async(req,res)=>{
 export const deleteSuggestion = async(req,res)=>{//deleting a suggestion means deleting the replies it has in its replies array
     const {taskId, suggestionId} = req.params;
 
-    //determine if there is any token 
-    const header = req.headers.authorization
-    //if undefined, deny access
-    if(!header) return res.status(403).json({msg:'Unauthorized'})
-
-    //get token and decode it
-    const token = req.headers.authorization.split(' ')[1]
-    const decoded = jwt.decode(token, process.env.JWT_SECRET)
+    const decoded = req.decoded
 
     //if any of the parameters are malformed, abort request
     if(!mongoose.Types.ObjectId.isValid(taskId) || !mongoose.Types.ObjectId.isValid(suggestionId)) return res.status(400).json({msg:'At least one of the parameters is not valid.'})
