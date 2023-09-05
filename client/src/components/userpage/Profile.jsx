@@ -38,7 +38,6 @@ const Profile = () => {
 
   //fetch User data depending on wether the link is for a user or authenticated user's
   const userData = useSelector((state)=>userId ? state.profile.profile : state.auth.user)
-  
   //filter active only tasks
   const filter_active = !userId ? userData?.tasks?.filter(task=> !task.completed) : []
   //depending on toggle value, show only active 
@@ -112,7 +111,7 @@ const Profile = () => {
     </Box>
       }
       {/* conditionally render. if it's user's own profile page, no use to render this component */}
-    {userId !== undefined && <AddFriend userId={userId} name={`${userData.firstName} ${userData.lastName}`}/>}
+    {(userId !== undefined && user) && <AddFriend userId={userId} name={`${userData.firstName} ${userData.lastName}`}/>}
         
       
     </Container>
