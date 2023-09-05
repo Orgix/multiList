@@ -15,7 +15,7 @@ const AddFriend = ({userId, name}) => {
     //search friend list if user is there
     const isFriend = user.friends.includes(userId)
     //search if there is an outgoing request to the user
-    const inRequests = user.requests.find(request=> request.from === user.id && request.to === userId)
+    const inRequests = user.requests.find(request=> request.from._id === user.id && request.to._id === userId)
     const userRequested =  user.requests.find(request=> request.from._id === userId)
 
     console.log(userRequested)
@@ -32,7 +32,8 @@ const AddFriend = ({userId, name}) => {
         dispatch(isFriend ? deleteFriend(userId) : addFriend(userId))
     }
     const cancelFriendRequest = () =>{
-      dispatch(cancelRequest(inRequests))
+      console.log(inRequests)
+      dispatch(cancelRequest({id:inRequests._id, from: inRequests.from._id}))
     }
     const resolveRequest = (response) =>{
       console.log(response)
