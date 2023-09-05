@@ -1,14 +1,16 @@
 import { Box, Container, Divider, IconButton, Paper, Typography,Tooltip,Button, Menu,MenuItem } from '@mui/material'
 import {useState} from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { convertToRelativeTime } from '../../utils/time'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
+import { cancelRequest, resolveUserRequest } from '../../services/actions/auth';
 
 const ViewRequests = () => {
     const requests = useSelector((state)=> state.auth.user)
     const [requestActions, setRequestActions] = useState(null);
+    const dispatch = useDispatch();
 
     const openRequestOptions = (event) =>{
       setRequestActions(event.currentTarget)
@@ -18,14 +20,15 @@ const ViewRequests = () => {
         setRequestActions(null)
     } 
 
-    const resolveRequest = (requestId, response)=>{
-        console.log(requestId)
-    }
+    const cancelFriendRequest = (request) =>{
+        console.log(request)
+        dispatch(cancelRequest({id:request._id, from: request.from._id}))
+      }
+      const resolveRequest = (id, response) =>{
+        console.log(response)
+        //dispatch(resolveUserRequest({id: userRequested._id, resp: response}))
+      }
 
-    const cancelRequest = (requestId, response)=>{
-
-    }
-    
     const pending = requests.requests.filter(request=> request.from._id === requests.id)
     const incoming = requests.requests.filter(request=> request.to._id === requests.id)
   return (
@@ -70,7 +73,7 @@ const ViewRequests = () => {
                     onClose={closeRequestActions}
                     >   
                         <MenuItem key="opt-1" onClick={closeRequestActions}>
-                        <Typography textAlign='center'>Cancel request.</Typography>
+                        <Typography textAlign='center' onClick={()=>cancelFriendRequest(request)}>Cancel request.</Typography>
                         </MenuItem>
                     </Menu>
                 </Paper> 
