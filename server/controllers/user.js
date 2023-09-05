@@ -353,8 +353,9 @@ export const addUserToFriendList = async(req,res,next)=>{
   })
 
   await friendRequest.save();
-
-  res.status(200).json({id:friendRequest._id ,to:userId, from:id, type: friendRequest.requestType, status: friendRequest.status})
+  const request = await Request.find({_id:friendRequest._id}).populate({path:'from', select:'firstName lastName'}).populate({path:'to', select:'firstName lastName'})
+  console.log(request)
+  res.status(200).json(request)
 }
 
 export const deleteUserFromFriendList = async(req,res,next)=>{
@@ -382,9 +383,9 @@ export const cancelRequest = async(req,res,next)=>{
 
   //get decoded information from authorization controller
   const decoded = req.decoded
-
   const id = decoded.UserInfo.id
-  
+  console.log(id)
+  console.log(userId)
   //confirm user canceling the request matches the user that has the token
   if(id !== userId) return res.status(403).json({msg:'Unauthorized request. Id mismatch'})
 
@@ -420,6 +421,8 @@ export const resolveRequest = async(req,res) =>{
   //add one user to the other's friend list
   ownUser.friends.push(request.from)
   otherUser.friends.push(request.to)
+  await otherUser.save();
+  await ownUser.save();
 
   //in front-end, use the request's id to filter it from the requests
   await Request.deleteOne({_id:requestId})
