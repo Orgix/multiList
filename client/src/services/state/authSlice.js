@@ -1,5 +1,5 @@
 import { createSlice} from '@reduxjs/toolkit'
-import { signin, register,signout, fetchUserTasks, updateUserData, deleteUser, toggleFavorite, addFriend, deleteFriend, cancelRequest } from "../actions/auth";
+import { signin, register,signout, fetchUserTasks, updateUserData, deleteUser, toggleFavorite, addFriend, deleteFriend, cancelRequest,resolveUserRequest } from "../actions/auth";
 import { deleteTask,updateTask,completeTask} from '../actions/tasks';
 import { synchronizeUser } from '../actions/profile';
 
@@ -119,7 +119,7 @@ const authSlice = createSlice({
               //userId will be in the payload, add it to the user's friend array
               const user = JSON.parse(localStorage.getItem('user'))
 
-              user.requests.push(action.payload) 
+              user.requests.push(action.payload[0]) 
               localStorage.setItem('user', JSON.stringify(user))
               state.user = user 
             })
@@ -136,6 +136,15 @@ const authSlice = createSlice({
             .addCase(cancelRequest.fulfilled, (state, action)=>{
                const {id} = action.payload
                const user = JSON.parse(localStorage.getItem('user'))
+               
+               user.requests= user.requests.filter(request=> request._id.toString() !== id)
+               localStorage.setItem('user', JSON.stringify(user))
+               
+               state.user = user
+            })
+            .addCase(resolveUserRequest.fulfilled, (state,action)=>{
+              const id = action.payload
+              const user = JSON.parse(localStorage.getItem('user'))
                
                user.requests= user.requests.filter(request=> request.id !== id)
                localStorage.setItem('user', JSON.stringify(user))
