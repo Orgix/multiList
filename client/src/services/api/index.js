@@ -33,6 +33,7 @@ export const addFriend = (userId) => API.post(`/auth/add/${userId}`)
 export const deleteFriend = (userId) => API.patch(`/auth/delete/${userId}`)
 export const cancelRequest = (requestId, userId) => API.delete(`/auth/${userId}/requests/cancel/${requestId}`)
 export const resolveRequest = (requestId, response) => API.put(`/auth/requests/${requestId}/resolve/${response}`)
+export const fetchRequests = (length) => API.get(`/auth/requests/fetch?length=${length}`)
 export const signIn = (formData) => API.post('/auth/signin', formData);
 export const signUp = (formData) => API.post('/auth/signup', formData);
 export const signOut = () => API.post('/auth/logout')
