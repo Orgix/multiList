@@ -429,3 +429,19 @@ export const resolveRequest = async(req,res) =>{
 
   res.status(200).json({msg:'Accepted request'})
 }
+
+export const fetchRequests = async(req,res)=>{
+  let {length } = req.query;
+  length = Number(length)
+
+  const id = req.decoded.UserInfo.id
+
+  const requests =await Request.find({
+    $or: [
+      { from: id },
+      { to: id }
+    ]
+  }).populate({path:'from', select:'firstName lastName'}).populate({path:'to', select:'firstName lastName'})
+
+  if(length <= requests.length) return res.status(200).json({requests})
+}
