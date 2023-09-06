@@ -1,4 +1,4 @@
-import React,{ useEffect, useState }  from 'react'
+import { useEffect, useState }  from 'react'
 
 import ListAltSharpIcon from '@mui/icons-material/ListAltSharp';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -9,7 +9,7 @@ import { Link as RouterLink, useNavigate} from 'react-router-dom';
 import userImage from '../../assets/images/user.png';
 import { useDispatch, useSelector } from 'react-redux';
 import {linkStyles} from './styles'
-import { signout } from '../../services/actions/auth';
+import { signout,fetchRequests } from '../../services/actions/auth';
 
 
 const Navbar = () => {
@@ -21,8 +21,7 @@ const Navbar = () => {
   const [anchorElUser, setAnchorElUser] = useState(null);
 
   let user = useSelector((state) => state.auth.user)
-
-  
+  let requestsLen;
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -44,6 +43,26 @@ const Navbar = () => {
     dispatch(signout())
     navigate('/explore')
   }
+
+  useEffect(()=>{
+    let intervalId;
+
+    // Check if there's a logged-in user
+    if (user) {
+      requestsLen = user.requests.length;
+      console.log(requestsLen)
+      // Set up an interval to periodically fetch new requests
+      intervalId = setInterval(() => {
+        console.log(requestsLen)
+        dispatch(fetchRequests(requestsLen))
+      }, 15000); // Fetch every 15seconds
+    }
+
+    return () => {
+      // Clear the interval when the component unmounts
+      clearInterval(intervalId);
+    };
+  }, [dispatch, user])
 
   return (
     <AppBar position='static' color={theme.secondary}>
