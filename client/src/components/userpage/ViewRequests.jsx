@@ -28,7 +28,7 @@ const ViewRequests = () => {
         console.log(response)
         //dispatch(resolveUserRequest({id: userRequested._id, resp: response}))
       }
-
+      console.log(requests)
     const pending = requests.requests.filter(request=> request.from._id === requests.id)
     const incoming = requests.requests.filter(request=> request.to._id === requests.id)
   return (
