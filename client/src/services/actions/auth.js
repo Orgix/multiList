@@ -109,3 +109,13 @@ export const resolveUserRequest = createAsyncThunk('auth/resolveUserRequest', as
     const response = await api.resolveRequest(id, resp);
     return id
 })
+
+export const fetchRequests = createAsyncThunk('auth/fetchRequests', async(length)=>{
+    try{
+        const response = await api.fetchRequests(length);
+        return response.data;
+    }
+    catch(err){
+        throw new Error('error')
+    }
+})
