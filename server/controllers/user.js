@@ -443,5 +443,5 @@ export const fetchRequests = async(req,res)=>{
     ]
   }).populate({path:'from', select:'firstName lastName'}).populate({path:'to', select:'firstName lastName'})
 
-  if(length <= requests.length) return res.status(200).json({requests})
+ return res.status(200).json({requests})
 }
