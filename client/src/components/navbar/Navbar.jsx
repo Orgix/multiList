@@ -45,16 +45,15 @@ const Navbar = () => {
   }
 
   useEffect(()=>{
-    let intervalId;
+    let intervalId, friendLen;
 
     // Check if there's a logged-in user
     if (user) {
       requestsLen = user.requests.length;
-      console.log(requestsLen)
+      friendLen = user.friends.length;
       // Set up an interval to periodically fetch new requests
       intervalId = setInterval(() => {
-        console.log(requestsLen)
-        dispatch(fetchRequests(requestsLen))
+        dispatch(fetchRequests({friends: friendLen, requests: requestsLen}))
       }, 15000); // Fetch every 15seconds
     }
 

@@ -13,7 +13,7 @@ const AddFriend = ({userId, name}) => {
     const user = useSelector((state)=> state.auth.user);
     const [requestActions, setRequestActions] = useState(null);
     //search friend list if user is there
-    const isFriend = user.friends.includes(userId)
+    const isFriend = user.friends.find(friend=> friend._id === userId)
     //search if there is an outgoing request to the user
     const inRequests = user.requests.find(request=> request.from._id === user.id && request.to._id === userId)
     const userRequested =  user.requests.find(request=> request.from._id === userId)

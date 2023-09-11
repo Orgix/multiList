@@ -26,7 +26,7 @@ const ViewRequests = () => {
       }
       const resolveRequest = (id, response) =>{
         console.log(response)
-        //dispatch(resolveUserRequest({id: userRequested._id, resp: response}))
+        dispatch(resolveUserRequest({id:id, resp: response}))
       }
       console.log(requests)
     const pending = requests.requests.filter(request=> request.from._id === requests.id)
@@ -94,12 +94,12 @@ const ViewRequests = () => {
                 </Box>
                 <Box sx={{position:'absolute', right:'5px', bottom:'9px'}}>
                     <Tooltip arrow title="Accept request" >
-                        <Button variant="contained" color="success" >
+                        <Button variant="contained" color="success" onClick={()=>resolveRequest(request._id, true)}>
                             <DoneIcon/>
                         </Button>
                     </Tooltip> 
                     <Tooltip arrow title="Deny Request">
-                        <Button variant="contained" color="error" sx={{marginLeft:'3px'}}>
+                        <Button variant="contained" color="error" sx={{marginLeft:'3px'}} onClick={()=>resolveRequest(request._id, false)}> 
                             <ClearIcon/>
                         </Button>
                     </Tooltip>
