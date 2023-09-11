@@ -128,7 +128,7 @@ const authSlice = createSlice({
               const {id} = action.payload;
               const user = JSON.parse(localStorage.getItem('user'))
 
-              user.friends = user.friends.filter(friend=> friend !== id)
+              user.friends = user.friends.filter(friend=> friend._id !== id)
 
               localStorage.setItem('user', JSON.stringify(user))
               state.user = user
@@ -143,10 +143,11 @@ const authSlice = createSlice({
                state.user = user
             })
             .addCase(resolveUserRequest.fulfilled, (state,action)=>{
+              console.log(action.payload)
               const id = action.payload
               const user = JSON.parse(localStorage.getItem('user'))
                
-               user.requests= user.requests.filter(request=> request.id !== id)
+               user.requests= user.requests.filter(request=> request._id !== id)
                localStorage.setItem('user', JSON.stringify(user))
                
                state.user = user

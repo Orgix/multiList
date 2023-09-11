@@ -110,9 +110,10 @@ export const resolveUserRequest = createAsyncThunk('auth/resolveUserRequest', as
     return id
 })
 
-export const fetchRequests = createAsyncThunk('auth/fetchRequests', async(length)=>{
+export const fetchRequests = createAsyncThunk('auth/fetchRequests', async(lengths)=>{
+    const {friends, requests} = lengths
     try{
-        const response = await api.fetchRequests(length);
+        const response = await api.fetchRequests(friends, requests);
         return response.data;
     }
     catch(err){
