@@ -367,10 +367,15 @@ export const deleteUserFromFriendList = async(req,res,next)=>{
   const id = decoded.UserInfo.id
  //fetch user
   const user = await User.findOne({_id: id}).exec();
-//filter the user list. leave the requested id out
+  const formerFriend = await User.findOne({_id: userId}).exec();
+  console.log(formerFriend)
+  console.log(user)
+//filter the users lists. leave the requested id out
   user.friends = user.friends.filter(friend=> friend.toString() !== userId)
+  formerFriend.friends = formerFriend.friends.filter(friend=> friend.toString() !== id)
   //save
   await user.save()
+  await formerFriend.save()
 //return id to front 
   res.status(200).json({id:userId});
 }
@@ -411,7 +416,7 @@ export const resolveRequest = async(req,res) =>{
 
   const request = await Request.findOne({_id:requestId})
   //if the one resolving the request isn't the user, end of route here.
-  if(request.to.toString() !== id) return res.status(401).json({msg:'Id mismatch'})
+  if(request.to.toString() !== id) return res.status(401).json({msg:'Id mismatch'}) 
   //if it's a deny request resolve, return the message
   if(!response) return res.status(200).json({msg:'Denied request'})
 
@@ -431,9 +436,9 @@ export const resolveRequest = async(req,res) =>{
 }
 
 export const fetchRequests = async(req,res)=>{
-  let {length } = req.query;
+  let {length,friends } = req.query;
   length = Number(length)
-
+  friends = Number(friends)
   const id = req.decoded.UserInfo.id
 
   const requests =await Request.find({
