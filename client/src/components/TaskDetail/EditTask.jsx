@@ -19,7 +19,7 @@ import DialogWindow from './DialogWindow';
 const EditTask = () => {
   const [taskData, setTaskData] = useState('')
   const [newTask, setNewTask] = useState('')
-  const [disabled, setDisabled] = useToggle(false)
+  const [disabled, setDisabled] = useToggle(true)
   const [open, setOpen] = useToggle(false)
   const [openComp, setOpenComp] = useToggle(false)
   const [staticState, setStaticState] = useState('')
