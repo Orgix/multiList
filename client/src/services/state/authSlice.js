@@ -153,13 +153,13 @@ const authSlice = createSlice({
                state.user = user
             })
             .addCase(fetchRequests.fulfilled, (state,action)=>{
-              const {requests} = action.payload
+              const {requests, friends} = action.payload
               const user = JSON.parse(localStorage.getItem('user'))
-
+              
+              if(friends) user.friends = friends
               user.requests = requests;
 
               localStorage.setItem('user', JSON.stringify(user))
-
               state.user = user
             })
     }
