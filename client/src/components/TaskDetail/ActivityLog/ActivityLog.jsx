@@ -44,11 +44,6 @@ const ActivityLog = ({activities}) => {
               to={activity.to} 
               toggle={activity.toggleStatus}
               createdAt={activity.createdAt}/>
-              {/* <ListItemIcon sx={{minWidth:'5%'}}>
-                <MailIcon fontSize="small"/>
-              </ListItemIcon>
-              <Typography variant="body1" sx={{width:'80%'}}>{activity.text}</Typography>
-              <ListItemText primary={convertToRelativeTime(activity.createdAt)} sx={{width:'20%'}}/> */}
           </ListItem>
         ))}
         </List>
