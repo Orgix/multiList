@@ -447,7 +447,8 @@ export const fetchRequests = async(req,res)=>{
       { to: id }
     ]
   }).populate({path:'from', select:'firstName lastName'}).populate({path:'to', select:'firstName lastName'})
-  const user = await User.findOne({_id:id}).populate({path:'friends', select:'firstName lastName'});
+  const user = await User.findOne({_id:id}).populate({path:'friends', select:'firstName lastName'})
+  
   if(user.friends.length !== friends) return res.status(200).json({requests: requests, friends: user.friends})
 
   res.status(200).json({requests})
