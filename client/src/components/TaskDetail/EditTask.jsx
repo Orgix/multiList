@@ -19,7 +19,7 @@ import DialogWindow from './DialogWindow';
 const EditTask = () => {
   const [taskData, setTaskData] = useState('')
   const [newTask, setNewTask] = useState('')
-  const [disabled, setDisabled] = useToggle(true)
+  const [disabled, setDisabled] = useToggle(false)
   const [open, setOpen] = useToggle(false)
   const [openComp, setOpenComp] = useToggle(false)
   const [staticState, setStaticState] = useState('')
@@ -47,9 +47,12 @@ const EditTask = () => {
     if(!disabled){
       const basicFieldDifferences = compareObjectValues(taskData, staticState, ['title', 'privacy','priority','description'], userEssentials)
       const subtaskChanges = compareArrays(taskData.tasks, staticState.tasks, userEssentials )
-    
-      dispatch(updateTask({task: taskData, activities: [...basicFieldDifferences, ...subtaskChanges]}))
-      navigate('..')
+      
+      if(basicFieldDifferences.length > 0 || subtaskChanges.length > 0) {
+        dispatch(updateTask({task: taskData, activities: [...basicFieldDifferences, ...subtaskChanges]}))
+        navigate('..')
+      }
+      
     }
   }
   const handleSubTaskChange = (evt)=>{
@@ -64,7 +67,6 @@ const EditTask = () => {
     setTaskData(prev=>({
         ...prev, tasks: prev.tasks.filter(todo=> todo.id !== id)
     }))
-   
 }
 
     const handleComplete = (id) =>{
@@ -233,7 +235,7 @@ const handleDeleteTask = () =>{
               
                 {taskData.tasks.map((subtask,index)=>(
                   <Grid item xs={12} lg={6} key={subtask.id}>
-                    <Subtask sub={subtask} mode="edit" handleDelete={handleDelete} handleComplete={handleComplete} setTaskData={setTaskData}/>
+                    <Subtask onClick={handleBlur} sub={subtask} mode="edit" handleDelete={handleDelete} handleComplete={handleComplete} setTaskData={setTaskData}/>
                   </Grid>
                 ))}
               </Grid>

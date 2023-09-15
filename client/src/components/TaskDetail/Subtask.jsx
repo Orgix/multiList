@@ -7,6 +7,7 @@ import { Paper, ButtonGroup, Button, TextField, Container } from '@mui/material'
 import { styles as extStyles} from './styles';
 import useScreenWidth from '../../hooks/useScreenWidth';
 import { useState } from 'react';
+import SubtaskOptions from './SubtaskOptions';
 
 const Subtask = ({sub, mode, handleComplete, handleDelete, setTaskData}) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -65,7 +66,7 @@ const Subtask = ({sub, mode, handleComplete, handleDelete, setTaskData}) => {
     )
   } else{
     return (
-      <Paper elevation={3} sx={[extStyles.taskContainer, {overflowWrap:'break-word', px:0}]}>
+      <Paper elevation={3} sx={[extStyles.taskContainer, {overflowWrap:'break-word', px:0,py:1}]}>
          {isEditing ? 
               <Container sx={extStyles.Editcontainer} disableGutters>
                         <TextField variant="outlined" sx={extStyles.input} InputProps={{ sx: { borderTopRightRadius: 0, borderBottomRightRadius:0 } }} type="text" label="Edit subtask" name="subtask" value={editedTask} onChange={handleInputChange}/>
@@ -76,14 +77,12 @@ const Subtask = ({sub, mode, handleComplete, handleDelete, setTaskData}) => {
           <div style={{inlineSize:{xs:'100px',sm:'150px'}, overflowWrap:'break-word', padding:'3px'}}>
               <span style={{textDecoration: sub.completed ? 'line-through' : 'none'}}>{sub.name}</span>
             </div>
-            <ButtonGroup  orientation={width < 600 ? 'vertical' : 'horizontal'} variant="contained" aria-label="outlined primary button group">
-                <Button onClick={handleDeleteClick}><DeleteForeverIcon sx={{color:'red'}}/></Button>
-                <Button onClick={handleEditClick}><EditIcon/></Button>
-                <Button onClick={handleCompleteClick}>
-                  {sub.completed ? <UndoIcon sx={{color:'white'}}/> : <CheckIcon sx={{color:'green'}}/>}
-                  
-                </Button>
-            </ButtonGroup>
+            <SubtaskOptions 
+              completeHandle={handleCompleteClick} 
+              editHandle={handleEditClick} 
+              deleteHandle={handleDeleteClick} 
+              completed={sub.completed}
+            />
          </>)}
             
         </Paper>
