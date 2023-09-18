@@ -58,7 +58,3 @@ export const compareArrays = (finalArray, staticArray, user) => {
 // for deleting a subtask [username, 'remove', 'name']
 // adding a subtask [username, 'add', 'name']
 //toggling a subtask's completion [username, 'toggle', 'name', toggleStatus]
-
-export const getDerivedActivityText = (entry) =>{
-    console.log(entry)
-}
