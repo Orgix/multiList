@@ -14,6 +14,7 @@ import { getKeys } from '../../utils/keys';
 import {compareObjectValues, compareArrays} from '../../utils/compare'
 import { updateTask, deleteTask, completeTask } from '../../services/actions/tasks';
 import DialogWindow from './DialogWindow';
+import EditOptions from './EditOptions/EditOptions';
 
 
 const EditTask = () => {
@@ -143,7 +144,10 @@ const handleDeleteTask = () =>{
     }
   }, [error, navigate]);
  
-  
+  useEffect(()=>{
+    if(user?.id !== task?.author.authorID)
+    navigate('..')
+  },[])
   
   if(error){
     return(
@@ -156,7 +160,8 @@ const handleDeleteTask = () =>{
       const completed = task?.tasks.filter(subtask=> subtask.completed).length
     return (
       
-      <Box p={3}>
+      <Box p={3} sx={{position:'relative'}}>
+        <EditOptions/>
         <Typography variant="h4" mb={2} textAlign={'center'}>Edit Task: {taskData.title}</Typography>
         
         <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
