@@ -2,7 +2,6 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import {  ListItem, ListItemIcon,ListItemText,ListItemButton, Typography, Box} from "@mui/material";
 import { convertToRelativeTime } from "../../../utils/time";
-import { getDerivedActivityText } from "../../../utils/compare";
 import { capitalizeFirstLetter } from "../../../utils/utility";
 import ActivityIcon from './ActivityIcon';
 
