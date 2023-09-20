@@ -228,7 +228,7 @@ const handleDeleteTask = () =>{
                 </Grid>
             </Grid>
             
-            <Typography variant="h4" textAlign="center" mb={2}>Subtasks:</Typography>
+            <Typography variant="h4" textAlign="center" mb={2} pt={2}>Subtasks:</Typography>
             <Box sx={[styles.Editcontainer, {mb:5}]}>
                         <TextField variant="outlined" sx={styles.input} InputProps={{ sx: { borderTopRightRadius: 0, borderBottomRightRadius:0 } }}fullWidth type="text" label="Add subtask" name="subtask" value={newTask} onChange={handleSubTaskChange} onKeyDown={handleKeyDown}/>
                         <Typography variant="subtitle2" sx={[styles.helperTextEdit,{display:{xs:'none', sm:'block'}}]}>press enter or the button to add</Typography>
@@ -257,14 +257,26 @@ const handleDeleteTask = () =>{
               variant="contained"
               color="error"
             >Delete Task</Button>
-            <DialogWindow open={open} setOpen={setOpen} confirm={handleDeleteTask} title="Actions with consequences: Delete Task" text="You're about to fully delete the whole task and all its subsequent subtasks. Do you agree"/>
+            <DialogWindow 
+              open={open} 
+              setOpen={setOpen} 
+              confirm={handleDeleteTask} 
+              title="Actions with consequences: Delete Task" 
+              text="You're about to fully delete the whole task and all its subsequent subtasks. Do you agree"
+            />
             <Button
               onClick={()=>setOpenComp(true)}
               variant="contained"
               sx={{backgroundColor: theme.palette.success.buttons, color:'white',"&:hover":{backgroundColor:'#279029'}}}
               
             >Complete Task</Button>
-            <DialogWindow open={openComp} setOpen={setOpenComp} confirm={handleCompleteTask} title="Actions with consequences: Complete Task" text="You're about to mark the whole task with the completion status. This way, the task will not appear actively in your tasks feed, except requested."/>
+            <DialogWindow 
+              open={openComp} 
+              setOpen={setOpenComp} 
+              confirm={handleCompleteTask} 
+              title="Actions with consequences: Complete Task" 
+              text="You're about to mark the whole task with the completion status. This way, the task will not appear actively in your tasks feed, except requested."
+            />
           </Container>
           
         </Paper>
