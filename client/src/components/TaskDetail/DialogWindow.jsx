@@ -4,12 +4,13 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import CloseIcon from '@mui/icons-material/Close';
-import CheckIcon from '@mui/icons-material/Check';
+import SubtaskView from './EditOptions/SubtaskView'; 
+import InviteSection from './EditOptions/InviteSection';
 import { Button, Typography,Box,Paper } from '@mui/material';
+import { useParams } from 'react-router-dom';
 
 const DialogWindow = ({title,text, confirm, open,setOpen, mode, owner}) => {
-    
+      const {id} = useParams();
       const handleClose = () => {
         setOpen(false);
       };
@@ -24,35 +25,7 @@ const DialogWindow = ({title,text, confirm, open,setOpen, mode, owner}) => {
                 <DialogContentText id="alert-dialog-description" textAlign='center'>
                   Assignment List and Assignees :
                 </DialogContentText>
-                <Box sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              m: 'auto',
-              gap:3
-            }}>
-                  <Paper sx={{position:'relative', py:1,px:1}}>
-                  <Typography>Task Name: <strong>Smoke a cigarette</strong></Typography>
-                      <Typography> Completed:</Typography> 
-                      <CheckIcon sx={{position:'absolute',left:'80px', top:'27px', color:'green'}}/>
-                      <Typography>Assigned To: <strong>Todor Smirnof</strong></Typography>
-                  </Paper>
-                  <Paper sx={{position:'relative', py:1,px:1}}>
-                  <Typography>Task Name: <strong>Moan the loan (that's right)</strong></Typography>
-                    <Typography> Completed:</Typography> 
-                    <CloseIcon sx={{position:'absolute',left:'80px', top:'30px', color:'red'}}/>
-                    <Typography>Assigned To: <strong>Nick Tsounias</strong></Typography>
-                  </Paper>
-                  <Paper sx={{position:'relative', py:1,px:1}}>
-                    <Typography>Task Name: <strong>Do the dishes</strong></Typography>
-                    <Typography> Completed:</Typography> 
-                    <CloseIcon sx={{position:'absolute',left:'80px', top:'30px', color:'red'}}/>
-                    <Typography>Assigned To: <strong>Bill Tito</strong></Typography>
-                  </Paper>
-
-                  <Typography sx={{ color: 'rgba(0, 0, 0, 0.5)' }}>
-                    Switching assignees for each subtask may be done by the correspondent subtask's action menu, provided you have ownership or the proper role.
-                  </Typography>
-                </Box>
+                <SubtaskView taskId={id}/>
               </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>Close</Button>
@@ -67,10 +40,7 @@ const DialogWindow = ({title,text, confirm, open,setOpen, mode, owner}) => {
                 Provide access to Task
             </DialogTitle>
             <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                  sample text here for now!
-                  invite section
-                </DialogContentText>
+            <InviteSection taskId={id}/>
               </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>Close</Button>
