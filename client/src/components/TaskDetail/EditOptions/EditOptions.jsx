@@ -1,18 +1,22 @@
-import {useState} from 'react'
+import {useState,createContext, useContext} from 'react'
 import { styles } from './styles'
 import { Tooltip, IconButton, Box, Menu,MenuItem, Typography} from '@mui/material'
 import { useParams } from 'react-router-dom';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import EmailIcon from '@mui/icons-material/Email';
+
 import DialogWindow from '../DialogWindow';
 import useToggle from '../../../hooks/useToggle';
 import { useSelector } from 'react-redux';
+
+export const AssociateListContext = createContext(null);
 
 const EditOptions = () => {
   const [assignModal, setAssignModal] = useToggle(false)
   const [infoModal, setInfoModal] = useToggle(false)
   const [subtaskActions, setSutaskActions] = useState(null);
+  const [associateList, setAssociateList] = useState([])
   const {id, userId} = useParams();
   const user = useSelector((state)=>state.auth.user)
 
@@ -25,6 +29,7 @@ const EditOptions = () => {
     };
     const dispatchInvitations = () =>{
       console.log('dispatch')
+      console.log(associateList)
       setInfoModal(false)
       //dispatch(completeTask(taskData._id))
     }
@@ -67,13 +72,18 @@ const EditOptions = () => {
                         </IconButton>
                     </MenuItem>
                 </Menu>
+                <AssociateListContext.Provider value={{associateList, setAssociateList}}>
                 <DialogWindow 
                             open={infoModal} 
                             setOpen={setInfoModal}  
                             owner = {userId === undefined}
                             mode = 'invites'
                             confirm = {dispatchInvitations}
+                            list={associateList}
+                            setList={setAssociateList}
                           />
+                </AssociateListContext.Provider>
+                
                 <DialogWindow 
                   open={assignModal} 
                   setOpen={setAssignModal}  
