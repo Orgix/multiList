@@ -41,3 +41,28 @@ export const convertTimeToDate = string =>{
 
   return formattedDate 
 }
+
+export const getFutureDate = days =>{
+  //e.g. 24 Jul 2023 + 10 days => 3 Aug 2023 
+  //that is if a number is picked and used. In the case a new Date was picked, 
+  //the function will not be accessed
+  const currentDate = new Date();
+  currentDate.setDate(currentDate.getDate() + days)
+  return currentDate;
+}
+
+export const checkDeadline = date =>{
+  const currDate = new Date();
+
+  const difference = date.getTime() - currDate.getTime()
+
+  if (difference < 0) {
+    return "Expired"; // The specified date is in the past
+  } else if (difference <= 24 * 60 * 60 * 1000) { //24*60*60*1000 = 1 day
+    return "Today";
+  } else if (difference <= 48 * 60 * 60 * 1000) { //48 * 60 * 60 * 1000 2 days
+    return "Tomorrow";
+  } else {
+    return `${Math.ceil(difference/(24*60*60*1000))} days from now`;
+  }
+}
