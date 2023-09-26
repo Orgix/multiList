@@ -1,10 +1,12 @@
-import * as api from '../api/'
+import * as authApi from '../api/authApi'
+import * as userApi from '../api/userApi'
+import * as taskApi from '../api/taskApi'
 import { createAsyncThunk} from '@reduxjs/toolkit'
 
 
 export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async () => {
     try{
-        const response = await api.fetchTasks()
+        const response = await taskApi.fetchTasks()
         return response.data
     }
     catch(error){
@@ -14,7 +16,7 @@ export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async () => {
 
 export const fetchTask = createAsyncThunk('tasks/fetchTask', async (id) =>{
     try{
-        const response = await api.fetchTask(id)
+        const response = await taskApi.fetchTask(id)
 
         return response.data
     }
@@ -26,7 +28,7 @@ export const fetchTask = createAsyncThunk('tasks/fetchTask', async (id) =>{
 export const updateTask = createAsyncThunk('tasks/updateTask', async(taskData) =>{
     try{
         
-        const response = await api.updateTask(taskData.task._id, taskData)
+        const response = await taskApi.updateTask(taskData.task._id, taskData)
         return response.data
     }
     catch(error){
@@ -36,23 +38,23 @@ export const updateTask = createAsyncThunk('tasks/updateTask', async(taskData) =
 })
 
 export const deleteTask = createAsyncThunk('tasks/deleteTask', async(id)=>{
-    const response = await api.deleteTask(id)
+    const response = await taskApi.deleteTask(id)
     return {data:response.data.message, id}
 })
 
 export const createTask = createAsyncThunk('tasks/createTask', async(newTask)=>{
-    const response = await api.createTask(newTask)
+    const response = await taskApi.createTask(newTask)
     return response.data
 })
 
 export const completeTask = createAsyncThunk('tasks/completeTask', async(id)=>{
-    const response = await api.completeTask(id)
+    const response = await taskApi.completeTask(id)
     return {data:response.data.message, id}
 })
 
 export const fetchPaginatedTasks = createAsyncThunk('tasks/fetchPaginatedTasks', async(page)=>{
     try{
-        const response = await api.fetchPaginatedTasks(page)
+        const response = await taskApi.fetchPaginatedTasks(page)
         return response.data
     }
     catch(error){
@@ -65,7 +67,7 @@ export const fetchPaginatedTasks = createAsyncThunk('tasks/fetchPaginatedTasks',
 //fetch all suggestions for task with the given taskId
 export const fetchTaskSuggestions = createAsyncThunk('comments/fetchTasksSuggestions', async(taskId)=>{
     try{
-        const response = await api.fetchTaskSuggestions(taskId);
+        const response = await taskApi.fetchTaskSuggestions(taskId);
         return response.data
     }
     catch(err){
@@ -76,7 +78,7 @@ export const fetchTaskSuggestions = createAsyncThunk('comments/fetchTasksSuggest
 //create a new suggestion for task with given id
 export const postSuggestion = createAsyncThunk('comments/postSuggestion',async(NewTaskSuggestion)=>{
     try{
-        const response = await api.postSuggestion(NewTaskSuggestion.id, NewTaskSuggestion.suggestion)
+        const response = await taskApi.postSuggestion(NewTaskSuggestion.id, NewTaskSuggestion.suggestion)
         console.log(response)
         return response.data
     }
@@ -88,7 +90,7 @@ export const postSuggestion = createAsyncThunk('comments/postSuggestion',async(N
 //delete suggestion from task with given taskId
 export const deleteSuggestion = createAsyncThunk('comments/deleteSuggestion', async(suggestionObj)=>{
     try{
-        const response = await api.deleteSuggestion(suggestionObj.taskId, suggestionObj.suggestionId)
+        const response = await taskApi.deleteSuggestion(suggestionObj.taskId, suggestionObj.suggestionId)
         return response.data;
     }
     catch(err){
@@ -98,7 +100,7 @@ export const deleteSuggestion = createAsyncThunk('comments/deleteSuggestion', as
 
 export const editSuggestion = createAsyncThunk('suggestions/editSuggestion', async(suggestionObj)=>{
     try{
-        const response = await api.editSuggestion(suggestionObj.id, {suggestion: suggestionObj.suggestion});
+        const response = await taskApi.editSuggestion(suggestionObj.id, {suggestion: suggestionObj.suggestion});
         return response.data;
     }
     catch(err){
@@ -108,7 +110,7 @@ export const editSuggestion = createAsyncThunk('suggestions/editSuggestion', asy
 
 export const fetchReplies = createAsyncThunk('suggestions/fetchReplies', async(suggestionId)=>{
     try{
-        const response = await api.fetchReplies(suggestionId)
+        const response = await taskApi.fetchReplies(suggestionId)
         return {data:response.data, id:suggestionId}
     }
     catch(error){
@@ -118,7 +120,7 @@ export const fetchReplies = createAsyncThunk('suggestions/fetchReplies', async(s
 
 export const postReply = createAsyncThunk('suggestions/postReply', async(replyObj)=>{
     try{
-        const response = await api.postReply(replyObj.id, {reply: replyObj.reply})
+        const response = await taskApi.postReply(replyObj.id, {reply: replyObj.reply})
         console.log(response)
         return response.data
     }
@@ -130,7 +132,7 @@ export const postReply = createAsyncThunk('suggestions/postReply', async(replyOb
 export const deleteReply = createAsyncThunk('suggestions/deleteReply', async(replyObj)=>{
     try{
         console.log(replyObj)
-        const response = await api.deleteReply(replyObj.suggestionId, replyObj.id)
+        const response = await taskApi.deleteReply(replyObj.suggestionId, replyObj.id)
         console.log(response)
         return response.data
     }
