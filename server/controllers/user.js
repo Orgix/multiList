@@ -401,7 +401,13 @@ export const cancelRequest = async(req,res,next)=>{
 }
 
 export const searchUser = async(req,res,next)=>{
-  console.log(req.params)
+  const {userId} = req.params;
+
+  if(userId.length < 24) return res.status(400).json({msg:'Bad request'})
+
+  const user = await User.findOne({_id: userId})
+  if(!user) return res.status(404).json({msg: 'No user found.'})
+  res.status(200).json({id: user._id, firstName: user.firstName, lastName:user.lastName})
 }
 
 export const resolveRequest = async(req,res) =>{
