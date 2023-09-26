@@ -5,6 +5,8 @@ import { Box, IconButton, Paper, Typography } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { AssociateListContext } from './EditOptions';
+import SearchBar from './SearchBar';
+import SearchBarResults from './SearchBarResults';
 
 const InviteSection = ({taskId}) => {
     const user = useSelector(getUser)
@@ -17,8 +19,9 @@ const InviteSection = ({taskId}) => {
   return (
     <Box>
         <Paper elevation={3} sx={{mb:4}}>
-            <Typography>Search field here.</Typography>
+            <SearchBar/>
         </Paper>
+            <SearchBarResults/>
         <Typography sx={{color:'rgba(0,0,0,0.5)', py:2}}>Inviting users associated with you may assist you a long way to organize the task/project and break it to even smaller pieces, making it more manageable. Any user invited will be able to view the task details and 
             activity log and will be able to mark any tasks that is correspondently assigned as complete. Inviting a user will send a request to the user. After resolving the request,
             user has access to the task.</Typography>
