@@ -10,3 +10,4 @@ export const cancelRequest = (requestId, userId) => API.delete(`/auth/${userId}/
 export const resolveRequest = (requestId, response) => API.put(`/auth/requests/${requestId}/resolve/${response}`);
 export const fetchRequests = (length) => API.get(`/auth/requests/fetch`, length);
 export const syncrhonizeUser = () => API.get('/profile/me/sync');
+export const searchUser = (userId) => API.get(`/auth/search/${userId}`)
