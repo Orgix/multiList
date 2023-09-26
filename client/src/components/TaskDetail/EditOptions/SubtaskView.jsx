@@ -6,6 +6,7 @@ import { getTaskById } from '../../../services/state/taskSlice'
 import { useSelector } from 'react-redux';
 
 const SubtaskView = ({taskId}) => {
+  const user = useSelector((state)=> state.auth.user)
     const task = useSelector((state)=>getTaskById(state,taskId));
   return (
     <Box sx={{
@@ -22,7 +23,7 @@ const SubtaskView = ({taskId}) => {
                     <CloseIcon sx={{position:'absolute',left:'80px', top:'30px', color:'red'}}/>}
                     {/* assigned to : before this works with a real assignee, it is strongly suggested to create the subtask accordingly 
                     and for the task structure to have the assignees */}
-                    <Typography>Assigned To: <strong>Todor Smirnof</strong></Typography>
+                    <Typography>Assigned To: <strong>{user.firstName} {user.lastName}</strong></Typography>
                 </Paper>
             )}
             <Typography sx={{ color: 'rgba(0, 0, 0, 0.5)' }}>
