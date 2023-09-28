@@ -1,5 +1,5 @@
 import { createSlice} from '@reduxjs/toolkit'
-import { signin, register,signout, fetchUserTasks, updateUserData, deleteUser, toggleFavorite, addFriend, deleteFriend, cancelRequest,resolveUserRequest, fetchRequests } from "../actions/auth";
+import { signin, register,signout, fetchUserTasks, updateUserData, deleteUser, toggleFavorite, addFriend, deleteFriend, cancelRequest,resolveUserRequest, fetchRequests, searchUser } from "../actions/auth";
 import { deleteTask,updateTask,completeTask} from '../actions/tasks';
 import { synchronizeUser } from '../actions/profile';
 
@@ -9,7 +9,8 @@ const initialState = {
     user:localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')): null,
     error:'',
     success:false,
-    tasks:[]
+    tasks:[],
+    search:''
 }
 
 const authSlice = createSlice({
@@ -161,6 +162,10 @@ const authSlice = createSlice({
 
               localStorage.setItem('user', JSON.stringify(user))
               state.user = user
+            })
+            .addCase(searchUser.fulfilled, (state,action)=>{
+              const result = action.payload;
+              state.search = result
             })
     }
 })

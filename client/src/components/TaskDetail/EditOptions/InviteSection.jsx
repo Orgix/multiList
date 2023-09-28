@@ -16,12 +16,16 @@ const InviteSection = ({taskId}) => {
         const found = associateList.find(associate=> associate === friendId)
         if(found === undefined) setAssociateList(prev=>[...prev, friendId])
     }
+    const removeAssociate = (id) => {
+        setAssociateList(prev=> 
+            prev.filter(associateId=> associateId !== id))
+    }
   return (
     <Box>
         <Paper elevation={3} sx={{mb:4}}>
             <SearchBar/>
         </Paper>
-            <SearchBarResults/>
+            <SearchBarResults add={selectAssociate}/>
         <Typography sx={{color:'rgba(0,0,0,0.5)', py:2}}>Inviting users associated with you may assist you a long way to organize the task/project and break it to even smaller pieces, making it more manageable. Any user invited will be able to view the task details and 
             activity log and will be able to mark any tasks that is correspondently assigned as complete. Inviting a user will send a request to the user. After resolving the request,
             user has access to the task.</Typography>
@@ -48,8 +52,9 @@ const InviteSection = ({taskId}) => {
                    <Box key={index} sx={{position:'relative',display:'flex',alignItems:'center'}}>
                    <Typography variant='h5' sx={{p:0,m:0}}>{user}</Typography>
                    <IconButton 
-                       sx={{p:0, m:0,color:'red'}}>
-                       <DeleteForeverIcon fontSize='large'/>
+                       sx={{p:0, m:0,color:'red'}}
+                       onClick={()=>removeAssociate(user)}>
+                       <DeleteForeverIcon fontSize='large' />
                    </IconButton>
                </Box>
                )}

@@ -127,7 +127,7 @@ export const searchUser = createAsyncThunk('auth/searchUser', async(searchTerm)=
     console.log(searchTerm)
     try{
         const response = await userApi.searchUser(searchTerm)
-        console.log(response)
+        return response.data;
     }
     catch(err){
         throw new Error('error')
