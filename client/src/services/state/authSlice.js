@@ -16,7 +16,11 @@ const initialState = {
 const authSlice = createSlice({
     name:'auth',
     initialState,
-    reducers:{},
+    reducers:{
+      clearSearch:(state)=>{
+        state.search = ''
+      }
+    },
     extraReducers(builder) {
         builder
             .addCase(register.pending, (state, action) => {
@@ -169,6 +173,6 @@ const authSlice = createSlice({
             })
     }
 })
-
+export const {clearSearch} = authSlice.actions
 export const getUser = (state) => state.auth.user;
 export default authSlice.reducer

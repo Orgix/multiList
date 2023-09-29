@@ -12,13 +12,13 @@ const InviteSection = ({taskId}) => {
     const user = useSelector(getUser)
     const {associateList, setAssociateList} = useContext(AssociateListContext)
 
-    const selectAssociate = (friendId)=>{//if id is in the state, do not setstate, else set it
-        const found = associateList.find(associate=> associate === friendId)
-        if(found === undefined) setAssociateList(prev=>[...prev, friendId])
+    const selectAssociate = (friendObj)=>{//if id is in the state, do not setstate, else set it
+        const found = associateList.find(associate=> associate.id === friendObj.id)
+        if(found === undefined) setAssociateList(prev=>[...prev, friendObj])
     }
     const removeAssociate = (id) => {
         setAssociateList(prev=> 
-            prev.filter(associateId=> associateId !== id))
+            prev.filter(associate=> associate.id !== id))
     }
   return (
     <Box>
@@ -36,8 +36,8 @@ const InviteSection = ({taskId}) => {
                     <Typography variant='h5' sx={{p:0,m:0}}>{friend.firstName} {friend.lastName}</Typography>
                     <IconButton 
                         sx={{p:0, m:0,color:'blue'}} 
-                        onClick={()=>selectAssociate(friend._id)} 
-                        disabled={associateList.find(associate=> associate === friend._id) !== undefined}
+                        onClick={()=>selectAssociate({id:friend._id, firstName: friend.firstName,lastName: friend.lastName})} 
+                        disabled={associateList.find(associate=> associate.id === friend._id) !== undefined}
                         
                         >
                         <AddIcon fontSize='large'/>
@@ -50,10 +50,10 @@ const InviteSection = ({taskId}) => {
             {associateList.length === 0 ? <Typography> No selected users yet.</Typography>: <Typography>Selected users:</Typography>}    
                 {associateList.map((user,index)=>
                    <Box key={index} sx={{position:'relative',display:'flex',alignItems:'center'}}>
-                   <Typography variant='h5' sx={{p:0,m:0}}>{user}</Typography>
+                   <Typography variant='h5' sx={{p:0,m:0}}>{user.firstName} {user.lastName}</Typography>
                    <IconButton 
                        sx={{p:0, m:0,color:'red'}}
-                       onClick={()=>removeAssociate(user)}>
+                       onClick={()=>removeAssociate(user.id)}>
                        <DeleteForeverIcon fontSize='large' />
                    </IconButton>
                </Box>

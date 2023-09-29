@@ -1,17 +1,22 @@
 import { Box, Typography,Link, IconButton } from '@mui/material'
 import {useContext} from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
 import { AssociateListContext } from './EditOptions';
+import { clearSearch } from '../../../services/state/authSlice';
 
 const SearchBarResults = ({add}) => {
+  const dispatch = useDispatch()
   const {associateList, setAssociateList} = useContext(AssociateListContext)
   const {id} = useParams();
   const search = useSelector((state)=> state.auth.search)
   console.log(search.length)
   
-
+ const clear = () => {
+  dispatch(clearSearch())
+ }
   return (
     <Box>
       {(search !== undefined && search.length !==0 ) && 
@@ -21,9 +26,12 @@ const SearchBarResults = ({add}) => {
           </Link>
           <IconButton 
           sx={{color:'blue'}}
-          onClick={()=>add(search.id)} 
-                        disabled={associateList.find(associate=> associate === search.id) !== undefined}>
+          onClick={()=>add({id: search.id, firstName: search.firstName, lastName:search.lastName})} 
+                        disabled={associateList.find(associate=> associate.id === search.id) !== undefined}>
             <AddIcon fontSize='large'/>
+          </IconButton>
+          <IconButton onClick={()=>clear()}>
+            <CloseIcon sx={{color:'red'}}/>
           </IconButton>
         </Box>
     
