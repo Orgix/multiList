@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import Todo from "../models/todo.js";
 
 //this controller is used as middleware to determine if the user requesting a change/addition/deletion
 //has any level of authorization
@@ -14,5 +15,17 @@ export const authorizeUser = (req,res,next) =>{
   
   req.token = token
   req.decoded = decoded;
+  next();
+}
+
+export const validateAuthor = async(req,res,next)=>{
+  const id = req.decoded.UserInfo.id
+  const {taskId} = req.params;
+
+  const task = await Todo.findOne({_id:taskId})
+
+  if(task.author.authorID.toString() !== id) return res.status(403).json({msg:'Only the author may use the invite privilege'})
+
+  req.task = task;
   next();
 }
