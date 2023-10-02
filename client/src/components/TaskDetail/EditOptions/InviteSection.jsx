@@ -9,6 +9,8 @@ import SearchBar from './SearchBar';
 import SearchBarResults from './SearchBarResults';
 
 const InviteSection = ({taskId}) => {
+    const requests = useSelector((state)=> state.auth.user.requests)
+  const invitations = requests.filter((request) => request.requestType === 'TASK INVITATION')
     const user = useSelector(getUser)
     const {associateList, setAssociateList} = useContext(AssociateListContext)
 
@@ -37,7 +39,7 @@ const InviteSection = ({taskId}) => {
                     <IconButton 
                         sx={{p:0, m:0,color:'blue'}} 
                         onClick={()=>selectAssociate({id:friend._id, firstName: friend.firstName,lastName: friend.lastName})} 
-                        disabled={associateList.find(associate=> associate.id === friend._id) !== undefined}
+                        disabled={(associateList.find(associate=> associate.id === friend._id) !== undefined || invitations.find(invitation=> invitation.to._id === friend._id) !== undefined)}
                         
                         >
                         <AddIcon fontSize='large'/>

@@ -5,33 +5,36 @@ import { useParams } from 'react-router-dom';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import EmailIcon from '@mui/icons-material/Email';
-
+import { sendInvitations } from '../../../services/actions/auth';
 import DialogWindow from '../DialogWindow';
 import useToggle from '../../../hooks/useToggle';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { clearSearch } from '../../../services/state/authSlice';
 
 export const AssociateListContext = createContext(null);
 
 const EditOptions = () => {
   const [assignModal, setAssignModal] = useToggle(false)
   const [infoModal, setInfoModal] = useToggle(false)
-  const [subtaskActions, setSutaskActions] = useState(null);
+  const [subtaskActions, setSubtaskActions] = useState(null);
   const [associateList, setAssociateList] = useState([])
   const {id, userId} = useParams();
+  const dispatch = useDispatch();
   const user = useSelector((state)=>state.auth.user)
-
+  
+  
     const handleOpenUserMenu = (event) => {
-        setSutaskActions(event.currentTarget);
+        setSubtaskActions(event.currentTarget);
       };
     
     const handleCloseUserMenu = () => {
-        setSutaskActions(null);
+        setSubtaskActions(null);
     };
     const dispatchInvitations = () =>{
-      console.log('dispatch')
-      console.log(associateList)
       setInfoModal(false)
-      //dispatch(completeTask(taskData._id))
+      dispatch(sendInvitations({list:associateList, taskId: id}))
+      setAssociateList([])
+      dispatch(clearSearch())
     }
   return (
     <div style={styles.container}>

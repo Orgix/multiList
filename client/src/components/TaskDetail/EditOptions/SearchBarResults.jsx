@@ -9,6 +9,8 @@ import { clearSearch } from '../../../services/state/authSlice';
 
 const SearchBarResults = ({add}) => {
   const dispatch = useDispatch()
+  const requests = useSelector((state)=> state.auth.user.requests)
+  const invitations = requests.filter((request) => request.requestType === 'TASK INVITATION')
   const {associateList, setAssociateList} = useContext(AssociateListContext)
   const {id} = useParams();
   const search = useSelector((state)=> state.auth.search)
@@ -27,7 +29,7 @@ const SearchBarResults = ({add}) => {
           <IconButton 
           sx={{color:'blue'}}
           onClick={()=>add({id: search.id, firstName: search.firstName, lastName:search.lastName})} 
-                        disabled={associateList.find(associate=> associate.id === search.id) !== undefined}>
+          disabled={(associateList.find(associate=> associate.id === search._id) !== undefined || invitations.find(invitation=> invitation.to._id === search.id) !== undefined)}>
             <AddIcon fontSize='large'/>
           </IconButton>
           <IconButton onClick={()=>clear()}>
