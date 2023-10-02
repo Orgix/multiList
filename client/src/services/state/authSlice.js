@@ -1,5 +1,5 @@
 import { createSlice} from '@reduxjs/toolkit'
-import { signin, register,signout, fetchUserTasks, updateUserData, deleteUser, toggleFavorite, addFriend, deleteFriend, cancelRequest,resolveUserRequest, fetchRequests, searchUser } from "../actions/auth";
+import { signin, register,signout, fetchUserTasks, updateUserData, deleteUser, toggleFavorite, addFriend, deleteFriend, cancelRequest,resolveUserRequest, fetchRequests, searchUser,sendInvitations } from "../actions/auth";
 import { deleteTask,updateTask,completeTask} from '../actions/tasks';
 import { synchronizeUser } from '../actions/profile';
 
@@ -170,6 +170,15 @@ const authSlice = createSlice({
             .addCase(searchUser.fulfilled, (state,action)=>{
               const result = action.payload;
               state.search = result
+            })
+            .addCase(sendInvitations.fulfilled, (state,action)=>{
+              const {requests} = action.payload
+              const user = JSON.parse(localStorage.getItem('user'))
+
+              user.requests = [...user.requests, ... requests]
+
+              localStorage.setItem('user', JSON.stringify(user))
+              state.user = user
             })
     }
 })

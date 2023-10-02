@@ -133,3 +133,14 @@ export const searchUser = createAsyncThunk('auth/searchUser', async(searchTerm)=
         throw new Error('error')
     }
 })
+
+export const sendInvitations = createAsyncThunk('auth/sendInvitations', async(taskInviteList)=>{
+    const {taskId, list} = taskInviteList
+    try{
+        const response = await userApi.inviteToTask(taskId, list);
+        return response.data;
+    }
+    catch(err){
+        throw new Error('error')
+    }
+})

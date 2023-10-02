@@ -11,3 +11,4 @@ export const resolveRequest = (requestId, response) => API.put(`/auth/requests/$
 export const fetchRequests = (length) => API.get(`/auth/requests/fetch`, length);
 export const syncrhonizeUser = () => API.get('/profile/me/sync');
 export const searchUser = (userId) => API.get(`/auth/search/${userId}`)
+export const inviteToTask = (taskId, inviteList) => API.post(`/auth/invitations/${taskId}`, inviteList)
