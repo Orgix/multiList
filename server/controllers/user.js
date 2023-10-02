@@ -460,3 +460,24 @@ export const fetchRequests = async(req,res)=>{
   res.status(200).json({requests})
 }
 //TODO -> create a controller that is performing logging of actions and user that has done it.
+
+export const inviteUsersToTask = async(req,res,next) =>{
+  const list = req.body;
+  const id = req.decoded.UserInfo.id
+
+  const requestArray = []
+
+  list.forEach((user)=>{
+    const request =  new Request({
+      from: id,
+      to: user.id,
+      requestType: 'TASK INVITATION',
+      status: 'PENDING'
+    })
+    requestArray.push(request)
+  })
+
+  const response = await Request.insertMany(requestArray);
+  
+  res.status(200).json({msg:'Request successfully sent', requests: requestArray}) 
+}
