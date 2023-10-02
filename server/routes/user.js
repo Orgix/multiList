@@ -1,8 +1,8 @@
 import express from "express";
 
-import { deleteUser, loginUser, registerUser, signout, updateUser,toggleFavorite, addUserToFriendList, deleteUserFromFriendList, cancelRequest,resolveRequest, fetchRequests, searchUser } from "../controllers/user.js";
+import { deleteUser, loginUser, registerUser, signout, updateUser,toggleFavorite, addUserToFriendList, deleteUserFromFriendList, cancelRequest,resolveRequest, fetchRequests, searchUser,inviteUsersToTask } from "../controllers/user.js";
 import { validateUser } from "../middleware/dataValidation.js";
-import { authorizeUser } from "../middleware/auth.js";
+import { authorizeUser,validateAuthor } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -18,5 +18,6 @@ router.post('/add/:userId', authorizeUser, addUserToFriendList)
 router.patch('/delete/:userId', authorizeUser, deleteUserFromFriendList)
 router.patch('/favorites/:taskId', authorizeUser, toggleFavorite)
 router.get('/search/:userId', searchUser)
+router.post('/invitations/:taskId',authorizeUser, validateAuthor, inviteUsersToTask)
 
 export default router;
