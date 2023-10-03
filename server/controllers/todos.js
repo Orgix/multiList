@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Todo from "../models/todo.js"
 import Activity from "../models/activity.js";
+import User from "../models/user.js";
 import jwt from 'jsonwebtoken'
 
 
@@ -136,5 +137,16 @@ try{
    }
 
     
+}
+
+export const fetchUserFavorites = async(req,res)=>{
+    const {id} = req.decoded.UserInfo
+
+    const user = await User.findOne({_id:id})
+    const favorites = user.favorites
+    
+    const tasks = await Todo.find({ '_id': { $in: favorites } }).sort({createdAt: -1})
+    if(tasks.length > 0 ) return res.status(200).json(tasks)
+    else return res.status(404).json({msg:'User has no specified favorite tasks.'})
 }
 
