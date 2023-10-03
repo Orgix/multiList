@@ -1,5 +1,5 @@
 import express from "express";
-import {getTask, createTask, updateTask, deleteTask, getTasks,completeTask, fetchUserTasks,} from '../controllers/todos.js'
+import {getTask, createTask, updateTask, deleteTask, getTasks,completeTask, fetchUserTasks,fetchUserFavorites} from '../controllers/todos.js'
 import {fetchUserProfile, synchronizeUser} from '../controllers/user.js'
 import { postActivity, deleteActivities } from "../controllers/activities.js";
 import { deleteSuggestions } from "../controllers/general.js"
@@ -36,5 +36,8 @@ router.patch('/tasks/:id/complete', completeTask)
 
 //retrieve updated task tuples for own profile
 router.get('/sync', authorizeUser, synchronizeUser)
+
+//retrieve all tasks that were marked as favorite by the user
+router.get('/favorites', authorizeUser, fetchUserFavorites)
 
 export default router;
