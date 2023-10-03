@@ -144,3 +144,14 @@ export const sendInvitations = createAsyncThunk('auth/sendInvitations', async(ta
         throw new Error('error')
     }
 })
+
+export const fetchFavorites = createAsyncThunk('auth/fetchFavorites', async()=>{
+    try{
+        const response = await taskApi.fetchFavoriteTasks();
+        console.log(response)
+        return response.data;
+    }
+    catch(err){
+        throw new Error('error')
+    }
+})

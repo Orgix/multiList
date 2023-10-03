@@ -1,5 +1,3 @@
-import * as authApi from '../api/authApi'
-import * as userApi from '../api/userApi'
 import * as taskApi from '../api/taskApi'
 import { createAsyncThunk} from '@reduxjs/toolkit'
 
@@ -79,7 +77,6 @@ export const fetchTaskSuggestions = createAsyncThunk('comments/fetchTasksSuggest
 export const postSuggestion = createAsyncThunk('comments/postSuggestion',async(NewTaskSuggestion)=>{
     try{
         const response = await taskApi.postSuggestion(NewTaskSuggestion.id, NewTaskSuggestion.suggestion)
-        console.log(response)
         return response.data
     }
     catch(err){
@@ -121,7 +118,6 @@ export const fetchReplies = createAsyncThunk('suggestions/fetchReplies', async(s
 export const postReply = createAsyncThunk('suggestions/postReply', async(replyObj)=>{
     try{
         const response = await taskApi.postReply(replyObj.id, {reply: replyObj.reply})
-        console.log(response)
         return response.data
     }
     catch(error){
@@ -131,9 +127,7 @@ export const postReply = createAsyncThunk('suggestions/postReply', async(replyOb
 
 export const deleteReply = createAsyncThunk('suggestions/deleteReply', async(replyObj)=>{
     try{
-        console.log(replyObj)
         const response = await taskApi.deleteReply(replyObj.suggestionId, replyObj.id)
-        console.log(response)
         return response.data
     }
     catch(error){
