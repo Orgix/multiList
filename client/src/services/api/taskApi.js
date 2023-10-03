@@ -8,6 +8,7 @@ export const updateTask = (id, updatedTask) => API.patch(`profile/me/tasks/${id}
 export const deleteTask = (id) => API.delete(`/profile/me/tasks/${id}`);
 export const completeTask = (id) => API.patch(`/profile/me/tasks/${id}/complete`);
 export const fetchUserTasks = () => API.get('/profile/me/tasks/user');
+export const fetchFavoriteTasks = () => API.get('/profile/me/favorites')
 export const fetchTaskSuggestions = (taskId) => API.get(`/tasks/${taskId}/suggestions`);
 export const postSuggestion = (taskId, newSuggestion) => API.post(`/tasks/${taskId}/suggestions`, newSuggestion);
 export const deleteSuggestion = (taskId, suggestionId) => API.delete(`/tasks/${taskId}/suggestions/${suggestionId}`);
