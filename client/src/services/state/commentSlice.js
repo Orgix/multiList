@@ -21,7 +21,6 @@ const suggestionSlice = createSlice({
                 state.error = ''
             })
             .addCase(fetchTaskSuggestions.fulfilled, (state,action)=>{
-                console.log(action.payload)
                 state.isLoading = false
                 state.success = true
                 state.suggestions = action.payload
