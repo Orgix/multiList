@@ -35,6 +35,7 @@ const EditOptions = () => {
       dispatch(sendInvitations({list:associateList, taskId: id}))
       setAssociateList([])
       dispatch(clearSearch())
+      console.log('d')
     }
   return (
     <div style={styles.container}>
