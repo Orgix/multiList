@@ -177,7 +177,7 @@ const authSlice = createSlice({
               const user = JSON.parse(localStorage.getItem('user'))
 
               user.requests = [...user.requests, ... requests]
-
+              console.log(action.payload)
               localStorage.setItem('user', JSON.stringify(user))
               state.user = user
             })
