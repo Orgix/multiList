@@ -28,7 +28,6 @@ const ViewRequests = () => {
         console.log(response)
         dispatch(resolveUserRequest({id:id, resp: response}))
       }
-      console.log(requests)
     const pending = requests.requests.filter(request=> request.from._id === requests.id)
     const incoming = requests.requests.filter(request=> request.to._id === requests.id)
   return (
@@ -45,9 +44,14 @@ const ViewRequests = () => {
             {pending.map(request=>{
                 return <Paper key={request._id} elevation={3} sx={{py:2, pl:1,my:2, display:'flex',position:'relative'}}>
                     <Box sx={{display:'flex', flexDirection:'row', gap:1}}>
+                    {request.requestType === 'FRIEND REQUEST' ? 
                         <Typography variant='h5'>
                             Friend Request sent to: {request.to.firstName} {request.to.lastName}  -
+                        </Typography> :
+                        <Typography>
+                            Invited {request.to.firstName} {request.to.lastName} to participate in the task <strong>{request.for.name}</strong> - 
                         </Typography>
+                        }
                         <Typography variant='subtitle2'>{convertToRelativeTime(request.createdAt)}</Typography>
                     </Box>
                 
