@@ -14,11 +14,12 @@ const SearchBarResults = ({add}) => {
   const {associateList, setAssociateList} = useContext(AssociateListContext)
   const {id} = useParams();
   const search = useSelector((state)=> state.auth.search)
-  console.log(search.length)
+  console.log(search)
   
  const clear = () => {
   dispatch(clearSearch())
  }
+ console.log(associateList)
   return (
     <Box>
       {(search !== undefined && search.length !==0 ) && 
@@ -29,7 +30,7 @@ const SearchBarResults = ({add}) => {
           <IconButton 
           sx={{color:'blue'}}
           onClick={()=>add({id: search.id, firstName: search.firstName, lastName:search.lastName})} 
-          disabled={(associateList.find(associate=> associate.id === search._id) !== undefined || invitations.find(invitation=> invitation.to._id === search.id) !== undefined)}>
+          disabled={(associateList.find(associate=> associate.id === search.id) !== undefined || invitations.find(invitation=> invitation.to._id === search.id && invitation.for.id === id) !== undefined)}>
             <AddIcon fontSize='large'/>
           </IconButton>
           <IconButton onClick={()=>clear()}>
