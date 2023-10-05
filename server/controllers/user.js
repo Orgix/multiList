@@ -464,7 +464,8 @@ export const fetchRequests = async(req,res)=>{
 export const inviteUsersToTask = async(req,res,next) =>{
   const list = req.body;
   const id = req.decoded.UserInfo.id
-
+  const {taskId} = req.params;
+  const task = req.task;
   const requestArray = []
 
   list.forEach((user)=>{
@@ -472,7 +473,12 @@ export const inviteUsersToTask = async(req,res,next) =>{
       from: id,
       to: user.id,
       requestType: 'TASK INVITATION',
-      status: 'PENDING'
+      status: 'PENDING',
+       for: {
+         id:new mongoose.Types.ObjectId(taskId),
+         name: task.title
+       },
+      createdAt: new Date()
     })
     requestArray.push(request)
   })
