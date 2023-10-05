@@ -21,6 +21,13 @@ const requestSchema = mongoose.Schema({
             ref:'Team'
         }
     },
+    for:{
+        id:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'Todo'
+        },
+        name: String
+    },
     createdAt:{
         type: Date,
         default: new Date()
