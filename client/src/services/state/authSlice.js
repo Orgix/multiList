@@ -98,7 +98,6 @@ const authSlice = createSlice({
                 data.synced = action.payload.synced
 
                 localStorage.setItem('user', JSON.stringify(data))
-                console.log(localStorage.getItem('user'))
                 state.user = data
             })
             .addCase(updateUserData.fulfilled, (state,action)=>{
@@ -149,7 +148,6 @@ const authSlice = createSlice({
                state.user = user
             })
             .addCase(resolveUserRequest.fulfilled, (state,action)=>{
-              console.log(action.payload)
               const id = action.payload
               const user = JSON.parse(localStorage.getItem('user'))
                
@@ -177,7 +175,6 @@ const authSlice = createSlice({
               const user = JSON.parse(localStorage.getItem('user'))
 
               user.requests = [...user.requests, ... requests]
-              console.log(action.payload)
               localStorage.setItem('user', JSON.stringify(user))
               state.user = user
             })

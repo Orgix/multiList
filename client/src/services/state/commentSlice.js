@@ -35,7 +35,6 @@ const suggestionSlice = createSlice({
            .addCase(editSuggestion.fulfilled, (state,action)=>{
                 
                 const updatedSuggestion = action.payload
-                console.log(updatedSuggestion)
                 state.suggestions = state.suggestions.map(suggestion=>{
                     if(suggestion.id === updatedSuggestion.id){
                         return updatedSuggestion;
