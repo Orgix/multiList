@@ -484,6 +484,5 @@ export const inviteUsersToTask = async(req,res,next) =>{
   })
 
   const response = await Request.insertMany(requestArray);
-  console.log(response)
   res.status(200).json({msg:'Request successfully sent', requests: requestArray}) 
 }
