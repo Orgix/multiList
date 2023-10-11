@@ -424,7 +424,12 @@ export const resolveRequest = async(req,res) =>{
   //if the one resolving the request isn't the user, end of route here.
   if(request.to.toString() !== id) return res.status(401).json({msg:'Id mismatch'}) 
   //if it's a deny request resolve, return the message
-  if(!response) return res.status(200).json({msg:'Denied request'})
+  if(!response) {
+    await Request.deleteOne({_id:requestId})
+    return res.status(200).json({msg:'Denied request'})
+  }
+
+  //determine if it's a friend request or an invite request- IDEALLY, each resolving of these has to split in 2 separate routes
 
   const ownUser = await User.findOne({_id:request.to})
   const otherUser = await User.findOne({_id:request.from})
@@ -485,4 +490,26 @@ export const inviteUsersToTask = async(req,res,next) =>{
 
   const response = await Request.insertMany(requestArray);
   res.status(200).json({msg:'Request successfully sent', requests: requestArray}) 
+}
+
+export const resolveTaskInvite = async(req,res)=>{
+  //user id that handles the answer to the request
+  const {id} = req.decoded.UserInfo
+  //request and response to it
+  const {response, requestId} = req.params
+
+  //get request
+  const request = await Request.findOne({_id: requestId})
+
+  //deny request. delete it and return a denial message
+  if(!response) {
+    await Request.deleteOne({_id:requestId})
+    return res.status(200).json({msg:'Request Denied'});
+  }
+
+  //get task
+  const task = await Todo.findOne({_id: request.for.id})
+
+  console.log(task)
+  
 }
