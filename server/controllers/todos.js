@@ -60,7 +60,24 @@ export const createTask = async(req,res)=>{
     
 
     //create the new object to be saved
-    const newTask = new Todo({title,priority,author,tasks,privacy,description: description.trim().length > 0 ? description : '', createdAt: new Date().toISOString(), log:[]});
+    const newTask = new Todo({
+        title,
+        priority,
+        author,
+        tasks,
+        privacy,
+        description: description.trim().length > 0 ? description : '', createdAt: new Date().toISOString(), 
+        log:[],
+        team:{
+            soloProject: true,
+            members:[
+                {id: decoded.UserInfo.id, 
+                 role:'Author', 
+                 name:`${decoded.UserInfo.firstName} ${decoded.UserInfo.lastName}`, 
+                 statistics: []
+                }]
+        }
+    });
     const newActivity = new Activity({
         user:{
             username: author.username,
