@@ -45,7 +45,27 @@ const todoSchema = mongoose.Schema({
         type: String,
     },
     team:{
-        id:{type:String, default:""}
+        soloProject:{
+            type:Boolean,
+            default:true
+        },
+        members:[
+            {
+                id: {
+                    type:mongoose.Schema.Types.ObjectId,
+                    ref:'User'
+                },
+                role:{
+                    type:String,
+                    enum:['Author', 'Assignee', 'View Only']
+                },
+                name:String,
+                statistics:{
+
+                },
+                _id:false
+            }
+        ]
     },
     completed:{
         type:Boolean,
@@ -66,14 +86,6 @@ const todoSchema = mongoose.Schema({
 },
 {timestamps:true})
 
-todoSchema.pre('save', function(next){
-    //create team token. lasts a year
-    const teamId = uuid();
-    //update team field
-    this.team.id = teamId
-    //next middleware
-    next();
-})
 const Todo = mongoose.model("Todos", todoSchema)
 
 export default Todo;
