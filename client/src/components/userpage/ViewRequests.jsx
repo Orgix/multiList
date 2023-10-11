@@ -5,7 +5,7 @@ import { convertToRelativeTime } from '../../utils/time'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
-import { cancelRequest, resolveUserRequest } from '../../services/actions/auth';
+import { cancelRequest, resolveUserRequest,resolveTaskInvite } from '../../services/actions/auth';
 
 const ViewRequests = () => {
     const requests = useSelector((state)=> state.auth.user)
@@ -21,12 +21,14 @@ const ViewRequests = () => {
     } 
 
     const cancelFriendRequest = (request) =>{
-        console.log(request)
         dispatch(cancelRequest({id:request._id, from: request.from._id}))
       }
       const resolveRequest = (id, response) =>{
-        console.log(response)
         dispatch(resolveUserRequest({id:id, resp: response}))
+      }
+
+      const resolveInvite = (id,response) =>{
+        dispatch(resolveTaskInvite({id:id, resp:response}))
       }
     const pending = requests.requests.filter(request=> request.from._id === requests.id)
     const incoming = requests.requests.filter(request=> request.to._id === requests.id)
@@ -91,22 +93,45 @@ const ViewRequests = () => {
             {incoming.map(request=> {
                 return <Paper key={request._id} elevation={3} sx={{py:2, pl:1,my:2, display:'flex',position:'relative'}}>
                 <Box sx={{display:'flex', flexDirection:'row', gap:1}}>
+                    {request.requestType === 'FRIEND REQUEST' ? 
                     <Typography variant='h5'>
-                        Friend Request sent from: {request.from.firstName} {request.from.lastName}  -
-                    </Typography>
-                    <Typography variant='subtitle2'>{convertToRelativeTime(request.createdAt)}</Typography>
+                    Friend Request sent from: {request.from.firstName} {request.from.lastName}  -
+                </Typography>
+                 : 
+                <Typography variant='h5'>
+                    <strong>{request.from.firstName} {request.from.lastName}</strong> invited you to participate in the task <strong>{request.for.name}</strong>
+                </Typography>
+                }
+                <Typography variant='subtitle2'>{convertToRelativeTime(request.createdAt)}</Typography>
                 </Box>
                 <Box sx={{position:'absolute', right:'5px', bottom:'9px'}}>
-                    <Tooltip arrow title="Accept request" >
-                        <Button variant="contained" color="success" onClick={()=>resolveRequest(request._id, true)}>
-                            <DoneIcon/>
-                        </Button>
-                    </Tooltip> 
-                    <Tooltip arrow title="Deny Request">
-                        <Button variant="contained" color="error" sx={{marginLeft:'3px'}} onClick={()=>resolveRequest(request._id, false)}> 
-                            <ClearIcon/>
-                        </Button>
-                    </Tooltip>
+                    {request.requestType === 'FRIEND REQUEST' ? 
+                    <>
+                        <Tooltip arrow title="Accept request" >
+                            <Button variant="contained" color="success" onClick={()=>resolveRequest(request._id, true)}>
+                                <DoneIcon/>
+                            </Button>
+                        </Tooltip> 
+                        <Tooltip arrow title="Deny Request">
+                            <Button variant="contained" color="error" sx={{marginLeft:'3px'}} onClick={()=>resolveRequest(request._id, false)}> 
+                                <ClearIcon/>
+                            </Button>
+                        </Tooltip>
+                    </> : 
+                    <>
+                        <Tooltip arrow title="Accept request" >
+                            <Button variant="contained" color="success" onClick={()=>resolveInvite(request._id, true)}>
+                                <DoneIcon/>
+                            </Button>
+                        </Tooltip> 
+                        <Tooltip arrow title="Deny Request">
+                            <Button variant="contained" color="error" sx={{marginLeft:'3px'}} onClick={()=>resolveInvite(request._id, false)}> 
+                                <ClearIcon/>
+                            </Button>
+                        </Tooltip>
+                    </>
+                    }
+                    
                 </Box>
                 </Paper>
             })}
