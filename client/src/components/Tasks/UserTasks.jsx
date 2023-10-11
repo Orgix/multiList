@@ -68,7 +68,7 @@ const UserTasks = () => {
     </>
   } 
   else {
-    favsComp = <Typography>No tasks marked as favorites</Typography>
+    favsComp = <Typography textAlign='center' variant="h5">No tasks marked as favorites</Typography>
   }
 
   if(!user){
