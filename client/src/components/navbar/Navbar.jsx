@@ -142,7 +142,7 @@ const Navbar = () => {
                 {user &&
                 <MenuItem key="key-4" onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">
-                    <Link component={RouterLink} to="/tasks/new" underline="none">
+                    <Link component={RouterLink} to="/profile/me/tasks/new" underline="none">
                       New Task
                     </Link>
                   </Typography>
