@@ -510,6 +510,6 @@ export const resolveTaskInvite = async(req,res)=>{
   //get task
   const task = await Todo.findOne({_id: request.for.id})
 
-  console.log(task)
-  
+  console.log(task)//continue here, add member to task team field, save task, save user etc.
+  //add a stack prop to handle multiple request
 }
