@@ -21,3 +21,7 @@ cd server
 npm install
 npm start 
 ```
+
+USER FEATURES: 
+
+Create Task, Update Task, Complete Task, Delete Task, Create subtask, Delete Subtask, Create Subtask, Edit Subtask
