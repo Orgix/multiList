@@ -9,7 +9,7 @@ const router = express.Router();
 //all routes have a protection, they can't be used unless the user is validated or authorized 
 router.post('/signup', validateUser, registerUser);
 router.post('/signin', validateUser, loginUser)
-router.post('/logout', authorizeUser, signout)
+router.post('/logout', signout)
 router.patch('/update', authorizeUser, updateUser)
 router.delete('/delete/:userId', authorizeUser, deleteUser)
 router.delete('/:userId/requests/cancel/:requestId', authorizeUser, cancelRequest)
